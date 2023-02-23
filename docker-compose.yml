@@ -1,0 +1,17 @@
+﻿version: '3.8'
+
+services:
+  neo4j-db:
+    image: neo4j:latest
+    environment:
+      NEO4J_AUTH: 'none'
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - nosql_data:/data
+      - nosql_logs:/logs
+
+volumes:
+  nosql_data:
+  nosql_logs:
