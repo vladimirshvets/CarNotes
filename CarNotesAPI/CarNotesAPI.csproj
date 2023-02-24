@@ -10,13 +10,19 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Neo4j.Driver" Version="5.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Models\" />
+    <None Remove="Models\Api\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Models\Api\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Neo4j.Driver, Version=4.3.2.2, Culture=neutral, PublicKeyToken=b646bc66d277ac07" />
   </ItemGroup>
 </Project>
