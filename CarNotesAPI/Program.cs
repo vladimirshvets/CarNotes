@@ -13,6 +13,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: "allowClientappOrigin",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:8080");
+        });
+});
+
 builder.Services.Configure<ApplicationSettings>(
     builder.Configuration.GetSection("ApplicationSettings"));
 
@@ -42,6 +52,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("allowClientappOrigin");
 
 app.Run();
 
