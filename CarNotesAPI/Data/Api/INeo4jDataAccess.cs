@@ -1,4 +1,4 @@
-﻿namespace CarNotesAPI.Models.Api
+﻿namespace CarNotesAPI.Data.Api
 {
     public interface INeo4jDataAccess : IAsyncDisposable
     {

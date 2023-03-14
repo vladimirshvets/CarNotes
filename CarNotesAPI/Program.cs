@@ -1,6 +1,7 @@
-﻿using CarNotesAPI.Models;
-using CarNotesAPI.Models.Api;
-using Microsoft.Extensions.Configuration;
+﻿using CarNotesAPI.Data;
+using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
+using CarNotesAPI.Data.Repositories;
 using Neo4j.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddSingleton(
 
 builder.Services.AddScoped<INeo4jDataAccess, Neo4jDataAccess>();
 builder.Services.AddTransient<CarRepository>();
+builder.Services.AddTransient<MileageRepository>();
 
 var app = builder.Build();
 

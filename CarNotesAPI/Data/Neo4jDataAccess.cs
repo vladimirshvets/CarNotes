@@ -1,17 +1,15 @@
-﻿using System;
-using CarNotesAPI.Models.Api;
+﻿using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using Microsoft.Extensions.Options;
 using Neo4j.Driver;
 
-namespace CarNotesAPI.Models;
+namespace CarNotesAPI.Data;
 
 public class Neo4jDataAccess : INeo4jDataAccess
 {
-    private IAsyncSession _session;
+    private readonly IAsyncSession _session;
 
-    private ILogger<Neo4jDataAccess> _logger;
-
-    private string _database;
+    private readonly ILogger<Neo4jDataAccess> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Neo4jDataAccess"/> class.
@@ -22,8 +20,8 @@ public class Neo4jDataAccess : INeo4jDataAccess
         IOptions<ApplicationSettings> appSettingsOptions)
     {
         _logger = logger;
-        _database = appSettingsOptions.Value.Neo4jDatabase ?? "neo4j";
-        _session = driver.AsyncSession(o => o.WithDatabase(_database));
+        string database = appSettingsOptions.Value.Neo4jDatabase ?? "neo4j";
+        _session = driver.AsyncSession(o => o.WithDatabase(database));
     }
 
     /// <summary>
@@ -64,7 +62,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
 
             var result = await _session.ExecuteReadAsync(async tx =>
             {
-                T scalar = default(T);
+                T scalar = default;
 
                 var res = await tx.RunAsync(query, parameters);
 
@@ -96,11 +94,22 @@ public class Neo4jDataAccess : INeo4jDataAccess
 
             var result = await _session.ExecuteWriteAsync(async tx =>
             {
-                T scalar = default(T);
+                T scalar = default;
 
                 var res = await tx.RunAsync(query, parameters);
 
-                scalar = (await res.SingleAsync())[0].As<T>();
+                var singleElement = (await res.SingleAsync())[0];
+
+                if (singleElement is INode)
+                {
+                    // Return the list of object properties.
+                    scalar = (T)singleElement.As<INode>().Properties;
+                }
+                else
+                {
+                    // Return the value of a primitive type.
+                    scalar = singleElement.As<T>();
+                }
 
                 return scalar;
             });
@@ -133,7 +142,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
 
                 var res = await tx.RunAsync(query, parameters);
 
-                var records = await res.ToListAsync();
+                List<IRecord> records = await res.ToListAsync();
 
                 data = records
                     .Select(x => (T)x.Values[returnObjectKey].As<INode>().Properties)

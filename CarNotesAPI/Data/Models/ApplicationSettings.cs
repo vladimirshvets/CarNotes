@@ -1,5 +1,4 @@
-﻿using System;
-namespace CarNotesAPI.Models
+﻿namespace CarNotesAPI.Data.Models
 {
     public class ApplicationSettings
     {
