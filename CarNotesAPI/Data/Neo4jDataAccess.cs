@@ -42,8 +42,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
     public async Task<List<Dictionary<string, object>>> ExecuteReadDictionaryAsync(
         string query,
         string returnObjectKey,
-        IDictionary<string, object>?
-        parameters = null)
+        IDictionary<string, object>? parameters = null)
     {
         return await ExecuteReadTransactionAsync<Dictionary<string, object>>(
             query, returnObjectKey, parameters);
@@ -82,9 +81,75 @@ public class Neo4jDataAccess : INeo4jDataAccess
     }
 
     /// <summary>
-    /// Execute write transaction
+    /// Execute write transaction with a dictionary result
+    /// as an asynchronous operation.
     /// </summary>
-    public async Task<T> ExecuteWriteTransactionAsync<T>(
+    /// <typeparam name="T">Primitive type (struct)</typeparam>
+    /// <param name="query">Query string</param>
+    /// <param name="parameters">Query parameters</param>
+    /// <returns>Dictionary representation of result.</returns>
+    public async Task<T> ExecuteWriteWithScalarResultAsync<T>(
+        string query,
+        IDictionary<string, object>? parameters = null) where T : struct
+    {
+        var response = await ExecuteWriteTransactionAsync(query, parameters);
+
+        // Return the value of a primitive type.
+        var value = response.First().Value;
+        var scalar = value.As<T>();
+
+        return scalar;
+    }
+
+    /// <summary>
+    /// Execute write transaction with a dictionary result
+    /// as an asynchronous operation.
+    /// </summary>
+    /// <param name="query">Query string</param>
+    /// <param name="parameters">Query parameters</param>
+    /// <returns>Dictionary representation of result.</returns>
+    public async Task<Dictionary<string, object>> ExecuteWriteWithDictionaryResultAsync(
+        string query,
+        IDictionary<string, object>? parameters = null)
+    {
+        var response = await ExecuteWriteTransactionAsync(query, parameters);
+
+        // Return the value of a class.
+        var value = response.First().Value;
+        var obj = (Dictionary<string, object>)value.As<INode>().Properties;
+
+        return obj;
+    }
+
+    /// <summary>
+    /// Execute write transaction with a list result
+    /// as an asynchronous operation.
+    /// </summary>
+    /// <param name="query">Query string</param>
+    /// <param name="parameters">Query parameters</param>
+    /// <returns>List representation of result.</returns>
+    public async Task<List<Dictionary<string, object>>> ExecuteWriteWithListResultAsync(
+        string query,
+        IDictionary<string, object>? parameters = null)
+    {
+        var response = await ExecuteWriteTransactionAsync(query, parameters);
+
+        // Return the collection of class values.
+        var collection = new List<Dictionary<string, object>>();
+        foreach (var item in response)
+        {
+            var value = item.Value;
+            var obj = (Dictionary<string, object>)value.As<INode>().Properties;
+            collection.Add(obj);
+        }
+
+        return collection;
+    }
+
+    /// <summary>
+    /// Execute write transaction.
+    /// </summary>
+    private async Task<IReadOnlyDictionary<string, object>> ExecuteWriteTransactionAsync(
         string query,
         IDictionary<string, object>? parameters = null)
     {
@@ -94,24 +159,16 @@ public class Neo4jDataAccess : INeo4jDataAccess
 
             var result = await _session.ExecuteWriteAsync(async tx =>
             {
-                T scalar = default;
-
+                // This function can process batch of statements per once.
                 var res = await tx.RunAsync(query, parameters);
 
-                var singleElement = (await res.SingleAsync())[0];
+                List<IRecord> records = await res.ToListAsync();
 
-                if (singleElement is INode)
-                {
-                    // Return the list of object properties.
-                    scalar = (T)singleElement.As<INode>().Properties;
-                }
-                else
-                {
-                    // Return the value of a primitive type.
-                    scalar = singleElement.As<T>();
-                }
+                // However, let's assume that one query is executed at a time
+                // to keep the code maintainable.
+                IRecord record = records[0];
 
-                return scalar;
+                return record.Values;
             });
 
             return result;

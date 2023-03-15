@@ -4,10 +4,8 @@
     {
         public Guid CarId { get; set; }
 
-        public int Value { get; set; }
+        public int OdometerValue { get; set; }
 
         public DateOnly Date { get; set; }
-
-        public string? Comment { get; set; }
     }
 }

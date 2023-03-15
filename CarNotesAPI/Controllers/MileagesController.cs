@@ -10,8 +10,7 @@ namespace CarNotesAPI.Controllers
     {
         private readonly MileageRepository _mileageRepository;
 
-        public MileagesController(
-            MileageRepository mileageRepository)
+        public MileagesController(MileageRepository mileageRepository)
         {
             _mileageRepository = mileageRepository;
         }
@@ -28,10 +27,8 @@ namespace CarNotesAPI.Controllers
         {
             Mileage mileage = new()
             {
-                Value = mileageVM.Value,
-                Date = mileageVM.Date,
-                Comment = mileageVM.Comment
-
+                OdometerValue = mileageVM.OdometerValue,
+                Date = mileageVM.Date
             };
             return await _mileageRepository.AddAsync(mileageVM.CarId, mileage);
         }
@@ -44,11 +41,5 @@ namespace CarNotesAPI.Controllers
             return await _mileageRepository.UpdateAsync(
                 carId, mileageDate, mileageValue, mileage);
         }
-
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

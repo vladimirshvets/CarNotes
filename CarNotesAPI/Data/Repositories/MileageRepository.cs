@@ -1,6 +1,5 @@
 ﻿using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
-using Neo4j.Driver;
 
 namespace CarNotesAPI.Data.Repositories;
 
@@ -30,21 +29,20 @@ public class MileageRepository
         string query =
             @"MATCH (c:Car { id: $carId })-[rel: MILE_MARKER]->(m: Mileage)
             RETURN m
-            ORDER BY m.Value DESC, m.Date DESC";
+            ORDER BY m.odometer DESC, m.date DESC";
 
         var parameters = new Dictionary<string, object>
         {
             { "carId", carId.ToString() }
         };
 
-        List<Dictionary<string, object>> response =
-            await _neo4jDataAccess.ExecuteReadDictionaryAsync(
+        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
                 query, "m", parameters);
 
         List<Mileage> mileages = new(response.Count);
         foreach (Dictionary<string, object> mileageObj in response)
         {
-            Mileage mileage = PopulateFrom(mileageObj);
+            Mileage mileage = Mileage.FromNode(mileageObj);
             mileages.Add(mileage);
         }
 
@@ -63,9 +61,9 @@ public class MileageRepository
             @"MATCH (c: Car { id: $carId })
             CREATE
                 (m: Mileage {
+                    id: apoc.create.uuid(),
                     date: $mileageDate,
-                    value: $mileageValue,
-                    comment: $mileageComment
+                    odometer: $mileageValue
                 }),
                 (c)-[rel:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN m";
@@ -74,14 +72,13 @@ public class MileageRepository
         {
             { "carId", carId.ToString() },
             { "mileageDate", mileage.Date },
-            { "mileageValue", mileage.Value },
-            { "mileageComment", mileage.Comment }
+            { "mileageValue", mileage.OdometerValue }
         };
 
-        var mileageObj = await _neo4jDataAccess.ExecuteWriteTransactionAsync<Dictionary<string, object>>(
+        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return PopulateFrom(mileageObj);
+        return Mileage.FromNode(response);
     }
 
     /// <summary>
@@ -99,8 +96,7 @@ public class MileageRepository
             @"MATCH (:Car { id: $carId })-[rel:MILE_MARKER]->(m: Mileage { date: $mileageDate, value: $mileageValue })
             SET
                 m.date = $updatedMileageDate,
-                m.value = $updatedMileageValue,
-                m.comment = $updatedMileageComment,
+                m.odometer = $updatedMileageValue,
                 rel.updated_at = timestamp()
             RETURN m";
 
@@ -110,30 +106,12 @@ public class MileageRepository
             { "mileageDate", mileageDate },
             { "mileageValue", mileageValue },
             { "updatedMileageDate", mileage.Date },
-            { "updatedMileageValue", mileage.Value },
-            { "updatedMileageComment", mileage.Comment }
+            { "updatedMileageValue", mileage.OdometerValue }
         };
 
-        var mileageObj = await _neo4jDataAccess.ExecuteWriteTransactionAsync<Dictionary<string, object>>(
+        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return PopulateFrom(mileageObj);
-    }
-
-    /// <summary>
-    /// Populates a mileage from the set of fields.
-    /// </summary>
-    /// <param name="mileageObj">Set of property names and their values</param>
-    /// <returns>A new instance of mileage.</returns>
-    private Mileage PopulateFrom(Dictionary<string, object> mileageObj)
-    {
-        Mileage mileage = new()
-        {
-            Date = ((LocalDate)mileageObj["date"]).ToDateOnly(),
-            Value = (int)(long)mileageObj["value"],
-            Comment = mileageObj.ContainsKey("Comment") ? (string)mileageObj["comment"] : null
-        };
-
-        return mileage;
+        return Mileage.FromNode(response);
     }
 }

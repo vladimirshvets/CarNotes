@@ -35,14 +35,13 @@ public class CarRepository
             { "userId", userId.ToString() }
         };
 
-        List<Dictionary<string, object>> response =
-            await _neo4jDataAccess.ExecuteReadDictionaryAsync(
+        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
                 query, "c", parameters);
 
         List<Car> cars = new(response.Count);
         foreach (Dictionary<string, object> carObj in response)
         {
-            Car car = PopulateFrom(carObj);
+            Car car = Car.FromNode(carObj);
             cars.Add(car);
         }
 
@@ -55,7 +54,7 @@ public class CarRepository
     /// <param name="userId">User identifier</param>
     /// <param name="car">Car data</param>
     /// <returns>A newly created instance of car.</returns>
-    public async Task<bool> AddAsync(Guid userId, Car car)
+    public async Task<Car> AddAsync(Guid userId, Car car)
     {
         string query =
             @"MATCH (u: User { id: $userId })
@@ -70,7 +69,7 @@ public class CarRepository
                     plate: $plate
                 }),
                 (u)-[rel:OWNS { created_at: timestamp() }]->(c)
-            RETURN TRUE";
+            RETURN c";
 
         var parameters = new Dictionary<string, object>
         {
@@ -83,8 +82,10 @@ public class CarRepository
             { "plate", car.Plate }
         };
 
-        return await _neo4jDataAccess.ExecuteWriteTransactionAsync<bool>(
+        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
+
+        return Car.FromNode(response);
     }
 
     /// <summary>
@@ -118,30 +119,9 @@ public class CarRepository
             { "plate", car.Plate }
         };
 
-        var carObj = await _neo4jDataAccess.ExecuteWriteTransactionAsync<Dictionary<string, object>>(
+        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return PopulateFrom(carObj);
-    }
-
-    /// <summary>
-    /// Populates a car from the set of fields.
-    /// </summary>
-    /// <param name="carObj">Set of property names and their values</param>
-    /// <returns>A new instance of car.</returns>
-    private Car PopulateFrom(Dictionary<string, object> carObj)
-    {
-        Car car = new()
-        {
-            Id = new Guid((string)carObj["id"]),
-            Make = carObj.ContainsKey("make") ? (string)carObj["make"] : string.Empty,
-            Model = carObj.ContainsKey("model") ? (string)carObj["model"] : string.Empty,
-            Generation = carObj.ContainsKey("generation") ? (string)carObj["generation"] : null,
-            VIN = carObj.ContainsKey("VIN") ? (string)carObj["VIN"] : null,
-            Year = carObj.ContainsKey("year") ? (int)(long)carObj["year"] : null,
-            Plate = carObj.ContainsKey("plate") ? (string)carObj["plate"] : null
-        };
-
-        return car;
+        return Car.FromNode(response);
     }
 }

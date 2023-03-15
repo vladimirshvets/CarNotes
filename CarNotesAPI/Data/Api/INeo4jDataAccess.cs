@@ -16,9 +16,16 @@
             string query,
             IDictionary<string, object>? parameters = null);
 
-        Task<T> ExecuteWriteTransactionAsync<T>(
+        Task<T> ExecuteWriteWithScalarResultAsync<T>(
+            string query,
+            IDictionary<string, object>? parameters = null) where T : struct;
+
+        Task<Dictionary<string, object>> ExecuteWriteWithDictionaryResultAsync(
             string query,
             IDictionary<string, object>? parameters = null);
 
+        Task<List<Dictionary<string, object>>> ExecuteWriteWithListResultAsync(
+            string query,
+            IDictionary<string, object>? parameters = null);
     }
 }

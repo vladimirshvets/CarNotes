@@ -20,6 +20,7 @@
     <None Remove="Data\Repositories\" />
     <None Remove="Data\Api\" />
     <None Remove="ViewModels\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -27,6 +28,7 @@
     <Folder Include="Data\Repositories\" />
     <Folder Include="Data\Api\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Neo4j.Driver, Version=4.3.2.2, Culture=neutral, PublicKeyToken=b646bc66d277ac07" />

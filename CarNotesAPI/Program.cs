@@ -37,6 +37,7 @@ builder.Services.AddSingleton(
 builder.Services.AddScoped<INeo4jDataAccess, Neo4jDataAccess>();
 builder.Services.AddTransient<CarRepository>();
 builder.Services.AddTransient<MileageRepository>();
+builder.Services.AddTransient<RefuelingRepository>();
 
 var app = builder.Build();
 

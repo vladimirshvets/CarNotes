@@ -8,7 +8,12 @@ namespace CarNotesAPI.Controllers;
 [Route("api/[controller]")]
 public class CarsController : ControllerBase
 {
-    private CarRepository _carRepository;
+    private readonly CarRepository _carRepository;
+
+    // ToDo:
+    // get from storage when a user functionality is ready.
+    private readonly Guid UserId =
+        new Guid("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
 
     public CarsController(CarRepository carRepository)
     {
@@ -19,15 +24,13 @@ public class CarsController : ControllerBase
     [Route("getByUser")]
     public async Task<IEnumerable<Car>> GetByUser()
     {
-        Guid userId = new Guid("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
-        return await _carRepository.GetByUser(userId);
+        return await _carRepository.GetByUser(UserId);
     }
 
     [HttpPost]
-    public async Task<bool> Post([FromBody]Car car)
+    public async Task<Car> Post([FromBody]Car car)
     {
-        Guid userId = new Guid("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
-        return await _carRepository.AddAsync(userId, car);
+        return await _carRepository.AddAsync(UserId, car);
     }
 
     [HttpPut("{id}")]
@@ -35,9 +38,4 @@ public class CarsController : ControllerBase
     {
         return await _carRepository.UpdateAsync(id, car);
     }
-
-    //[HttpDelete("{id}")]
-    //public void Delete(int id)
-    //{
-    //}
 }
