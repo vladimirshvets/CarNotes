@@ -33,7 +33,7 @@
 import axios from 'axios'
 
 export default {
-    name: 'MyCars',
+    name: 'CarsList',
     data() {
         return {
             cars: null,
