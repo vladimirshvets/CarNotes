@@ -10,12 +10,12 @@
         /// <summary>
         /// Make.
         /// </summary>
-        public string Make { get; set; }
+        public string Make { get; set; } = string.Empty;
 
         /// <summary>
         /// Model.
         /// </summary>
-        public string Model { get; set; }
+        public string Model { get; set; } = string.Empty;
 
         /// <summary>
         /// Generation.
@@ -46,13 +46,13 @@
         {
             Car car = new()
             {
-                Id = new Guid((string)node["id"]),
-                Make = node.ContainsKey("make") ? (string)node["make"] : string.Empty,
-                Model = node.ContainsKey("model") ? (string)node["model"] : string.Empty,
-                Generation = node.ContainsKey("generation") ? (string)node["generation"] : null,
-                VIN = node.ContainsKey("VIN") ? (string)node["VIN"] : null,
-                Year = node.ContainsKey("year") ? (int)(long)node["year"] : null,
-                Plate = node.ContainsKey("plate") ? (string)node["plate"] : null
+                Id          = new Guid((string)node["id"]),
+                Make        = node.TryGetValue("make", out object? make) ? (string)make : string.Empty,
+                Model       = node.TryGetValue("model", out object? model) ? (string)model : string.Empty,
+                Generation  = node.TryGetValue("generation", out object? generation) ? (string)generation : null,
+                VIN         = node.TryGetValue("VIN", out object? vin) ? (string)vin : null,
+                Year        = node.TryGetValue("year", out object? year) ? (int)(long)year : null,
+                Plate       = node.TryGetValue("plate", out object? plate) ? (string)plate : null
             };
 
             return car;

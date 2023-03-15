@@ -1,4 +1,4 @@
-﻿namespace CarNotesAPI.Data.Models
+﻿namespace CarNotesAPI.Data.Models.Notes
 {
     public abstract class Note
     {
@@ -8,14 +8,19 @@
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Note type.
+        /// </summary>
+        public abstract string NoteType { get; }
+
+        /// <summary>
+        /// Note title.
+        /// </summary>
+        public abstract string NoteTitle { get; }
+
+        /// <summary>
         /// Mileage marker.
         /// </summary>
         public virtual Mileage? Mileage { get; set; }
-
-        /// <summary>
-        /// Title.
-        /// </summary>
-        public abstract string Title { get; }
 
         /// <summary>
         /// Comment.

@@ -1,4 +1,5 @@
 ﻿using CarNotesAPI.Data.Models;
+using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.Data.Repositories;
 using CarNotesAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,13 @@ namespace CarNotesAPI.Controllers
         {
             _mileageRepository = mileageRepository;
             _refuelingRepository = refuelingRepository;
+        }
+
+        [HttpGet]
+        [Route("getByCar/{carId}")]
+        public async Task<IEnumerable<Refueling>> GetByCar(Guid carId)
+        {
+            return await _refuelingRepository.GetListAsync(carId);
         }
 
         [HttpPost]

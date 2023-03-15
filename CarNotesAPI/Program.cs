@@ -29,15 +29,14 @@ builder.Services.Configure<ApplicationSettings>(
 var settings = new ApplicationSettings();
 builder.Configuration.GetSection("ApplicationSettings").Bind(settings);
 
-builder.Services.AddSingleton(
-    GraphDatabase.Driver(
-        settings.Neo4jConnection,
-        AuthTokens.Basic(settings.Neo4jUser, settings.Neo4jPassword)));
-
+builder.Services.AddSingleton(GraphDatabase.Driver(
+    settings.Neo4jConnection,
+    AuthTokens.Basic(settings.Neo4jUser, settings.Neo4jPassword)));
 builder.Services.AddScoped<INeo4jDataAccess, Neo4jDataAccess>();
 builder.Services.AddTransient<CarRepository>();
 builder.Services.AddTransient<MileageRepository>();
 builder.Services.AddTransient<RefuelingRepository>();
+builder.Services.AddTransient<WashingRepository>();
 
 var app = builder.Build();
 

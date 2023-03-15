@@ -9,7 +9,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Neo4j.Driver" Version="5.6.0" />
   </ItemGroup>
@@ -21,6 +21,7 @@
     <None Remove="Data\Api\" />
     <None Remove="ViewModels\" />
     <None Remove="Services\" />
+    <None Remove="Data\Models\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -29,8 +30,6 @@
     <Folder Include="Data\Api\" />
     <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Neo4j.Driver, Version=4.3.2.2, Culture=neutral, PublicKeyToken=b646bc66d277ac07" />
+    <Folder Include="Data\Models\Notes\" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,14 @@
 ﻿using CarNotesAPI.Data.Api;
 using CarNotesAPI.Services;
 
-namespace CarNotesAPI.Data.Models
+namespace CarNotesAPI.Data.Models.Notes
 {
     public class Refueling : Note
     {
+        public override string NoteType => nameof(Refueling);
+
+        public override string NoteTitle => $"Refueling: {Volume} l. * {Price}";
+
         /// <summary>
         /// Amount of fuel.
         /// </summary>
@@ -18,13 +22,13 @@ namespace CarNotesAPI.Data.Models
         /// <summary>
         /// Total amount, in national currency.
         /// </summary>
-        public double Total => Price * Volume;
+        public double TotalAmount => Price * Volume;
 
         /// <summary>
         /// Total amount, in base currency.
         /// </summary>
-        public double BaseTotal =>
-            CurrencyService.Convert(Total, Mileage?.Date, "USD");
+        public double BaseTotalAmount =>
+            CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
         /// Trading network name.
@@ -37,12 +41,7 @@ namespace CarNotesAPI.Data.Models
         public string? Address { get; set; }
 
         /// <summary>
-        /// Title.
-        /// </summary>
-        public override string Title => $"Refueling: {Volume} l. * {Price}";
-
-        /// <summary>
-        /// Populates a refueling from the set of fields.
+        /// Populates a refueling instance from the set of fields.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
         /// <returns>A new instance of refueling.</returns>
@@ -50,12 +49,12 @@ namespace CarNotesAPI.Data.Models
         {
             Refueling refueling = new()
             {
-                Id = new Guid((string)node["id"]),
-                Volume = (double)node["volume"],
-                Price = (double)node["price"],
-                Distributor = node.ContainsKey("distributor") ? (string)node["distributor"] : null,
-                Address = node.ContainsKey("address") ? (string)node["address"] : null,
-                Comment = node.ContainsKey("comment") ? (string)node["comment"] : null
+                Id          = new Guid((string)node["id"]),
+                Volume      = (double)node["volume"],
+                Price       = (double)node["price"],
+                Distributor = node.TryGetValue("distributor", out object? distributor) ? (string)distributor : null,
+                Address     = node.TryGetValue("address", out object? address) ? (string)address : null,
+                Comment     = node.TryGetValue("comment", out object? comment) ? (string)comment : null
             };
 
             return refueling;

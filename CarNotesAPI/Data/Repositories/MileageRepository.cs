@@ -27,7 +27,7 @@ public class MileageRepository
     public async Task<IEnumerable<Mileage>> GetListAsync(Guid carId)
     {
         string query =
-            @"MATCH (c:Car { id: $carId })-[rel: MILE_MARKER]->(m: Mileage)
+            @"MATCH (c:Car { id: $carId })-[rel:MILE_MARKER]->(m:Mileage)
             RETURN m
             ORDER BY m.odometer DESC, m.date DESC";
 
@@ -37,7 +37,7 @@ public class MileageRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, "m", parameters);
+                query, new List<string> { "m" }, parameters);
 
         List<Mileage> mileages = new(response.Count);
         foreach (Dictionary<string, object> mileageObj in response)
@@ -58,7 +58,7 @@ public class MileageRepository
     public async Task<Mileage> AddAsync(Guid carId, Mileage mileage)
     {
         string query =
-            @"MATCH (c: Car { id: $carId })
+            @"MATCH (c:Car { id: $carId })
             CREATE
                 (m: Mileage {
                     id: apoc.create.uuid(),
@@ -93,7 +93,7 @@ public class MileageRepository
         Guid carId, DateOnly mileageDate, long mileageValue, Mileage mileage)
     {
         string query =
-            @"MATCH (:Car { id: $carId })-[rel:MILE_MARKER]->(m: Mileage { date: $mileageDate, value: $mileageValue })
+            @"MATCH (:Car { id: $carId })-[rel:MILE_MARKER]->(m:Mileage { date: $mileageDate, value: $mileageValue })
             SET
                 m.date = $updatedMileageDate,
                 m.odometer = $updatedMileageValue,

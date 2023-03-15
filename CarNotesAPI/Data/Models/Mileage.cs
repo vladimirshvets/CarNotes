@@ -20,7 +20,7 @@ namespace CarNotesAPI.Data.Models
         public int OdometerValue { get; set; }
 
         /// <summary>
-        /// Populates a mileage from the set of fields.
+        /// Populates a mileage instance from the set of fields.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
         /// <returns>A new instance of mileage.</returns>
@@ -28,9 +28,9 @@ namespace CarNotesAPI.Data.Models
         {
             Mileage mileage = new()
             {
-                Id = new Guid((string)node["id"]),
-                Date = ((LocalDate)node["date"]).ToDateOnly(),
-                OdometerValue = (int)(long)node["odometer"]
+                Id              = new Guid((string)node["id"]),
+                Date            = ((LocalDate)node["date"]).ToDateOnly(),
+                OdometerValue   = (int)(long)node["odometer"]
             };
 
             return mileage;

@@ -27,7 +27,7 @@ public class CarRepository
     public async Task<IEnumerable<Car>> GetByUser(Guid userId)
     {
         string query =
-            @"MATCH (u:User { id: $userId })-[rel: OWNS]->(c: Car)
+            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car)
             RETURN c";
 
         var parameters = new Dictionary<string, object>
@@ -36,7 +36,7 @@ public class CarRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, "c", parameters);
+                query, new List<string> { "c" }, parameters);
 
         List<Car> cars = new(response.Count);
         foreach (Dictionary<string, object> carObj in response)
@@ -57,9 +57,9 @@ public class CarRepository
     public async Task<Car> AddAsync(Guid userId, Car car)
     {
         string query =
-            @"MATCH (u: User { id: $userId })
+            @"MATCH (u:User { id: $userId })
             CREATE
-                (c: Car {
+                (c:Car {
                     id: apoc.create.uuid(),
                     make: $make,
                     model: $model,
@@ -97,7 +97,7 @@ public class CarRepository
     public async Task<Car> UpdateAsync(Guid carId, Car car)
     {
         string query =
-            @"MATCH (c: Car { id: $carId })
+            @"MATCH (c:Car { id: $carId })
             SET
                 c.make = $make,
                 c.model = $model,

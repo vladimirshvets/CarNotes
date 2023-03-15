@@ -29,11 +29,11 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// </summary>
     public async Task<List<string>> ExecuteReadListAsync(
         string query,
-        string returnObjectKey,
+        List<string> returnObjectKeys,
         IDictionary<string, object>? parameters = null)
     {
         return await ExecuteReadTransactionAsync<string>(
-            query, returnObjectKey, parameters);
+            query, returnObjectKeys, parameters);
     }
 
     /// <summary>
@@ -41,11 +41,11 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// </summary>
     public async Task<List<Dictionary<string, object>>> ExecuteReadDictionaryAsync(
         string query,
-        string returnObjectKey,
+        List<string> returnObjectKeys,
         IDictionary<string, object>? parameters = null)
     {
         return await ExecuteReadTransactionAsync<Dictionary<string, object>>(
-            query, returnObjectKey, parameters);
+            query, returnObjectKeys, parameters);
     }
 
     /// <summary>
@@ -57,11 +57,11 @@ public class Neo4jDataAccess : INeo4jDataAccess
     {
         try
         {
-            parameters = parameters == null ? new Dictionary<string, object>() : parameters;
+            parameters ??= new Dictionary<string, object>();
 
             var result = await _session.ExecuteReadAsync(async tx =>
             {
-                T scalar = default;
+                T? scalar = default;
 
                 var res = await tx.RunAsync(query, parameters);
 
@@ -155,7 +155,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
     {
         try
         {
-            parameters = parameters == null ? new Dictionary<string, object>() : parameters;
+            parameters ??= new Dictionary<string, object>();
 
             var result = await _session.ExecuteWriteAsync(async tx =>
             {
@@ -186,12 +186,12 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// </summary>
     private async Task<List<T>> ExecuteReadTransactionAsync<T>(
         string query,
-        string returnObjectKey,
+        List<string> returnObjectKeys,
         IDictionary<string, object>? parameters)
     {
         try
         {
-            parameters = parameters ?? new Dictionary<string, object>();
+            parameters ??= new Dictionary<string, object>();
 
             var result = await _session.ExecuteReadAsync(async tx =>
             {
@@ -201,9 +201,17 @@ public class Neo4jDataAccess : INeo4jDataAccess
 
                 List<IRecord> records = await res.ToListAsync();
 
-                data = records
-                    .Select(x => (T)x.Values[returnObjectKey].As<INode>().Properties)
-                    .ToList();
+                // Single object key.
+                //data = records
+                //    .Select(x => (T)x.Values[returnObjectKey].As<INode>().Properties)
+                //    .ToList();
+
+                // Multiple object keys.
+                data = (
+                    from recordValue in records.SelectMany(r => r.Values)
+                    where returnObjectKeys.Contains(recordValue.Key)
+                    select (T)recordValue.Value.As<INode>().Properties
+                ).ToList();
 
                 return data;
             });
