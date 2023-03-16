@@ -1,40 +1,53 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import CarsList from './components/CarsList.vue'
-import CarDetails from './components/CarDetails.vue'
-import CarProfile from './views/CarProfile'
-import RefuelingsList from './views/RefuelingsList.vue'
-import WashingsList from './views/WashingsList.vue'
+import CarsList from './views/Car/CarsList.vue'
+import CarProfile from './views/Car/CarProfile.vue'
+import CarStats from './views/Car/Profile/CarStats'
+import RefuelingsList from './views/Car/Profile/RefuelingsList.vue'
+import WashingsList from './views/Car/Profile/WashingsList.vue'
 
 // Router
 const routes = [
-  { 
-    path: '/', 
-    component: CarsList 
-  },
-  { 
-    path: '/cars/:id', 
-    component: CarDetails,
-    children: [
-      { 
-        path: '', 
-        name: 'carProfile', 
-        component: CarProfile 
-      },
-      {
-        path: 'refuelings',
-        name: 'carRefuelings',
-        component: RefuelingsList
-      },
-      { 
-        path: 'washings', 
-        name: 'carWashings', 
-        component: WashingsList 
-      }
-    ]
-  }
+    {
+        path: '/',
+        name: 'Home',
+        component: CarsList
+    },
+    {
+        path: '/cars',
+        name: 'Cars',
+        component: CarsList
+    },
+    {
+        path: '/cars/profile/:id',
+        name: 'CarProfile',
+        component: CarProfile,
+        children: [
+            {
+                path: 'stats',
+                name: 'CarStats',
+                component: CarStats
+            },
+            {
+                path: 'refuelings',
+                name: 'RefuelingsList',
+                component: RefuelingsList
+            },
+            {
+                path: 'washings',
+                name: 'WashingsList',
+                component: WashingsList
+            }
+        ]
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('./views/NotFound.vue')
+    }
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
-  routes: routes,
+    history: createWebHistory(),
+    routes: routes,
+    linkActiveClass: 'router-link-active'
 })

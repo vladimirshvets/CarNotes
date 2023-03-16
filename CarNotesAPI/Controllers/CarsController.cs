@@ -21,10 +21,22 @@ public class CarsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("getByUser")]
-    public async Task<IEnumerable<Car>> GetByUser()
+    [Route("list")]
+    public async Task<IEnumerable<Car>> GetList()
     {
-        return await _carRepository.GetByUser(UserId);
+        return await _carRepository.GetListAsync(UserId);
+    }
+
+    [HttpGet]
+    [Route("{carId}")]
+    public async Task<ActionResult<Car>> Get(Guid carId)
+    {
+        Car? car = await _carRepository.GetAsync(UserId, carId);
+        if (car == null)
+        {
+            return BadRequest();
+        }
+        return car;
     }
 
     [HttpPost]

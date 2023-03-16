@@ -24,7 +24,7 @@ public class CarRepository
     /// </summary>
     /// <param name="userId">User identifier</param>
     /// <returns>Collection of cars.</returns>
-    public async Task<IEnumerable<Car>> GetByUser(Guid userId)
+    public async Task<IEnumerable<Car>> GetListAsync(Guid userId)
     {
         string query =
             @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car)
@@ -46,6 +46,29 @@ public class CarRepository
         }
 
         return cars;
+    }
+
+    public async Task<Car?> GetAsync(Guid userId, Guid carId)
+    {
+        string query =
+            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car { id: $carId })
+            RETURN c";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "userId", userId.ToString() },
+            { "carId", carId.ToString() }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
+                query, new List<string> { "c" }, parameters);
+
+        if (response.Count == 0)
+        {
+            return null;
+        }
+
+        return Car.FromNode(response[0]);
     }
 
     /// <summary>
