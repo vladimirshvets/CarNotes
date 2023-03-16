@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import RefuelingsGrid from '../../../components/Car/Details/RefuelingsGrid.vue'
+import RefuelingsGrid from '../../../components/Car/Profile/RefuelingsGrid.vue'
 
 export default {
     name: 'RefuelingsList',

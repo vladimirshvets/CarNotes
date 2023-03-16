@@ -15,7 +15,7 @@
 
 <script>
 import axios from 'axios'
-import WashingsGrid from '../../../components/Car/Details/WashingsGrid.vue'
+import WashingsGrid from '../../../components/Car/Profile/WashingsGrid.vue'
 
 export default {
     name: 'WashingsList',

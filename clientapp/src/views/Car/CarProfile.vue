@@ -3,14 +3,16 @@
     <div class="tab-wrap" id="car-profile">
         <v-card class="car-card-wrapper">
             <v-card-title>
-                {{ carInfo.make }} {{ carInfo.model }} {{ carInfo.generation }}
+                <span>{{ carInfo.make }} {{ carInfo.model }} {{ carInfo.generation }}</span>
+                <v-sheet v-if="carInfo.plate" border rounded class="plate-number">
+                    {{ carInfo.plate }}
+                </v-sheet>
             </v-card-title>
             <v-card-subtitle>
                 {{ carInfo.year }}
             </v-card-subtitle>
             <v-card-text>
-                <div>{{ carInfo.vin }}</div>
-                <div>{{ carInfo.plate }}</div>
+                <div v-if="carInfo.vin">* {{ carInfo.vin }} *</div>
             </v-card-text>
         </v-card>
 
@@ -27,7 +29,6 @@
                 <router-view></router-view>
             </div>
         </v-card>
-
     </div>
 
 </template>
@@ -51,6 +52,19 @@ export default {
 </script>
 
 <style scoped>
+    .car-card-wrapper {
+        margin: 1em 2em;
+    }
+
+    .plate-number {
+        display: inline;
+        margin-left: 10px;
+        padding: 2px;
+        height: 25px;
+        width: 80px;
+        font-size: 16px;
+    }
+
     .car-profile-tab {
         margin: 1.4em;
     }
@@ -64,10 +78,6 @@ export default {
 
     .router-link-active {
         color:#cdff07;
-    }
-
-    .car-card-wrapper {
-        margin: 1em 2em;
     }
 
     .car-tabs-wrapper {
