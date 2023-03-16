@@ -45,8 +45,10 @@ public class WashingRepository
         List<Washing> washings = new(washingsCount);
         for (int i = 0; i < washingsCount; i++)
         {
-            Washing washing = Washing.FromNode(response[i * 2]);
-            washing.Mileage = Mileage.FromNode(response[i * 2 + 1]);
+            Washing washing = new(response[i * 2])
+            {
+                Mileage = new Mileage(response[i * 2 + 1])
+            };
             washings.Add(washing);
         }
 
@@ -96,8 +98,10 @@ public class WashingRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        Washing newInstance = Washing.FromNode(response[0]);
-        newInstance.Mileage = Mileage.FromNode(response[1]);
+        Washing newInstance = new(response[0])
+        {
+            Mileage = new Mileage(response[1])
+        };
 
         return newInstance;
     }

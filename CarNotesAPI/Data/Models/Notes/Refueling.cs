@@ -41,23 +41,25 @@ namespace CarNotesAPI.Data.Models.Notes
         public string? Address { get; set; }
 
         /// <summary>
-        /// Populates a refueling instance from the set of fields.
+        /// Initializes a new instance of Refueling.
+        /// </summary>
+        public Refueling()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of Refueling
+        /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
-        /// <returns>A new instance of refueling.</returns>
-        public static Refueling FromNode(Dictionary<string, object> node)
+        public Refueling(Dictionary<string, object> node)
         {
-            Refueling refueling = new()
-            {
-                Id          = new Guid((string)node["id"]),
-                Volume      = (double)node["volume"],
-                Price       = (double)node["price"],
-                Distributor = node.TryGetValue("distributor", out object? distributor) ? (string)distributor : null,
-                Address     = node.TryGetValue("address", out object? address) ? (string)address : null,
-                Comment     = node.TryGetValue("comment", out object? comment) ? (string)comment : null
-            };
-
-            return refueling;
+            Id = new Guid((string)node["id"]);
+            Volume = (double)node["volume"];
+            Price = (double)node["price"];
+            Distributor = node.TryGetValue("distributor", out object? distributor) ? (string)distributor : null;
+            Address = node.TryGetValue("address", out object? address) ? (string)address : null;
+            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }
     }
 }

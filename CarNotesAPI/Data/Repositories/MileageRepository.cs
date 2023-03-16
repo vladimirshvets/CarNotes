@@ -42,7 +42,7 @@ public class MileageRepository
         List<Mileage> mileages = new(response.Count);
         foreach (Dictionary<string, object> mileageObj in response)
         {
-            Mileage mileage = Mileage.FromNode(mileageObj);
+            Mileage mileage = new(mileageObj);
             mileages.Add(mileage);
         }
 
@@ -78,7 +78,7 @@ public class MileageRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return Mileage.FromNode(response);
+        return new Mileage(response);
     }
 
     /// <summary>
@@ -112,6 +112,6 @@ public class MileageRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return Mileage.FromNode(response);
+        return new Mileage(response);
     }
 }

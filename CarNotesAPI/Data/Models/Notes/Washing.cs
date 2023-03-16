@@ -42,25 +42,27 @@
         public double TotalAmount { get; set; }
 
         /// <summary>
-        /// Populates a washing instance from the set of fields.
+        /// Initializes a new instance of Washing.
+        /// </summary>
+        public Washing()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of Washing
+        /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
-        /// <returns>A new instance of washing.</returns>
-        public static Washing FromNode(Dictionary<string, object> node)
+        public Washing(Dictionary<string, object> node)
         {
-            Washing washing = new()
-            {
-                Id              = new Guid((string)node["id"]),
-                Title           = node.TryGetValue("title", out object? title) ? (string)title : null,
-                Address         = node.TryGetValue("address", out object? address) ? (string)address : null,
-                IsContact       = node.TryGetValue("is_contact", out object? isContact) ? (bool)isContact : null,
-                IsDegreaserUsed = node.TryGetValue("is_degreaser_used", out object? isDegreaserUser) ? (bool)isDegreaserUser : null,
-                IsPolishUsed    = node.TryGetValue("is_polish_used", out object? isPolishUsed) ? (bool)isPolishUsed : null,
-                IsAntiRainUsed  = node.TryGetValue("is_antirain_used", out object? isAntiRainUsed) ? (bool)isAntiRainUsed : null,
-                TotalAmount     = (double)node["total_amount"]
-            };
-
-            return washing;
+            Id = new Guid((string)node["id"]);
+            Title = node.TryGetValue("title", out object? title) ? (string)title : null;
+            Address = node.TryGetValue("address", out object? address) ? (string)address : null;
+            IsContact = node.TryGetValue("is_contact", out object? isContact) ? (bool)isContact : null;
+            IsDegreaserUsed = node.TryGetValue("is_degreaser_used", out object? isDegreaserUser) ? (bool)isDegreaserUser : null;
+            IsPolishUsed = node.TryGetValue("is_polish_used", out object? isPolishUsed) ? (bool)isPolishUsed : null;
+            IsAntiRainUsed = node.TryGetValue("is_antirain_used", out object? isAntiRainUsed) ? (bool)isAntiRainUsed : null;
+            TotalAmount = (double)node["total_amount"];
         }
     }
 }

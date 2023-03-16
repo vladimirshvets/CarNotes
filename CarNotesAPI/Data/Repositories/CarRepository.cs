@@ -41,7 +41,7 @@ public class CarRepository
         List<Car> cars = new(response.Count);
         foreach (Dictionary<string, object> carObj in response)
         {
-            Car car = Car.FromNode(carObj);
+            Car car = new(carObj);
             cars.Add(car);
         }
 
@@ -68,7 +68,7 @@ public class CarRepository
             return null;
         }
 
-        return Car.FromNode(response[0]);
+        return new Car(response[0]);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public class CarRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return Car.FromNode(response);
+        return new Car(response);
     }
 
     /// <summary>
@@ -145,6 +145,6 @@ public class CarRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return Car.FromNode(response);
+        return new Car(response);
     }
 }

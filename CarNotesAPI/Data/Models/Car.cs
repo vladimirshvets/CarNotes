@@ -37,25 +37,20 @@
         /// </summary>
         public string? Plate { get; set; }
 
-        /// /// <summary>
-        /// Populates a car from the set of fields.
+        /// <summary>
+        /// Initializes a new instance of Car
+        /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
-        /// <returns>A new instance of car.</returns>
-        public static Car FromNode(Dictionary<string, object> node)
+        public Car(Dictionary<string, object> node)
         {
-            Car car = new()
-            {
-                Id          = new Guid((string)node["id"]),
-                Make        = node.TryGetValue("make", out object? make) ? (string)make : string.Empty,
-                Model       = node.TryGetValue("model", out object? model) ? (string)model : string.Empty,
-                Generation  = node.TryGetValue("generation", out object? generation) ? (string)generation : null,
-                VIN         = node.TryGetValue("VIN", out object? vin) ? (string)vin : null,
-                Year        = node.TryGetValue("year", out object? year) ? (int)(long)year : null,
-                Plate       = node.TryGetValue("plate", out object? plate) ? (string)plate : null
-            };
-
-            return car;
+            Id = new Guid((string)node["id"]);
+            Make = node.TryGetValue("make", out object? make) ? (string)make : string.Empty;
+            Model = node.TryGetValue("model", out object? model) ? (string)model : string.Empty;
+            Generation = node.TryGetValue("generation", out object? generation) ? (string)generation : null;
+            VIN = node.TryGetValue("VIN", out object? vin) ? (string)vin : null;
+            Year = node.TryGetValue("year", out object? year) ? (int)(long)year : null;
+            Plate = node.TryGetValue("plate", out object? plate) ? (string)plate : null;
         }
     }
 }

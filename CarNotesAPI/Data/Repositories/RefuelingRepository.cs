@@ -44,8 +44,10 @@ public class RefuelingRepository
         List<Refueling> refuelings = new(refuelingsCount);
         for (int i = 0; i < refuelingsCount; i++)
         {
-            Refueling refueling = Refueling.FromNode(response[i * 2]);
-            refueling.Mileage = Mileage.FromNode(response[i * 2 + 1]);
+            Refueling refueling = new(response[i * 2])
+            {
+                Mileage = new Mileage(response[i * 2 + 1])
+            };
             refuelings.Add(refueling);
         }
 
@@ -89,8 +91,10 @@ public class RefuelingRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
                 query, parameters);
 
-        Refueling newInstance = Refueling.FromNode(response[0]);
-        newInstance.Mileage = Mileage.FromNode(response[1]);
+        Refueling newInstance = new(response[0])
+        {
+            Mileage = new Mileage(response[1])
+        };
 
         return newInstance;
     }
