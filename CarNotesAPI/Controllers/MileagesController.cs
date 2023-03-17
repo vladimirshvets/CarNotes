@@ -23,14 +23,14 @@ namespace CarNotesAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<Mileage> Post([FromBody]MileageViewModel mileageVM)
+        public async Task<Mileage> Post([FromBody]MileageViewModel viewModel)
         {
             Mileage mileage = new()
             {
-                OdometerValue = mileageVM.OdometerValue,
-                Date = mileageVM.Date
+                OdometerValue = viewModel.OdometerValue,
+                Date = viewModel.Date
             };
-            return await _mileageRepository.AddAsync(mileageVM.CarId, mileage);
+            return await _mileageRepository.AddAsync(viewModel.CarId, mileage);
         }
 
         [HttpPut]

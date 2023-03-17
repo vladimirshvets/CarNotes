@@ -8,7 +8,7 @@
         <td><span v-if="washing.isDegreaserUsed">+</span></td>
         <td><span v-if="washing.isPolishUsed">+</span></td>
         <td><span v-if="washing.isAntiRainUsed">+</span></td>
-        <td><span></span>{{ washing.totalAmount }}</td>
+        <td><span>{{ washing.totalAmount }}</span></td>
         <td><span></span></td>
         <td><span>{{ washing.comment }}</span></td>
     </tr>

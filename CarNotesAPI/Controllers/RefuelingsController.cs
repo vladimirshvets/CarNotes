@@ -29,30 +29,31 @@ namespace CarNotesAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<Refueling> Post([FromBody] RefuelingViewModel refuelingVM)
+        public async Task<Refueling> Post(
+            [FromBody]RefuelingViewModel viewModel)
         {
             // ToDo:
             // Check if the mileage already exists.
             // Try to save mileage and refueling together.
             Mileage mileage = new()
             {
-                OdometerValue = refuelingVM.OdometerValue,
-                Date = refuelingVM.Date
-
+                OdometerValue = viewModel.OdometerValue,
+                Date = viewModel.Date
             };
-            mileage = await _mileageRepository.AddAsync(refuelingVM.CarId, mileage);
+            mileage =
+                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
 
             Refueling refueling = new()
             {
-                Volume = refuelingVM.Volume,
-                Price = refuelingVM.Price,
-                Distributor = refuelingVM.Distributor,
-                Address = refuelingVM.Address,
-                Comment = refuelingVM.Comment
+                Volume = viewModel.Volume,
+                Price = viewModel.Price,
+                Distributor = viewModel.Distributor,
+                Address = viewModel.Address,
+                Comment = viewModel.Comment
 
             };
             refueling = await _refuelingRepository.AddAsync(
-                refuelingVM.CarId, mileage.Id, refueling);
+                viewModel.CarId, mileage.Id, refueling);
 
             return refueling;
         }

@@ -7,29 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 namespace CarNotesAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class WashingsController : ControllerBase
+    public class ServicesController : ControllerBase
     {
         private readonly MileageRepository _mileageRepository;
 
-        private readonly WashingRepository _washingRepository;
+        private readonly ServiceRepository _serviceRepository;
 
-        public WashingsController(
+        public ServicesController(
             MileageRepository mileageRepository,
-            WashingRepository washingRepository)
+            ServiceRepository serviceRepository)
         {
             _mileageRepository = mileageRepository;
-            _washingRepository = washingRepository;
+            _serviceRepository = serviceRepository;
         }
 
         [HttpGet]
         [Route("getByCar/{carId}")]
-        public async Task<IEnumerable<Washing>> GetByCar(Guid carId)
+        public async Task<IEnumerable<Service>> GetByCar(Guid carId)
         {
-            return await _washingRepository.GetListAsync(carId);
+            return await _serviceRepository.GetListAsync(carId);
         }
 
         [HttpPost]
-        public async Task<Washing> Post([FromBody]WashingViewModel viewModel)
+        public async Task<Service> Post([FromBody]ServiceViewModel viewModel)
         {
             // ToDo:
             // Check if the mileage already exists.
@@ -42,20 +42,19 @@ namespace CarNotesAPI.Controllers
             mileage =
                 await _mileageRepository.AddAsync(viewModel.CarId, mileage);
 
-            Washing washing = new()
+            Service service = new()
             {
                 Title = viewModel.Title,
+                StationName = viewModel.StationName,
                 Address = viewModel.Address,
-                IsContact = viewModel.IsContact,
-                IsDegreaserUsed = viewModel.IsDegreaserUsed,
-                IsPolishUsed = viewModel.IsPolishUsed,
-                IsAntiRainUsed = viewModel.IsAntiRainUsed,
-                TotalAmount = viewModel.TotalAmount
+                WebsiteUrl = viewModel.WebsiteUrl,
+                CostOfWork = viewModel.CostOfWork,
+                CostOfSpareParts = viewModel.CostOfSpareParts
             };
-            washing = await _washingRepository.AddAsync(
-                viewModel.CarId, mileage.Id, washing);
+            service = await _serviceRepository.AddAsync(
+                viewModel.CarId, mileage.Id, service);
 
-            return washing;
+            return service;
         }
     }
 }

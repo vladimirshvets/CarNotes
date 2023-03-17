@@ -20,7 +20,10 @@
             <v-card-title class="bg-teal">
                 <router-link class="car-profile-tab-link" :to="{ name: 'CarStats' }">Statistics</router-link> |
                 <router-link class="car-profile-tab-link" :to="{ name: 'RefuelingsList' }">Refuelings</router-link> |
-                <router-link class="car-profile-tab-link" :to="{ name: 'WashingsList' }">Washings</router-link>
+                <router-link class="car-profile-tab-link" :to="{ name: 'WashingsList' }">Washings</router-link> |
+                <router-link class="car-profile-tab-link" :to="{ name: 'SparePartsList' }">Spare Parts</router-link> |
+                <router-link class="car-profile-tab-link" :to="{ name: 'ServicesList' }">Services</router-link> |
+                <router-link class="car-profile-tab-link" :to="{ name: 'LegalProceduresList' }">Legal Procedures</router-link>
 
                 <v-spacer></v-spacer>
             </v-card-title>

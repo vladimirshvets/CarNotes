@@ -2,9 +2,9 @@
 {
     public class Washing : Note
     {
-        public override string NoteType => nameof(Washing);
+        public override string NoteType => nameof(Service);
 
-        public override string NoteTitle => $"Washing: {Title}, {Address} ({TotalAmount} BYN)";
+        public override string NoteTitle => $"{NoteType}: {Title}, {Address} ({TotalAmount} BYN)";
 
         /// <summary>
         /// Washing title.
@@ -66,4 +66,3 @@
         }
     }
 }
-
