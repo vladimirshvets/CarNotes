@@ -5,11 +5,20 @@
         :elevation="2"
         density="compact"
     >
-        <v-app-bar-title>
-            <router-link class="title" :to="{ name: 'Home' }">
-                CAR NOTES
-            </router-link>
-        </v-app-bar-title>
+        <router-link class="nav-link" :to="{ name: 'Home' }">
+            <v-btn icon>
+                <v-icon>mdi-car-multiple</v-icon>
+            </v-btn>
+        </router-link>
+        <v-app-bar-title>CAR NOTES</v-app-bar-title>
+
+        <v-spacer></v-spacer>
+        
+        <v-btn icon>
+          <v-icon>mdi-card-account-details-star</v-icon>
+        </v-btn>
+
+        
     </v-app-bar>
 
 
@@ -21,16 +30,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
     #nav-bar {
         background-color: #016a59;
         color: #fff;
         border-bottom: 1px solid #ddd;
-    }
 
-    .v-toolbar-title .title {
-        text-decoration: none;
-        cursor: pointer;
-        color: #fff;
+        a.nav-link {
+            text-decoration: none;
+            cursor: pointer;
+            color: #fff;
+        }
     }
 </style>

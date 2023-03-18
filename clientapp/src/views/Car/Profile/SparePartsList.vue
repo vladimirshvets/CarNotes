@@ -7,37 +7,17 @@
             </div>
         </div>
 
-        <!-- <div class="filter-wrap">
-            <v-row>
-                <v-col cols="12">
-                    <v-combobox
-                        v-model="select"
-                        :items="filters"
-                        label="Show olny"
-                        multiple
-                    >
-                        <template v-slot:selection="data">
-                            <v-chip
-                                :key="JSON.stringify(data.item)"
-                                v-bind="data.attrs"
-                                :model-value="data.selected"
-                                :disabled="data.disabled"
-                                size="small"
-                                @click:close="data.parent.selectItem(data.item)"
-                            >
-                            <template v-slot:prepend>
-                                <v-avatar
-                                    class="bg-accent text-uppercase"
-                                    start
-                                >{{ data.item.title.slice(0, 1) }}</v-avatar>
-                            </template>
-                            {{ data.item.title }}
-                            </v-chip>
-                        </template>
-                    </v-combobox>
-                </v-col>
-            </v-row>
-        </div> -->
+        <div class="filter-wrap">
+            <v-select
+                v-model="selectedItems"
+                :items="filterItems"
+                item-title="title"
+                item-value="value"
+                chips
+                label="Show Only"
+                multiple
+            ></v-select>
+        </div>
 
         <div class="grid-wrap">
             <SparePartsGrid :spareParts="sparePartItems" />
@@ -69,19 +49,28 @@ export default {
         return {
             sparePartItems: [],
             sparePartFilteredItems: [],
-            // filters: [
-            //     {
-            //         title: "Maintenance"
-            //     },
-            //     {
-            //         title: "Retrofit"
-            //     }
-            // ]
+            filterItems: [
+                {
+                    title: "Maintenance",
+                    value: "maintenance"
+                },
+                {
+                    title: "Service",
+                    value: "service"
+                },
+                {
+                    title: "Retrofit",
+                    value: "retrofit"
+                }
+            ],
+            selectedItems: [],
         }
     },
     async created() {
         const result = await axios.get('/api/spareParts/getByCar/' + this.$route.params.id);
         const spareParts = result.data;
+
+        this.selectedItems = this.filterItems.slice();
         this.sparePartItems = spareParts;
     },
     methods: {
