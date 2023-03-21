@@ -3,7 +3,7 @@
         <div class="summary-wrap">
             <div>
                 <div>Total:</div>
-                <div>BYN {{ totalAmountSum }} | USD {{ baseTotalAmountSum }}</div>
+                <div>BYN {{ totalAmountSum.toFixed(2) }} | USD {{ baseTotalAmountSum.toFixed(2) }}</div>
             </div>
         </div>
 

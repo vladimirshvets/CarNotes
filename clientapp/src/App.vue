@@ -1,6 +1,7 @@
 <template>
     <v-app>
-        <NavBar/>
+        <NavBar />
+        <OverlayComponent />
         <v-main>
             <router-view></router-view>
         </v-main>
@@ -10,10 +11,13 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
+import OverlayComponent from './components/OverlayComponent.vue'
+
 export default {
     name: 'App',
     components: {
-        NavBar
+        NavBar,
+        OverlayComponent
     }
 }
 </script>

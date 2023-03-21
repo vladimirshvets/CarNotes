@@ -9,7 +9,7 @@
                 <th class="text-left">Purchase Date</th>
                 <th class="text-left">Installation Date</th>
                 <th class="text-left">Installation Odometer</th>
-                <th class="text-left">Removeal Date</th>
+                <th class="text-left">Removal Date</th>
                 <th class="text-left">Removal Odometer</th>
                 <th class="text-left">Group</th>
                 <th class="text-left">Name</th>

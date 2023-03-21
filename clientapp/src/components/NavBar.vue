@@ -13,12 +13,11 @@
         <v-app-bar-title>CAR NOTES</v-app-bar-title>
 
         <v-spacer></v-spacer>
-        
+
         <v-btn icon>
           <v-icon>mdi-card-account-details-star</v-icon>
         </v-btn>
 
-        
     </v-app-bar>
 
 

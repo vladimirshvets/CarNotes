@@ -42,15 +42,15 @@ export default {
     },
     mounted() {
         axios
-        .get('/api/cars/list')
-        .then(response => {
-            this.cars = response.data;
-        })
-        .catch(error => {
-            console.log(error);
-            this.error = true;
-        })
-        .finally(() => (this.loading = false));
+            .get('/api/cars/list')
+            .then(response => {
+                this.cars = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+                this.error = true;
+            })
+            .finally(() => (this.loading = false));
     }
 }
 </script>
