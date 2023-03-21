@@ -1,5 +1,5 @@
 <template>
-    <tr class="service-item">
+    <tr class="service-item list-item">
         <td><span>{{ service.mileage.date }}</span></td>
         <td><span>{{ service.mileage.odometerValue }}</span></td>
         <td><span>{{ service.title }}</span></td>
@@ -20,3 +20,9 @@ export default {
     props: ['service']
 }
 </script>
+
+<style lang="less" scoped>
+.list-item:hover{
+    background-color: #e6ff84;
+}
+</style>

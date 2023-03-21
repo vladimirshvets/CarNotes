@@ -1,5 +1,5 @@
 <template>
-    <tr class="washing-item">
+    <tr class="washing-item list-item">
         <td><span>{{ washing.mileage.date }}</span></td>
         <td><span>{{ washing.mileage.odometerValue }}</span></td>
         <td><span>{{ washing.title }}</span></td>
@@ -20,3 +20,9 @@ export default {
     props: ['washing']
 }
 </script>
+
+<style lang="less" scoped>
+.list-item:hover{
+    background-color: #e6ff84;
+}
+</style>

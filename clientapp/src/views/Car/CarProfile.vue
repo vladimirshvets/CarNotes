@@ -32,27 +32,32 @@
         </v-card> -->
 
         <v-card class="car-tabs-wrapper">
-            <v-card-title class="bg-teal">
+            <v-card-title class="links">
                 <router-link class="car-profile-tab-link" :to="{ name: 'CarStats' }">
                     <v-icon>mdi-chart-bar</v-icon>
                     <span>Statistics</span>
-                </router-link> |
+                </router-link>
+                <span class="link-separator">|</span>
                 <router-link class="car-profile-tab-link" :to="{ name: 'RefuelingsList' }">
                     <v-icon>mdi-gas-station</v-icon>
                     <span>Refuelings</span>
-                </router-link> |
+                </router-link>
+                <span class="link-separator">|</span>
                 <router-link class="car-profile-tab-link" :to="{ name: 'WashingsList' }">
                     <v-icon>mdi-car-wash</v-icon>
                     <span>Washings</span>
-                </router-link> |
+                </router-link>
+                <span class="link-separator">|</span>
                 <router-link class="car-profile-tab-link" :to="{ name: 'SparePartsList' }">
                     <v-icon>mdi-car-turbocharger</v-icon>
                     <span>Spare Parts</span>
-                </router-link> |
+                </router-link>
+                <span class="link-separator">|</span>
                 <router-link class="car-profile-tab-link" :to="{ name: 'ServicesList' }">
                     <v-icon>mdi-car-wrench</v-icon>
                     <span>Services</span>
-                </router-link> |
+                </router-link>
+                <span class="link-separator">|</span>
                 <router-link class="car-profile-tab-link" :to="{ name: 'LegalProceduresList' }">
                     <v-icon>mdi-file-document-check</v-icon>
                     <span>Legal Procedures</span>
@@ -116,6 +121,16 @@ export default {
     .car-tabs-wrapper {
         margin: 0 2em;
 
+        .links {
+            background-color: #009688;
+            color: #fff;
+            font-size: 16px;
+
+            .link-separator {
+                margin: 0 10px;
+            }
+        }
+
         .car-profile-tab-link {
             text-decoration: none;
             cursor: pointer;
@@ -131,9 +146,13 @@ export default {
             }
 
             i {
-                font-size: unset;
+                font-size: 16px;
                 margin-right: 5px;
                 margin-bottom: 4px;
+            }
+
+            span {
+                text-transform: uppercase;
             }
         }
 

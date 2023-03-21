@@ -11,7 +11,7 @@
                         @click="triggerRefuelingForm(true)"
                         color="primary"
                     >
-                        Add/Edit Refueling
+                        Add Refueling
                     </v-btn>
                 </v-col>
             </v-row>

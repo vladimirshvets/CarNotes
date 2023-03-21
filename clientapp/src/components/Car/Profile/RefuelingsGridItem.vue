@@ -1,5 +1,5 @@
 <template>
-    <tr class="refueling-item">
+    <tr class="refueling-item list-item">
         <td><span>{{ refueling.mileage.date }}</span></td>
         <td><span>{{ refueling.mileage.odometerValue }}</span></td>
         <td><span>{{ refueling.volume.toFixed(1) }}</span></td>
@@ -18,3 +18,9 @@ export default {
     props: ['refueling']
 }
 </script>
+
+<style lang="less" scoped>
+.list-item:hover{
+    background-color: #e6ff84;
+}
+</style>

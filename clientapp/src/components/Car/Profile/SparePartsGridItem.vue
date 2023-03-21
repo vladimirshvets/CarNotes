@@ -1,5 +1,5 @@
 <template>
-    <tr class="spare-part-item">
+    <tr class="spare-part-item list-item">
         <td><span>{{ sparePart.orderDate }}</span></td>
         <td><span>{{ sparePart.purchaseDate }}</span></td>
         <td><span>{{ sparePart.installationMileage.date }}</span></td>
@@ -32,3 +32,9 @@ export default {
     props: ['sparePart']
 }
 </script>
+
+<style lang="less" scoped>
+.list-item:hover{
+    background-color: #e6ff84;
+}
+</style>

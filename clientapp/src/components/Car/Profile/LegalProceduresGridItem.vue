@@ -1,5 +1,5 @@
 <template>
-    <tr class="legal-procedure-item">
+    <tr class="legal-procedure-item list-item">
         <td><span>{{ legalProcedure.mileage.date }}</span></td>
         <td><span>{{ legalProcedure.mileage.odometerValue }}</span></td>
         <td><span>{{ legalProcedure.title }}</span></td>
@@ -17,3 +17,9 @@ export default {
     props: ['legalProcedure']
 }
 </script>
+
+<style lang="less" scoped>
+.list-item:hover{
+    background-color: #e6ff84;
+}
+</style>
