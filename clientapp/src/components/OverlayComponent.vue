@@ -12,16 +12,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
   export default {
-    data() {
-        return {
-            overlay: false
-        }
-    },
-    methods: {
-        triggerOverlay(state) {
-            this.overlay = state;
-        }
-    }
+    name: 'OverlayComponent',
+    computed: mapState({
+        overlay: state => state.isLoading
+    })
   }
 </script>

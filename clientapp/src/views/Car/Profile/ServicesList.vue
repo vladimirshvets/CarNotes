@@ -39,7 +39,7 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get('/api/services/getByCar/' + this.$route.params.id);
+        const result = await axios.get(`/api/services/getByCar/${this.$route.params.id}`);
         const services = result.data;
         this.serviceItems = services;
     }

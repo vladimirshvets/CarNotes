@@ -1,49 +1,45 @@
 <template>
-    <div class="tab-wrap" id="car-refuelings">
+    <div v-if="isLoading"></div>
+    <div v-else class="tab-wrap" id="car-refuelings">
         <v-container class="summary-wrap">
             <v-row>
-                <v-col cols="12" sm="6">
+                <v-col cols="12" sm="3">
                     <div>Total:</div>
                     <div>BYN {{ totalAmountSum.toFixed(2) }} | USD {{ baseTotalAmountSum.toFixed(2) }}</div>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="12" sm="1">
                     <v-btn
-                        @click="triggerRefuelingForm(true)"
+                        icon="mdi-plus" 
+                        size="large"
                         color="primary"
-                    >
-                        Add Refueling
-                    </v-btn>
+                        @click="triggerRefuelingForm(true)"
+                    ></v-btn>
                 </v-col>
             </v-row>
-
         </v-container>
         <div class="form-wrap">
             <RefuelingsForm
                 :showForm="showForm"
-                @close="triggerRefuelingForm"
-                @submit="save"
+                @triggerForm="triggerRefuelingForm"
+                @save="save"
+                @update="update"
+                @remove="remove"
                 :distributorAutocomplete="distributorList" 
                 :addressAutocomplete="addressList"
             />
         </div>
         <div class="grid-wrap">
-            <RefuelingsGrid :refuelings="refuelingItems" />
+            <RefuelingsGrid 
+                :refuelings="refuelingItems"
+                @doubleClickItem="triggerRefuelingForm(true)"
+            />
         </div>
     </div>
-
-    <!-- ToDo: create reusable component -->
-    <v-snackbar
-        v-model="snackbar"
-        :timeout="2000"
-        color="#016a59"
-        rounded="pill"
-    >
-        Refueling info has been saved.
-    </v-snackbar>
 </template>
 
 <script>
 import axios from 'axios'
+import { mapGetters, mapMutations } from 'vuex';
 import RefuelingsForm from '@/components/Car/Profile/RefuelingsForm.vue'
 import RefuelingsGrid from '@/components/Car/Profile/RefuelingsGrid.vue'
 
@@ -72,13 +68,15 @@ export default {
             return this.refuelingItems
                 .map(r => r.address)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
-        }
+        },
+        ...mapGetters([
+            'isLoading'
+        ])
     },
     data() {
         return {
             refuelingItems: [],
             showForm: false,
-            snackbar: false
         }
     },
     async created() {
@@ -86,33 +84,54 @@ export default {
     },
     methods: {
         async getItems() {
-            const result = await axios.get('/api/refuelings/getByCar/' + this.$route.params.id);
+            this.setIsLoading(true);
+            const result = await axios
+                .get(`/api/refuelings/getByCar/${this.$route.params.id}`)
+                .finally(() => {
+                    this.setIsLoading(false);
+                });
             const refuelings = result.data;
             this.refuelingItems = refuelings;
         },
-        async save(refuelingData) {
-            await axios
-                .post('/api/refuelings', refuelingData)
-                .then(response => {
-                    // ToDo:
-                    // Option 1. Update and sort array
-                    const item = response.data;
-                    this.refuelingItems.push(item);
+        async save() {
+            //this.setIsLoading(true);
+            // await axios
+            //     .post('/api/refuelings', payload)
+            //     .then(() => {
+            //         this.getItems();
+            //         this.triggerRefuelingForm(false);
+            //         this.showSnackbar("The record has been saved.");
+            //     })
+            //     .catch(error => {
+            //         console.log(error);
+            //     })
+            //     .finally(() => {
+            //         this.setIsLoading(false);
+            //     });
 
-                    // or Option 2. Reload array
-                    this.getItems();
-                    this.triggerRefuelingForm(false);
-                    this.snackbar = true;
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-                .finally(() => {
-                });
+            this.triggerRefuelingForm(false);
+            this.showSnackbar("The record has been saved.");
         },
-        triggerRefuelingForm(value) {
-            this.showForm = value;
-        }
+        async update() {
+            this.triggerRefuelingForm(false);
+            this.showSnackbar("The record has been updated.")
+        },
+        async remove() {
+            this.triggerRefuelingForm(false);
+            this.showSnackbar("The record has been removed.")
+        },
+        triggerRefuelingForm(show) {
+            this.showForm = show;
+            if (show == false) {
+                this.setFormData({});
+            }
+        },
+        ...mapMutations([
+            'setIsLoading',
+            'setSnackbarText',
+            'showSnackbar',
+            'setFormData',
+        ])
     }
 }
 </script>

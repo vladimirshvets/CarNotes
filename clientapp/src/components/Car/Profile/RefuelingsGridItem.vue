@@ -1,5 +1,8 @@
 <template>
-    <tr class="refueling-item list-item">
+    <tr 
+        class="refueling-item list-item"
+        v-on:dblclick="editItem(refueling)"
+    >
         <td><span>{{ refueling.mileage.date }}</span></td>
         <td><span>{{ refueling.mileage.odometerValue }}</span></td>
         <td><span>{{ refueling.volume.toFixed(1) }}</span></td>
@@ -15,7 +18,14 @@
 <script>
 export default {
     name: 'RefuelingsGridItem',
-    props: ['refueling']
+    props: ['refueling'],
+    methods: {
+        editItem(item) {
+            let itemCopy = { ...item };
+            this.$store.commit('setFormData', itemCopy);
+            this.$parent.$emit('doubleClickItem');
+        }
+    }
 }
 </script>
 

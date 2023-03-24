@@ -116,7 +116,7 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get('/api/spareParts/getByCar/' + this.$route.params.id);
+        const result = await axios.get(`/api/spareParts/getByCar/${this.$route.params.id}`);
         const spareParts = result.data;
         this.sparePartItems = spareParts;
         this.categoryFilterState = this.categoryFilterOptions.map(option => option.value);

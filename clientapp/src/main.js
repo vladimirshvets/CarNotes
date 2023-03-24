@@ -8,7 +8,11 @@ import { router } from './router'
 // Vuetify
 import { vuetify } from './vuetify'
 
+// Vuex store
+import { store } from './store.js';
+
 createApp(App)
     .use(router)
     .use(vuetify)
+    .use(store)
     .mount('#app')

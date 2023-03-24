@@ -5,15 +5,13 @@
     </section>
 
     <section v-else>
-        <div v-if="loading">
-            Loading...
-        </div>
+        <div v-if="isLoading"></div>
         <div v-else class="d-flex flex-column">
             <v-card
                 v-for="car in cars"
                 :key="car.id"
-                :title="car.make + ' ' + car.model"
-                :subtitle="car.year"
+                :title="car.make + ' ' + car.model.toString()"
+                :subtitle="car.year.toString()"
                 class="car-card-wrapper"
             >
                 <v-card-text>
@@ -30,27 +28,40 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
     name: 'CarsList',
     data() {
         return {
             cars: null,
-            loading: true,
             error: false
         }
     },
+    computed: {
+        ...mapGetters([
+            'isLoading'
+        ])
+    },
+    methods: {
+        ...mapMutations([
+            'setIsLoading'
+        ])
+    },
     mounted() {
+        this.setIsLoading(true);
         axios
             .get('/api/cars/list')
             .then(response => {
                 this.cars = response.data;
             })
-            .catch(error => {
-                console.log(error);
+            .catch(err => {
+                console.log(err);
                 this.error = true;
             })
-            .finally(() => (this.loading = false));
+            .finally(() => {
+                this.setIsLoading(false)
+            });
     }
 }
 </script>
