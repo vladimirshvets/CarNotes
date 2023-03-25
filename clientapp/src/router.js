@@ -21,7 +21,7 @@ const routes = [
         component: CarsList
     },
     {
-        path: '/cars/profile/:id',
+        path: '/cars/profile/:carId',
         name: 'CarProfile',
         component: CarProfile,
         children: [

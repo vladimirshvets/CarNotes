@@ -9,7 +9,7 @@
                 </v-col>
                 <v-col cols="12" sm="1">
                     <v-btn
-                        icon="mdi-plus" 
+                        icon="mdi-plus"
                         size="large"
                         color="primary"
                         @click="triggerRefuelingForm(true)"
@@ -29,7 +29,7 @@
             />
         </div>
         <div class="grid-wrap">
-            <RefuelingsGrid 
+            <RefuelingsGrid
                 :refuelings="refuelingItems"
                 @doubleClickItem="triggerRefuelingForm(true)"
             />
@@ -80,13 +80,14 @@ export default {
         }
     },
     async created() {
-        this.getItems();
+        this.$store.dispatch('loadMileages', this.$route.params.carId);
+        await this.getItems();
     },
     methods: {
         async getItems() {
             this.setIsLoading(true);
             const result = await axios
-                .get(`/api/refuelings/getByCar/${this.$route.params.id}`)
+                .get(`/api/refuelings/getByCar/${this.$route.params.carId}`)
                 .finally(() => {
                     this.setIsLoading(false);
                 });

@@ -1,38 +1,37 @@
 <template>
-    <h4>Stats will be collected soon...</h4>
-
     <MileageChart :key="mileageChartKey" :labels="mileageDates" :values="mileageValues" />
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters, mapMutations } from 'vuex';
 import MileageChart from '../../../components/Car/Profile/Stats/MileageChart.vue'
-
-
 
 export default {
     name: 'CarStats',
     components: {
         MileageChart
     },
-    data() {
-        return {
-            mileageChartKey: 0,
-            mileageDates: [],
-            mileageValues: []
-        }
+    computed: {
+        mileageChartKey() {
+            return this.mileages.length;
+        },
+        mileageDates() {
+            return this.mileages.map(m => m.date).reverse();
+        },
+        mileageValues() {
+            return this.mileages.map(m => m.odometerValue).reverse();
+        },
+        ...mapGetters([
+            'mileages'
+        ])
     },
-    async created() {
-        const result = await axios.get(`/api/mileages/getByCar/${this.$route.params.id}`);
-        const mileages = result.data;
-        this.mileageDates = mileages.map(m => m.date).reverse();
-        this.mileageValues = mileages.map(m => m.odometerValue).reverse();
-        this.mileageForceRerender();
+    created() {
+        this.$store.dispatch('loadMileages', this.$route.params.carId);
     },
     methods: {
-        mileageForceRerender() {
-            this.mileageChartKey += 1;
-        },
+        ...mapMutations([
+            'setMileages',
+        ])
     }
 }
 </script>

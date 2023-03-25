@@ -39,7 +39,7 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get(`/api/washings/getByCar/${this.$route.params.id}`);
+        const result = await axios.get(`/api/washings/getByCar/${this.$route.params.carId}`);
         const washings = result.data;
         this.washingItems = washings;
     }

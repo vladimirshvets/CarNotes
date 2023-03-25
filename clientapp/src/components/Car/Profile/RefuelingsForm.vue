@@ -16,7 +16,17 @@
                             <small>* required fields</small>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="6" md="6">
+                                    <v-col cols="12" sm="12">
+                                        <v-switch
+                                            v-model="useExistingMileage"
+                                            hide-details
+                                            inset
+                                            color="success"
+                                            label="Use existing mileage"
+                                        ></v-switch>
+                                    </v-col>
+                                    <mileage-input v-if="useExistingMileage" />
+                                    <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
                                         <v-text-field
                                             name="date"
                                             label="Date*"
@@ -24,7 +34,7 @@
                                             required
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="6" md="6">
+                                    <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
                                         <v-text-field
                                             name="odometerValue"
                                             label="Mileage, km*"
@@ -114,8 +124,12 @@
 </template>
 
 <script>
+import MileageInput from './MileageInput.vue';
 export default {
     name: 'RefuelingsForm',
+    components: {
+        MileageInput
+    },
     props: {
         showForm: Boolean,
         distributorAutocomplete: Array,
@@ -137,6 +151,11 @@ export default {
             return refuelingData;
         }
     },
+    data() {
+        return {
+            useExistingMileage: false
+        }
+    },
     methods: {
         async submit() {
             // ToDo:
@@ -144,7 +163,7 @@ export default {
             //const results = await event
             //alert(JSON.stringify(results, null, 2))
             const payload = {
-                carId: this.$route.params.id,
+                carId: this.$route.params.carId,
                 date: this.formData.date,
                 odometerValue: this.formData.odometerValue,
                 volume: this.formData.volume,

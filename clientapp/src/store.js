@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import axios from 'axios';
 
 export const store = createStore({
     state: {
@@ -7,13 +8,15 @@ export const store = createStore({
             show: false,
             text: ''
         },
-        formData: {}
+        formData: {},
+        mileages: [],
     },
     getters: {
         isLoading: state => state.isLoading,
-        formData: state => state.formData,
         snackbar: state => state.snackbar.show,
         snackbarText: state => state.snackbar.text,
+        formData: state => state.formData,
+        mileages: state => state.mileages
     },
     mutations: {
         setIsLoading(state, isLoading) {
@@ -28,9 +31,16 @@ export const store = createStore({
         },
         setFormData(state, formData) {
             state.formData = formData;
+        },
+        setMileages(state, mileages) {
+            state.mileages = mileages;
         }
     },
     actions: {
-
+        async loadMileages({ commit }, carId) {
+            const result = await axios.get(`/api/mileages/getByCar/${carId}`);
+            let mileages = result.data;
+            commit('setMileages', mileages);
+        }
     }
 });

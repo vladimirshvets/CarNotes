@@ -39,7 +39,7 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get(`/api/legalProcedures/getByCar/${this.$route.params.id}`);
+        const result = await axios.get(`/api/legalProcedures/getByCar/${this.$route.params.carId}`);
         const legalProcedures = result.data;
         this.legalProcedureItems = legalProcedures;
     }

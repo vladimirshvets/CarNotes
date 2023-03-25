@@ -97,7 +97,7 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get(`/api/cars/${this.$route.params.id}`);
+        const result = await axios.get(`/api/cars/${this.$route.params.carId}`);
         const car = result.data;
         this.carInfo = car;
     }
