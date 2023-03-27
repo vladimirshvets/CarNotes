@@ -18,7 +18,7 @@
                     {{ car.plate }}
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn :to="{ name: 'CarStats', params: { id: car.id} }">Details</v-btn>
+                    <v-btn :to="{ name: 'CarStats', params: { carId: car.id} }">Details</v-btn>
                 </v-card-actions>
             </v-card>
         </div>

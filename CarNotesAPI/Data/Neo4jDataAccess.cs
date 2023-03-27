@@ -1,5 +1,6 @@
 ﻿using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
+using CarNotesAPI.Models.Exceptions;
 using Microsoft.Extensions.Options;
 using Neo4j.Driver;
 
@@ -88,11 +89,18 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <param name="query">Query string</param>
     /// <param name="parameters">Query parameters</param>
     /// <returns>Dictionary representation of result.</returns>
+    /// <exception cref="MatchNotFoundException">
+    /// Throws if no node matches the specified parameters.
+    /// </exception>
     public async Task<T> ExecuteWriteWithScalarResultAsync<T>(
         string query,
         IDictionary<string, object>? parameters = null) where T : struct
     {
         var response = await ExecuteWriteTransactionAsync(query, parameters);
+        if (response == null)
+        {
+            throw new MatchNotFoundException();
+        }
 
         // Return the value of a primitive type.
         var value = response.First().Value;
@@ -108,11 +116,18 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <param name="query">Query string</param>
     /// <param name="parameters">Query parameters</param>
     /// <returns>Dictionary representation of result.</returns>
+    /// <exception cref="MatchNotFoundException">
+    /// Throws if no node matches the specified parameters.
+    /// </exception>
     public async Task<Dictionary<string, object>> ExecuteWriteWithDictionaryResultAsync(
         string query,
         IDictionary<string, object>? parameters = null)
     {
         var response = await ExecuteWriteTransactionAsync(query, parameters);
+        if (response == null)
+        {
+            throw new MatchNotFoundException();
+        }
 
         // Return the value of a class.
         var value = response.First().Value;
@@ -128,14 +143,22 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <param name="query">Query string</param>
     /// <param name="parameters">Query parameters</param>
     /// <returns>List representation of result.</returns>
+    /// /// <exception cref="MatchNotFoundException">
+    /// Throws if no node matches the specified parameters.
+    /// </exception>
     public async Task<List<Dictionary<string, object>>> ExecuteWriteWithListResultAsync(
         string query,
         IDictionary<string, object>? parameters = null)
     {
         var response = await ExecuteWriteTransactionAsync(query, parameters);
+        if (response == null)
+        {
+            throw new MatchNotFoundException();
+        }
 
         // Return the collection of class values.
         var collection = new List<Dictionary<string, object>>();
+
         foreach (var item in response)
         {
             var value = item.Value;
@@ -149,7 +172,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <summary>
     /// Execute write transaction.
     /// </summary>
-    private async Task<IReadOnlyDictionary<string, object>> ExecuteWriteTransactionAsync(
+    private async Task<IReadOnlyDictionary<string, object>?> ExecuteWriteTransactionAsync(
         string query,
         IDictionary<string, object>? parameters = null)
     {
@@ -163,6 +186,10 @@ public class Neo4jDataAccess : INeo4jDataAccess
                 var res = await tx.RunAsync(query, parameters);
 
                 List<IRecord> records = await res.ToListAsync();
+                if (records.Count == 0)
+                {
+                    return null;
+                }
 
                 // However, let's assume that one query is executed at a time
                 // to keep the code maintainable.

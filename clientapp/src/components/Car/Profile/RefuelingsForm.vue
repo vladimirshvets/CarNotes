@@ -7,7 +7,6 @@
                 width="1024"
             >
                 <v-form @submit.prevent="submit(formData.id)">
-
                     <v-card>
                         <v-card-title>
                             <span class="text-h5">Refueling Info</span>
@@ -18,6 +17,7 @@
                                 <v-row>
                                     <v-col cols="12" sm="12">
                                         <v-switch
+                                            v-if="!formData.id"
                                             v-model="useExistingMileage"
                                             hide-details
                                             inset
@@ -25,12 +25,18 @@
                                             label="Use existing mileage"
                                         ></v-switch>
                                     </v-col>
-                                    <mileage-input v-if="useExistingMileage" />
+                                </v-row>
+                                <v-row>
+                                    <v-col v-if="useExistingMileage" col="12" sm="12" md="12">
+                                        <mileage-input
+                                            v-model="formData.mileage"
+                                        />
+                                    </v-col>
                                     <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
                                         <v-text-field
                                             name="date"
                                             label="Date*"
-                                            v-model="formData.date"
+                                            v-model="formData.newMileage.date"
                                             required
                                         ></v-text-field>
                                     </v-col>
@@ -38,7 +44,7 @@
                                         <v-text-field
                                             name="odometerValue"
                                             label="Mileage, km*"
-                                            v-model="formData.odometerValue"
+                                            v-model="formData.newMileage.odometerValue"
                                             required
                                         ></v-text-field>
                                     </v-col>
@@ -146,14 +152,21 @@ export default {
         },
         formData() {
             let refuelingData = this.$store.state.formData;
-            refuelingData.date = refuelingData.mileage?.date,
-            refuelingData.odometerValue = refuelingData.mileage?.odometerValue;
+            refuelingData.newMileage = {
+                date: '',
+                odometerValue: ''
+            };
             return refuelingData;
         }
     },
     data() {
         return {
             useExistingMileage: false
+        }
+    },
+    watch: {
+        formData: function() {
+            this.useExistingMileage = this.formData.id ? true : false;
         }
     },
     methods: {
@@ -164,8 +177,7 @@ export default {
             //alert(JSON.stringify(results, null, 2))
             const payload = {
                 carId: this.$route.params.carId,
-                date: this.formData.date,
-                odometerValue: this.formData.odometerValue,
+                mileage: this.useExistingMileage ? this.formData.mileage : this.formData.newMileage,
                 volume: this.formData.volume,
                 price: this.formData.price,
                 distributor: this.formData.distributor,
@@ -173,8 +185,7 @@ export default {
                 comment: this.formData.comment
             };
             if (this.formData.id) {
-                payload.id = this.formData.id;
-                this.$emit('update', payload);
+                this.$emit('update', this.formData.id, payload);
             } else {
                 this.$emit('save', payload);
             }
@@ -182,7 +193,11 @@ export default {
         remove() {
             // ToDo:
             // Add confirmation dialog.
-            this.$emit('remove', this.formData.id);
+            const payload = {
+                carId: this.$route.params.carId,
+                mileageId: this.formData.mileage.id
+            }
+            this.$emit('remove', this.formData.id, payload);
         },
         closeForm() {
             this.form = false;

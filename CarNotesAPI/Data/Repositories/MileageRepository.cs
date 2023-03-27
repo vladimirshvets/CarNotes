@@ -37,7 +37,7 @@ public class MileageRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "m" }, parameters);
+            query, new List<string> { "m" }, parameters);
 
         List<Mileage> mileages = new(response.Count);
         foreach (Dictionary<string, object> mileageObj in response)
@@ -76,7 +76,7 @@ public class MileageRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
-                query, parameters);
+            query, parameters);
 
         return new Mileage(response);
     }
@@ -110,8 +110,58 @@ public class MileageRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
-                query, parameters);
+            query, parameters);
 
         return new Mileage(response);
+    }
+
+    /// <summary>
+    /// Deletes an existing mileage record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <returns>true on success.</returns>
+    public async Task<bool> DeleteAsync(Guid carId, Guid mileageId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })
+            DETACH DELETE m
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
+                query, parameters);
+
+        return response;
+    }
+
+    /// <summary>
+    /// Returns the number of records related to specified mileage record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <returns>Count of related records.</returns>
+    public async Task<int> GetRelatedRecordsCountAsync(
+        Guid carId, Guid mileageId)
+    {
+        string query =
+            @"MATCH (:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[rel:MILE_MARKER]-()
+            RETURN COUNT(rel)";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() }
+        };
+
+        int response = await _neo4jDataAccess.ExecuteReadScalarAsync<int>(
+            query, parameters);
+        return response;
     }
 }

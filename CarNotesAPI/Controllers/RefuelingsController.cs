@@ -32,16 +32,12 @@ namespace CarNotesAPI.Controllers
         public async Task<Refueling> Post(
             [FromBody]RefuelingViewModel viewModel)
         {
-            // ToDo:
-            // Check if the mileage already exists.
-            // Try to save mileage and refueling together.
-            Mileage mileage = new()
+            Mileage mileage = viewModel.Mileage;
+            if (mileage.Id == Guid.Empty)
             {
-                OdometerValue = viewModel.OdometerValue,
-                Date = viewModel.Date
-            };
-            mileage =
-                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
+                mileage = await _mileageRepository.AddAsync(
+                    viewModel.CarId, viewModel.Mileage);
+            }
 
             Refueling refueling = new()
             {
@@ -50,12 +46,47 @@ namespace CarNotesAPI.Controllers
                 Distributor = viewModel.Distributor,
                 Address = viewModel.Address,
                 Comment = viewModel.Comment
-
             };
             refueling = await _refuelingRepository.AddAsync(
                 viewModel.CarId, mileage.Id, refueling);
 
             return refueling;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(
+            Guid id, [FromBody]RefuelingViewModel viewModel)
+        {
+
+
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(
+            Guid id, [FromBody]RemovalViewModel viewModel)
+        {
+            await _refuelingRepository.DeleteAsync(
+                viewModel.CarId, viewModel.MileageId, id);
+
+            bool isMileageDeleted = false;
+            int relatedRecords =
+                await _mileageRepository.GetRelatedRecordsCountAsync(
+                    viewModel.CarId, viewModel.MileageId);
+            if (relatedRecords == 0)
+            {
+                await _mileageRepository.DeleteAsync(
+                    viewModel.CarId, viewModel.MileageId);
+                isMileageDeleted = true;
+            }
+
+            return Ok(new
+            {
+                RefuelingId = id,
+                IsMileageDeleted = isMileageDeleted,
+                MileageId = viewModel.MileageId
+            });
         }
     }
 }

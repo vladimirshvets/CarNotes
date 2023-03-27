@@ -38,7 +38,7 @@ public class RefuelingRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "r", "m" }, parameters);
+            query, new List<string> { "r", "m" }, parameters);
 
         int refuelingsCount = response.Count / 2;
         List<Refueling> refuelings = new(refuelingsCount);
@@ -58,9 +58,11 @@ public class RefuelingRepository
     /// Creates a new refueling record.
     /// </summary>
     /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
     /// <param name="refueling">Refueling data</param>
     /// <returns>A newly created instance of refueling.</returns>
-    public async Task<Refueling> AddAsync(Guid carId, Guid mileageId, Refueling refueling)
+    public async Task<Refueling> AddAsync(
+        Guid carId, Guid mileageId, Refueling refueling)
     {
         string query =
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })
@@ -89,7 +91,7 @@ public class RefuelingRepository
         };
 
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
-                query, parameters);
+            query, parameters);
 
         Refueling newInstance = new(response[0])
         {
@@ -97,5 +99,34 @@ public class RefuelingRepository
         };
 
         return newInstance;
+    }
+
+    /// <summary>
+    /// Deletes an existing refueling record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="refuelingId">Refueling identifier</param>
+    /// <returns>true on success.</returns>
+    public async Task<bool> DeleteAsync(
+        Guid carId, Guid mileageId, Guid refuelingId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(r:Refueling { id: $refuelingId })
+            DETACH DELETE r
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "refuelingId", refuelingId.ToString() }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
+                query, parameters);
+
+        return response;
     }
 }

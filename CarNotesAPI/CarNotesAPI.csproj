@@ -22,6 +22,8 @@
     <None Remove="ViewModels\" />
     <None Remove="Services\" />
     <None Remove="Data\Models\Notes\" />
+    <None Remove="Models\" />
+    <None Remove="Models\Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -31,5 +33,7 @@
     <Folder Include="ViewModels\" />
     <Folder Include="Services\" />
     <Folder Include="Data\Models\Notes\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Exceptions\" />
   </ItemGroup>
 </Project>

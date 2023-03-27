@@ -94,32 +94,55 @@ export default {
             const refuelings = result.data;
             this.refuelingItems = refuelings;
         },
-        async save() {
-            //this.setIsLoading(true);
-            // await axios
-            //     .post('/api/refuelings', payload)
-            //     .then(() => {
-            //         this.getItems();
-            //         this.triggerRefuelingForm(false);
-            //         this.showSnackbar("The record has been saved.");
-            //     })
-            //     .catch(error => {
-            //         console.log(error);
-            //     })
-            //     .finally(() => {
-            //         this.setIsLoading(false);
-            //     });
-
-            this.triggerRefuelingForm(false);
-            this.showSnackbar("The record has been saved.");
+        async save(payload) {
+            this.setIsLoading(true);
+            await axios
+                .post('/api/refuelings', payload)
+                .then(() => {
+                    this.getItems();
+                    this.triggerRefuelingForm(false);
+                    this.showSnackbar("The record has been saved.");
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.setIsLoading(false);
+                });
         },
-        async update() {
-            this.triggerRefuelingForm(false);
-            this.showSnackbar("The record has been updated.")
+        async update(id, payload) {
+            this.setIsLoading(true);
+            await axios
+                .put(`/api/refuelings/${id}`, payload)
+                .then(() => {
+                    this.getItems();
+                    this.triggerRefuelingForm(false);
+                    this.showSnackbar("The record has been updated.")
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.setIsLoading(false);
+                });
         },
-        async remove() {
-            this.triggerRefuelingForm(false);
-            this.showSnackbar("The record has been removed.")
+        async remove(id, payload) {
+            this.setIsLoading(true);
+            await axios
+                .delete(`/api/refuelings/${id}`, {
+                    data: payload
+                })
+                .then(() => {
+                    this.getItems();
+                    this.triggerRefuelingForm(false);
+                    this.showSnackbar("The record has been removed.")
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                })
+                .finally(() => {
+                    this.setIsLoading(false);
+                });
         },
         triggerRefuelingForm(show) {
             this.showForm = show;
