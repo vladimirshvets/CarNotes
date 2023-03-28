@@ -19,10 +19,10 @@
             </tr>
         </thead>
         <tbody>
-            <ServicesGridItem
-                v-for="service in services"
-                :key="service.id"
-                :service="service"
+            <service-grid-item
+                v-for="item in items"
+                :key="item.id"
+                :item="item"
                 class="services-container list-container"
             />
         </tbody>
@@ -30,12 +30,14 @@
 </template>
 
 <script>
-import ServicesGridItem from './ServicesGridItem.vue'
+import ServiceGridItem from './ServiceGridItem.vue';
 export default {
-    name: 'ServicesGrid',
-    props: ['services'],
+    name: 'ServiceGrid',
+    props: {
+        items: Array
+    },
     components: {
-        ServicesGridItem
+        ServiceGridItem
     }
 }
 </script>

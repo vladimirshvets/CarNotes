@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import WashingGridItem from './WashingGridItem.vue'
+import WashingGridItem from './WashingGridItem.vue';
 export default {
     name: 'WashingGrid',
     props: {

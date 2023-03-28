@@ -11,7 +11,7 @@
         >
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">Washing Info</span>
+                    <span class="text-h5">Service Info</span>
                 </v-card-title>
                 <v-card-text>
                     <small>* required fields</small>
@@ -71,42 +71,26 @@
                                 ></v-combobox>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-checkbox
-                                    name="isContact"
-                                    label="Contact Washing"
-                                    v-model="formData.isContact"
-                                    color="info"
-                                ></v-checkbox>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="6">
-                                <v-checkbox
-                                    name="isDegreaserUsed"
-                                    label="Degreaser used"
-                                    v-model="formData.isDegreaserUsed"
-                                    color="info"
-                                ></v-checkbox>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="6">
-                                <v-checkbox
-                                    name="isPolish"
-                                    label="Polish used"
-                                    v-model="formData.isPolishUsed"
-                                    color="info"
-                                ></v-checkbox>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="6">
-                                <v-checkbox
-                                    name="isAntiRainUsed"
-                                    label="Anti-rain used"
-                                    v-model="formData.isAntiRainUsed"
-                                    color="info"
-                                ></v-checkbox>
+                                <v-text-field
+                                    name="costOfWork"
+                                    label="Cost of work, BYN"
+                                    v-model="formData.costOfWork"
+                                    required
+                                ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
                                 <v-text-field
-                                    name="totalAmount"
-                                    label="Total Amount, BYN"
-                                    v-model="formData.totalAmount"
+                                    name="costOfSpareParts"
+                                    label="Cost of spare parts, BYN"
+                                    v-model="formData.costOfSpareParts"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="12" md="12">
+                                <v-text-field
+                                    name="websiteUrl"
+                                    label="Website URL"
+                                    v-model="formData.websiteUrl"
                                     required
                                 ></v-text-field>
                             </v-col>
@@ -160,7 +144,7 @@
             :showModal="removalModal"
             @triggerModal="triggerRemovalModal"
             @remove="remove"
-            title="Delete Washing"
+            title="Delete Service"
             text="Are you sure you want to delete this record?"
         ></delete-confirmation-modal>
     </v-dialog>
@@ -171,7 +155,7 @@ import { mapGetters } from 'vuex';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import MileageInput from './MileageInput.vue';
 export default {
-    name: 'WashingForm',
+    name: 'ServiceForm',
     components: {
         MileageInput,
         DeleteConfirmationModal
@@ -232,11 +216,9 @@ export default {
                     : this.mileageMatch ?? this.formData.newMileage,
                 title: this.formData.title,
                 address: this.formData.address,
-                isContact: this.formData.isContact,
-                isDegreaserUsed: this.formData.isDegreaserUsed,
-                isPolishUsed: this.formData.isPolishUsed,
-                isAntiRainUsed: this.formData.isAntiRainUsed,
-                totalAmount: this.formData.totalAmount,
+                websiteUrl: this.formData.websiteUrl,
+                costOfWork: this.formData.costOfWork,
+                costOfSpareParts: this.formData.costOfSpareParts,
                 comment: this.formData.comment
             };
             if (this.formData.id) {
