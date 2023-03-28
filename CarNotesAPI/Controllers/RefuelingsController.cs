@@ -54,13 +54,22 @@ namespace CarNotesAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(
+        public async Task<Refueling> Put(
             Guid id, [FromBody]RefuelingViewModel viewModel)
         {
+            Refueling refueling = new()
+            {
+                Volume = viewModel.Volume,
+                Price = viewModel.Price,
+                Distributor = viewModel.Distributor,
+                Address = viewModel.Address,
+                Comment = viewModel.Comment
+            };
 
+            refueling = await _refuelingRepository.UpdateAsync(
+                viewModel.CarId, viewModel.Mileage.Id, id, refueling);
 
-
-            return Ok();
+            return refueling;
         }
 
         [HttpDelete("{id}")]

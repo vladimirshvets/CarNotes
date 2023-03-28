@@ -6,10 +6,10 @@
         <td><span>{{ service.stationName }}</span></td>
         <td><span>{{ service.address }}</span></td>
         <td><span>{{ service.websiteUrl }}</span></td>
-        <td><span>{{ service.costOfWork.toFixed(2) }}</span></td>
-        <td><span>{{ service.costOfSpareParts.toFixed(2) }}</span></td>
-        <td><span>{{ service.totalAmount.toFixed(2) }}</span></td>
-        <td><span></span></td>
+        <td><span>{{ service.costOfWork?.toFixed(2) }}</span></td>
+        <td><span>{{ service.costOfSpareParts?.toFixed(2) }}</span></td>
+        <td><span>{{ service.totalAmount?.toFixed(2) }}</span></td>
+        <td><span class="base-total">{{ service.baseTotalAmount?.toFixed(2) }}</span></td>
         <td><span>{{ service.comment }}</span></td>
     </tr>
 </template>
@@ -22,7 +22,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.list-item:hover{
-    background-color: #e6ff84;
+.list-item {
+    &:hover{
+        background-color: #e6ff84;
+    }
+
+    .base-total {
+        color: #016a59;
+    }
 }
 </style>

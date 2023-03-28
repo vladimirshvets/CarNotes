@@ -17,10 +17,10 @@
             </tr>
         </thead>
         <tbody>
-            <RefuelingsGridItem
-                v-for="refueling in refuelings"
-                :key="refueling.id"
-                :refueling="refueling"
+            <refuelings-grid-item
+                v-for="item in items"
+                :key="item.id"
+                :item="item"
                 class="refuelings-container list-container"
             />
         </tbody>
@@ -31,7 +31,7 @@
 import RefuelingsGridItem from './RefuelingsGridItem.vue'
 export default {
     name: 'RefuelingsGrid',
-    props: ['refuelings'],
+    props: ['items'],
     components: {
         RefuelingsGridItem
     }

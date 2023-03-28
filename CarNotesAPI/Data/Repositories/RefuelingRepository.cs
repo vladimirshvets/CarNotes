@@ -102,6 +102,50 @@ public class RefuelingRepository
     }
 
     /// <summary>
+    /// Updates an existing refueling record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="refuelingId">Refueling identifier</param>
+    /// <param name="refueling">Refueling data</param>
+    /// <returns>An updated instance of refueling.</returns>
+    public async Task<Refueling> UpdateAsync(
+        Guid carId, Guid mileageId, Guid refuelingId, Refueling refueling)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(r:Refueling { id: $refuelingId })
+            SET
+                r.volume = $volume,
+                r.price = $price,
+                r.distributor = $distributor,
+                r.address = $address,
+                r.comment = $comment
+            RETURN r, m";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "refuelingId", refuelingId.ToString() },
+            { "volume", refueling.Volume },
+            { "price", refueling.Price },
+            { "distributor", refueling.Distributor },
+            { "address", refueling.Address },
+            { "comment", refueling.Comment }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+            query, parameters);
+
+        Refueling updatedInstance = new(response[0])
+        {
+            Mileage = new Mileage(response[1])
+        };
+
+        return updatedInstance;
+    }
+
+    /// <summary>
     /// Deletes an existing refueling record.
     /// </summary>
     /// <param name="carId">Car identifier</param>

@@ -1,4 +1,6 @@
-﻿namespace CarNotesAPI.Data.Models.Notes
+﻿using CarNotesAPI.Services;
+
+namespace CarNotesAPI.Data.Models.Notes
 {
     public class Service : Note
     {
@@ -40,6 +42,12 @@
         /// Total amount, in national currency.
         /// </summary>
         public double TotalAmount => CostOfWork + CostOfSpareParts;
+
+        /// <summary>
+        /// Total amount, in base currency.
+        /// </summary>
+        public double BaseTotalAmount =>
+            CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
         /// Initializes a new instance of Service.

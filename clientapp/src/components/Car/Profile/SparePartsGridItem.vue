@@ -14,10 +14,10 @@
         <td><span>{{ sparePart.replacementNumber }}</span></td>
         <td><span>{{ sparePart.manufacturer }}</span></td>
         <td><span>{{ sparePart.countryOfOrigin }}</span></td>
-        <td><span>{{ sparePart.price.toFixed(2) }}</span></td>
+        <td><span>{{ sparePart.price?.toFixed(2) }}</span></td>
         <td><span>{{ sparePart.qty }}</span></td>
-        <td><span>{{ sparePart.totalAmount.toFixed(2) }}</span></td>
-        <td><span></span></td>
+        <td><span>{{ sparePart.totalAmount?.toFixed(2) }}</span></td>
+        <td><span class="base-total">{{ sparePart.baseTotalAmount?.toFixed(2) }}</span></td>
         <td><span>{{ sparePart.shopWebsiteUrl }}</span></td>
         <td><span>{{ sparePart.shopAddress }}</span></td>
         <td><span>{{ sparePart.productionDate }}</span></td>
@@ -34,7 +34,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.list-item:hover{
-    background-color: #e6ff84;
+.list-item {
+    &:hover{
+        background-color: #e6ff84;
+    }
+
+    .base-total {
+        color: #016a59;
+    }
 }
 </style>

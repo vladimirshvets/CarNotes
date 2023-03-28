@@ -1,145 +1,160 @@
 <template>
-    <v-container>
-        <v-row justify="center">
-            <v-dialog
-                v-model="form"
-                @click:outside="closeForm"
-                width="1024"
-            >
-                <v-form @submit.prevent="submit(formData.id)">
-                    <v-card>
-                        <v-card-title>
-                            <span class="text-h5">Refueling Info</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <small>* required fields</small>
-                            <v-container>
-                                <v-row>
-                                    <v-col cols="12" sm="12">
-                                        <v-switch
-                                            v-if="!formData.id"
-                                            v-model="useExistingMileage"
-                                            hide-details
-                                            inset
-                                            color="success"
-                                            label="Use existing mileage"
-                                        ></v-switch>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col v-if="useExistingMileage" col="12" sm="12" md="12">
-                                        <mileage-input
-                                            v-model="formData.mileage"
-                                        />
-                                    </v-col>
-                                    <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="date"
-                                            label="Date*"
-                                            v-model="formData.newMileage.date"
-                                            required
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="odometerValue"
-                                            label="Mileage, km*"
-                                            v-model="formData.newMileage.odometerValue"
-                                            required
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="volume"
-                                            label="Volume*"
-                                            v-model="formData.volume"
-                                            required
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="price"
-                                            label="Price per l., BYN*"
-                                            v-model="formData.price"
-                                            required
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="distributor"
-                                            label="Distributor"
-                                            v-model="formData.distributor"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="6" md="6">
-                                        <v-text-field
-                                            name="address"
-                                            label="Address"
-                                            v-model="formData.address"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-text-field
-                                            name="comment"
-                                            label="Comment"
-                                            v-model="formData.comment"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn
-                                v-if="formData.id"
-                                color="red"
-                                variant="outlined"
-                                @click="remove"
-                            >
-                                <v-icon
-                                    start
-                                    icon="mdi-alert"
-                                ></v-icon>
-                                <span>Delete</span>
-                            </v-btn>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                color="blue-darken-1"
-                                variant="text"
-                                @click="closeForm"
-                            >
-                                <span>Cancel</span>
-                            </v-btn>
-                            <v-btn
-                                type="submit"
-                                color="success"
-                                variant="outlined"
-                            >
-                                <span v-if="!formData.id">Save</span>
-                                <span v-if="formData.id">Update</span>
-                                <v-icon
-                                    end
-                                    icon="mdi-checkbox-marked-circle"
-                                ></v-icon>
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-form>
-            </v-dialog>
-        </v-row>
-    </v-container>
+    <v-dialog
+        v-model="form"
+        @click:outside="closeForm"
+        width="1024"
+        scrollable
+    >
+        <v-form
+            @submit.prevent="submit(formData.id)"
+            class="form"
+        >
+            <v-card>
+                <v-card-title>
+                    <span class="text-h5">Refueling Info</span>
+                </v-card-title>
+                <v-card-text>
+                    <small>* required fields</small>
+                    <v-container>
+                        <v-row>
+                            <v-col v-if="!formData.id" cols="12" sm="12">
+                                <v-switch
+                                    v-model="useExistingMileage"
+                                    hide-details
+                                    inset
+                                    color="success"
+                                    label="Use existing mileage"
+                                ></v-switch>
+                            </v-col>
+                            <v-col v-if="useExistingMileage" col="12" sm="12" md="12">
+                                <mileage-input
+                                    v-model="formData.mileage"
+                                    :readonly="Boolean(formData.id)"
+                                />
+                            </v-col>
+                            <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="date"
+                                    label="Date*"
+                                    v-model="formData.newMileage.date"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col v-if="!useExistingMileage" cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="odometerValue"
+                                    label="Mileage, km*"
+                                    v-model="formData.newMileage.odometerValue"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col  cols="12" sm="12" md="12">
+                                <span v-if="!useExistingMileage && mileageAlreadyExists">Mileage already exists</span>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="volume"
+                                    label="Volume*"
+                                    v-model="formData.volume"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="price"
+                                    label="Price per l., BYN*"
+                                    v-model="formData.price"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="distributor"
+                                    label="Distributor"
+                                    v-model="formData.distributor"
+                                    :items="suggestedDistributors"
+                                ></v-combobox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="address"
+                                    label="Address"
+                                    v-model="formData.address"
+                                    :items="suggestedAddresses"
+                                ></v-combobox>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-text-field
+                                    name="comment"
+                                    label="Comment"
+                                    v-model="formData.comment"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn
+                        v-if="formData.id"
+                        color="red"
+                        variant="outlined"
+                        @click="removalModal = true"
+                    >
+                        <v-icon
+                            start
+                            icon="mdi-alert"
+                        ></v-icon>
+                        <span>Delete</span>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue-darken-1"
+                        variant="text"
+                        @click="closeForm"
+                    >
+                        <span>Cancel</span>
+                    </v-btn>
+                    <v-btn
+                        type="submit"
+                        color="success"
+                        variant="outlined"
+                    >
+                        <span v-if="!formData.id">Save</span>
+                        <span v-if="formData.id">Update</span>
+                        <v-icon
+                            end
+                            icon="mdi-checkbox-marked-circle"
+                        ></v-icon>
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+        <delete-confirmation-modal
+            :showModal="removalModal"
+            @triggerModal="triggerRemovalModal"
+            @remove="remove"
+            title="Delete Refueling"
+            text="Are you sure you want to delete this record?"
+        ></delete-confirmation-modal>
+    </v-dialog>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import MileageInput from './MileageInput.vue';
 export default {
     name: 'RefuelingsForm',
     components: {
-        MileageInput
+        MileageInput,
+        DeleteConfirmationModal
     },
     props: {
         showForm: Boolean,
-        distributorAutocomplete: Array,
-        addressAutocomplete: Array
+        suggestedDistributors: Array,
+        suggestedAddresses: Array
     },
     computed: {
         form: {
@@ -157,16 +172,27 @@ export default {
                 odometerValue: ''
             };
             return refuelingData;
-        }
+        },
+        mileageAlreadyExists() {
+            var result = this.mileages.find(item =>
+                item.date == this.formData.newMileage.date &&
+                item.odometerValue == this.formData.newMileage.odometerValue
+            );
+            return Boolean(result);
+        },
+        ...mapGetters([
+            'mileages'
+        ])
     },
     data() {
         return {
-            useExistingMileage: false
+            useExistingMileage: false,
+            removalModal: false
         }
     },
     watch: {
         formData: function() {
-            this.useExistingMileage = this.formData.id ? true : false;
+            this.useExistingMileage = Boolean(this.formData.id);
         }
     },
     methods: {
@@ -191,8 +217,6 @@ export default {
             }
         },
         remove() {
-            // ToDo:
-            // Add confirmation dialog.
             const payload = {
                 carId: this.$route.params.carId,
                 mileageId: this.formData.mileage.id
@@ -202,6 +226,15 @@ export default {
         closeForm() {
             this.form = false;
         },
+        triggerRemovalModal(show) {
+            this.removalModal = show;
+        }
     }
 }
 </script>
+
+<style lang="less" scoped>
+.form {
+    overflow: scroll;
+}
+</style>

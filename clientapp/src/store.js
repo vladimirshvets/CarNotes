@@ -22,7 +22,7 @@ export const store = createStore({
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
         },
-        showSnackbar(state, text) {
+        snackbar(state, text) {
             state.snackbar.show = true;
             state.snackbar.text = text;
         },

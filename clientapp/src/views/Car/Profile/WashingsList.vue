@@ -25,12 +25,13 @@ export default {
     computed: {
         totalAmountSum() {
             return this.washingItems.reduce(
-                (sum, item) => sum + Number(item.totalAmount),
-                0
+                (sum, item) => sum + Number(item.totalAmount), 0
             )
         },
         baseTotalAmountSum() {
-            return 0;
+            return this.washingItems.reduce(
+                (sum, item) => sum + Number(item.baseTotalAmount), 0
+            )
         }
     },
     data() {

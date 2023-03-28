@@ -1,4 +1,6 @@
-﻿namespace CarNotesAPI.Data.Models.Notes
+﻿using CarNotesAPI.Services;
+
+namespace CarNotesAPI.Data.Models.Notes
 {
     public class Washing : Note
     {
@@ -40,6 +42,12 @@
         /// Price total.
         /// </summary>
         public double TotalAmount { get; set; }
+
+        /// <summary>
+        /// Total amount, in base currency.
+        /// </summary>
+        public double BaseTotalAmount =>
+            CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
         /// Initializes a new instance of Washing.

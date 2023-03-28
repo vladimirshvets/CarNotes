@@ -1,4 +1,5 @@
-﻿using Neo4j.Driver;
+﻿using CarNotesAPI.Services;
+using Neo4j.Driver;
 
 namespace CarNotesAPI.Data.Models.Notes
 {
@@ -98,6 +99,12 @@ namespace CarNotesAPI.Data.Models.Notes
         /// Total amount, in national currency.
         /// </summary>
         public double TotalAmount => Price * Qty;
+
+        /// <summary>
+        /// Total amount, in base currency.
+        /// </summary>
+        public double BaseTotalAmount =>
+            CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
         /// Shop website url.

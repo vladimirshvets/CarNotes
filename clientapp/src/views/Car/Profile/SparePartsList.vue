@@ -71,21 +71,23 @@ export default {
     computed: {
         totalAmountSum() {
             return this.sparePartItems.reduce(
-                (sum, item) => sum + Number(item.totalAmount),
-                0
+                (sum, item) => sum + Number(item.totalAmount), 0
             );
         },
         baseTotalAmountSum() {
-            return 0;
+            return this.sparePartItems.reduce(
+                (sum, item) => sum + Number(item.baseTotalAmount), 0
+            );
         },
         filteredTotalAmountSum() {
             return this.sparePartFilteredItems.reduce(
-                (sum, item) => sum + Number(item.totalAmount),
-                0
+                (sum, item) => sum + Number(item.totalAmount), 0
             );
         },
         filteredBaseTotalAmountSum() {
-            return 0;
+            return this.sparePartFilteredItems.reduce(
+                (sum, item) => sum + Number(item.baseTotalAmount), 0
+            );
         },
         groupFilterOptions() {
             return this.sparePartFilteredItems

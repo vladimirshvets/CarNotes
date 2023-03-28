@@ -1,38 +1,35 @@
 <template>
     <div v-if="isLoading"></div>
     <div v-else class="tab-wrap" id="car-refuelings">
-        <v-container class="summary-wrap">
-            <v-row>
-                <v-col cols="12" sm="3">
-                    <div>Total:</div>
-                    <div>BYN {{ totalAmountSum.toFixed(2) }} | USD {{ baseTotalAmountSum.toFixed(2) }}</div>
-                </v-col>
-                <v-col cols="12" sm="1">
-                    <v-btn
-                        icon="mdi-plus"
-                        size="large"
-                        color="primary"
-                        @click="triggerRefuelingForm(true)"
-                    ></v-btn>
-                </v-col>
-            </v-row>
-        </v-container>
+        <div class="summary-wrap">
+            <total-costs
+                :totalAmount="totalAmountSum"
+                :baseTotalAmount="baseTotalAmountSum"
+            />
+        </div>
         <div class="form-wrap">
-            <RefuelingsForm
+            <refuelings-form
                 :showForm="showForm"
-                @triggerForm="triggerRefuelingForm"
+                @triggerForm="triggerForm"
                 @save="save"
                 @update="update"
                 @remove="remove"
-                :distributorAutocomplete="distributorList" 
-                :addressAutocomplete="addressList"
+                :suggestedDistributors="distributorList"
+                :suggestedAddresses="addressList"
             />
         </div>
         <div class="grid-wrap">
-            <RefuelingsGrid
-                :refuelings="refuelingItems"
-                @doubleClickItem="triggerRefuelingForm(true)"
+            <refuelings-grid
+                :items="items"
+                @editItem="triggerForm(true)"
             />
+            <v-btn
+                class="button-add"
+                icon="mdi-plus"
+                size="large"
+                color="primary"
+                @click="triggerForm(true)"
+            ></v-btn>
         </div>
     </div>
 </template>
@@ -40,32 +37,35 @@
 <script>
 import axios from 'axios'
 import { mapGetters, mapMutations } from 'vuex';
+import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
 import RefuelingsForm from '@/components/Car/Profile/RefuelingsForm.vue'
 import RefuelingsGrid from '@/components/Car/Profile/RefuelingsGrid.vue'
 
 export default {
     name: 'RefuelingsList',
     components: {
+        TotalCosts,
         RefuelingsForm,
         RefuelingsGrid
     },
     computed: {
         totalAmountSum() {
-            return this.refuelingItems.reduce(
-                (sum, item) => sum + Number(item.totalAmount),
-                0
+            return this.items.reduce(
+                (sum, item) => sum + Number(item.totalAmount), 0
             )
         },
         baseTotalAmountSum() {
-            return 0;
+            return this.items.reduce(
+                (sum, item) => sum + Number(item.baseTotalAmount), 0
+            )
         },
         distributorList() {
-            return this.refuelingItems
+            return this.items
                 .map(r => r.distributor)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
         addressList() {
-            return this.refuelingItems
+            return this.items
                 .map(r => r.address)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
@@ -75,7 +75,7 @@ export default {
     },
     data() {
         return {
-            refuelingItems: [],
+            items: [],
             showForm: false,
         }
     },
@@ -86,13 +86,14 @@ export default {
     methods: {
         async getItems() {
             this.setIsLoading(true);
-            const result = await axios
+            await axios
                 .get(`/api/refuelings/getByCar/${this.$route.params.carId}`)
+                .then((response) => {
+                    this.items = response.data;
+                })
                 .finally(() => {
                     this.setIsLoading(false);
                 });
-            const refuelings = result.data;
-            this.refuelingItems = refuelings;
         },
         async save(payload) {
             this.setIsLoading(true);
@@ -100,8 +101,8 @@ export default {
                 .post('/api/refuelings', payload)
                 .then(() => {
                     this.getItems();
-                    this.triggerRefuelingForm(false);
-                    this.showSnackbar("The record has been saved.");
+                    this.triggerForm(false);
+                    this.snackbar("The record has been saved.");
                 })
                 .catch(error => {
                     console.log(error);
@@ -116,8 +117,8 @@ export default {
                 .put(`/api/refuelings/${id}`, payload)
                 .then(() => {
                     this.getItems();
-                    this.triggerRefuelingForm(false);
-                    this.showSnackbar("The record has been updated.")
+                    this.triggerForm(false);
+                    this.snackbar("The record has been updated.")
                 })
                 .catch(error => {
                     console.log(error);
@@ -134,8 +135,8 @@ export default {
                 })
                 .then(() => {
                     this.getItems();
-                    this.triggerRefuelingForm(false);
-                    this.showSnackbar("The record has been removed.")
+                    this.triggerForm(false);
+                    this.snackbar("The record has been removed.")
                 })
                 .catch(error => {
                     console.log(error.response.data);
@@ -144,18 +145,38 @@ export default {
                     this.setIsLoading(false);
                 });
         },
-        triggerRefuelingForm(show) {
-            this.showForm = show;
-            if (show == false) {
+        triggerForm(state) {
+            this.showForm = state;
+            if (!state) {
                 this.setFormData({});
             }
         },
         ...mapMutations([
             'setIsLoading',
             'setSnackbarText',
-            'showSnackbar',
+            'snackbar',
             'setFormData',
         ])
     }
 }
 </script>
+
+<style lang="less" scoped>
+.summary-wrap {
+    padding-bottom: 2em;
+}
+
+.grid-wrap {
+    .button-add {
+        position: fixed;
+        right: 50px;
+        bottom: 50px;
+        z-index: 1000;
+        transition: transform 0.3s;
+
+        &:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+    }
+}
+</style>
