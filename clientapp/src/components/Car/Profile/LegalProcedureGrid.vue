@@ -16,10 +16,10 @@
             </tr>
         </thead>
         <tbody>
-            <LegalProceduresGridItem
-                v-for="legalProcedure in legalProcedures"
-                :key="legalProcedure.id"
-                :legalProcedure="legalProcedure"
+            <legal-procedure-grid-item
+                v-for="item in items"
+                :key="item.id"
+                :item="item"
                 class="legal-procedures-container list-container"
             />
         </tbody>
@@ -27,12 +27,14 @@
 </template>
 
 <script>
-import LegalProceduresGridItem from './LegalProceduresGridItem.vue'
+import LegalProcedureGridItem from './LegalProcedureGridItem.vue';
 export default {
-    name: 'LegalProceduresGrid',
-    props: ['legalProcedures'],
+    name: 'LegalProcedureGrid',
+    props: {
+        items: Array
+    },
     components: {
-        LegalProceduresGridItem
+        LegalProcedureGridItem
     }
 }
 </script>
