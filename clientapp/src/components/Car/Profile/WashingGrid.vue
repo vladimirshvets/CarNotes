@@ -19,10 +19,10 @@
             </tr>
         </thead>
         <tbody>
-            <WashingsGridItem
-                v-for="washing in washings"
-                :key="washing.id"
-                :washing="washing"
+            <washing-grid-item
+                v-for="item in items"
+                :key="item.id"
+                :item="item"
                 class="washings-container list-container"
             />
         </tbody>
@@ -30,12 +30,14 @@
 </template>
 
 <script>
-import WashingsGridItem from './WashingsGridItem.vue'
+import WashingGridItem from './WashingGridItem.vue'
 export default {
-    name: 'WashingsGrid',
-    props: ['washings'],
+    name: 'WashingGrid',
+    props: {
+        items: Array
+    },
     components: {
-        WashingsGridItem
+        WashingGridItem
     }
 }
 </script>

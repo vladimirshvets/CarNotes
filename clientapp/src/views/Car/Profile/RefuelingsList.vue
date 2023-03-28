@@ -8,7 +8,7 @@
             />
         </div>
         <div class="form-wrap">
-            <refuelings-form
+            <refueling-form
                 :showForm="showForm"
                 @triggerForm="triggerForm"
                 @save="save"
@@ -19,10 +19,12 @@
             />
         </div>
         <div class="grid-wrap">
-            <refuelings-grid
+            <refueling-grid
                 :items="items"
                 @editItem="triggerForm(true)"
             />
+        </div>
+        <div class="actions-wrap">
             <v-btn
                 class="button-add"
                 icon="mdi-plus"
@@ -35,18 +37,17 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
-import RefuelingsForm from '@/components/Car/Profile/RefuelingsForm.vue'
-import RefuelingsGrid from '@/components/Car/Profile/RefuelingsGrid.vue'
-
+import RefuelingForm from '@/components/Car/Profile/RefuelingForm.vue';
+import RefuelingGrid from '@/components/Car/Profile/RefuelingGrid.vue';
 export default {
     name: 'RefuelingsList',
     components: {
         TotalCosts,
-        RefuelingsForm,
-        RefuelingsGrid
+        RefuelingForm,
+        RefuelingGrid
     },
     computed: {
         totalAmountSum() {
@@ -76,7 +77,7 @@ export default {
     data() {
         return {
             items: [],
-            showForm: false,
+            showForm: false
         }
     },
     async created() {
@@ -153,7 +154,6 @@ export default {
         },
         ...mapMutations([
             'setIsLoading',
-            'setSnackbarText',
             'snackbar',
             'setFormData',
         ])
@@ -166,7 +166,7 @@ export default {
     padding-bottom: 2em;
 }
 
-.grid-wrap {
+.actions-wrap {
     .button-add {
         position: fixed;
         right: 50px;

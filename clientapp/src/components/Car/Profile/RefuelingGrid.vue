@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            <refuelings-grid-item
+            <refueling-grid-item
                 v-for="item in items"
                 :key="item.id"
                 :item="item"
@@ -28,12 +28,14 @@
 </template>
 
 <script>
-import RefuelingsGridItem from './RefuelingsGridItem.vue'
+import RefuelingGridItem from './RefuelingGridItem.vue';
 export default {
-    name: 'RefuelingsGrid',
-    props: ['items'],
+    name: 'RefuelingGrid',
+    props: {
+        items: Array
+    },
     components: {
-        RefuelingsGridItem
+        RefuelingGridItem
     }
 }
 </script>

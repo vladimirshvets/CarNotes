@@ -1,24 +1,28 @@
 <template>
-    <tr
-        class="refueling-item list-item"
+    <tr 
+        class="washing-item list-item"
         v-on:dblclick="editItem(item)"
     >
         <td><span>{{ item.mileage.date }}</span></td>
         <td><span>{{ item.mileage.odometerValue }}</span></td>
-        <td><span>{{ item.volume?.toFixed(1) }}</span></td>
-        <td><span>{{ item.price?.toFixed(2) }}</span></td>
+        <td><span>{{ item.title }}</span></td>
+        <td><span>{{ item.address }}</span></td>
+        <td><span v-if="item.isContact"><v-icon>mdi-check</v-icon></span></td>
+        <td><span v-if="item.isDegreaserUsed"><v-icon>mdi-check</v-icon></span></td>
+        <td><span v-if="item.isPolishUsed"><v-icon>mdi-check</v-icon></span></td>
+        <td><span v-if="item.isAntiRainUsed"><v-icon>mdi-check</v-icon></span></td>
         <td><span>{{ item.totalAmount?.toFixed(2) }}</span></td>
         <td><span class="base-total">{{ item.baseTotalAmount?.toFixed(2) }}</span></td>
-        <td><span>{{ item.distributor }}</span></td>
-        <td><span>{{ item.address }}</span></td>
         <td><span>{{ item.comment }}</span></td>
     </tr>
 </template>
 
 <script>
 export default {
-    name: 'RefuelingsGridItem',
-    props: ['item'],
+    name: 'WashingGridItem',
+    props: {
+        item: Object
+    },
     methods: {
         editItem(item) {
             let itemCopy = { ...item };
