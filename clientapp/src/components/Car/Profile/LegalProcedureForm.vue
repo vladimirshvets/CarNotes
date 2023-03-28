@@ -201,8 +201,8 @@ export default {
             //alert(JSON.stringify(results, null, 2))
             const payload = {
                 carId: this.$route.params.carId,
-                mileage: this.useExistingMileage 
-                    ? this.formData.mileage 
+                mileage: this.useExistingMileage
+                    ? this.formData.mileage
                     : this.mileageMatch ?? this.formData.newMileage,
                 title: this.formData.title,
                 group: this.formData.group,

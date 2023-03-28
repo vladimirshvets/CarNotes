@@ -31,10 +31,10 @@
             </tr>
         </thead>
         <tbody>
-            <SparePartsGridItem
-                v-for="sparePart in spareParts"
-                :key="sparePart.id"
-                :sparePart="sparePart"
+            <spare-part-grid-item
+                v-for="item in items"
+                :key="item.id"
+                :item="item"
                 class="spare-parts-container list-container"
             />
         </tbody>
@@ -42,12 +42,14 @@
 </template>
 
 <script>
-import SparePartsGridItem from './SparePartsGridItem.vue'
+import SparePartGridItem from './SparePartGridItem.vue';
 export default {
-    name: 'SparePartsGrid',
-    props: ['spareParts'],
+    name: 'SparePartGrid',
+    props: {
+        items: Array
+    },
     components: {
-        SparePartsGridItem
+        SparePartGridItem
     }
 }
 </script>

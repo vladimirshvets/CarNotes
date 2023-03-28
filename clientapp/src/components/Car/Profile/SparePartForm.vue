@@ -11,7 +11,7 @@
         >
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">Refueling Info</span>
+                    <span class="text-h5">Spare Part Info</span>
                 </v-card-title>
                 <v-card-text>
                     <small>* required fields</small>
@@ -53,37 +53,131 @@
                             </v-col>
                         </v-row>
                         <v-row>
+                            <v-col cols="12">Removal mileage</v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-autocomplete
+                                    name="category"
+                                    label="Category*"
+                                    v-model="formData.category"
+                                    :items="suggestedCategories"
+                                    required
+                                ></v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="group"
+                                    label="Group"
+                                    v-model="formData.group"
+                                    :items="suggestedGroups"
+                                ></v-combobox>
+                            </v-col>
                             <v-col cols="12" sm="6" md="6">
                                 <v-text-field
-                                    name="volume"
-                                    label="Volume*"
-                                    v-model="formData.volume"
-                                    required
+                                    name="orderDate"
+                                    label="Order Date"
+                                    v-model="formData.orderDate"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="purchaseDate"
+                                    label="Purchase Date"
+                                    v-model="formData.purchaseDate"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="name"
+                                    label="Name"
+                                    v-model="formData.name"
+                                ></v-combobox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="uom"
+                                    label="Unit of Measure"
+                                    v-model="formData.uom"
+                                ></v-combobox>
+                            </v-col>
+                            <v-col cols="12" sm="12" md="12">
+                                <v-checkbox
+                                    name="isOE"
+                                    label="Original Equipment"
+                                    v-model="formData.isOE"
+                                    color="info"
+                                ></v-checkbox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="oeNumber"
+                                    label="Original Equipment Number"
+                                    v-model="formData.oeNumber"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="replacementNumber"
+                                    label="Replacement Number"
+                                    v-model="formData.replacementNumber"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="manufacturer"
+                                    label="Manufacturer"
+                                    v-model="formData.manufacturer"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="countryOfOrigin"
+                                    label="Country of Origin"
+                                    v-model="formData.countryOfOrigin"
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
                                 <v-text-field
                                     name="price"
-                                    label="Price per l., BYN*"
+                                    label="Price, BYN"
                                     v-model="formData.price"
-                                    required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-combobox
-                                    name="distributor"
-                                    label="Distributor"
-                                    v-model="formData.distributor"
-                                    :items="suggestedDistributors"
-                                ></v-combobox>
+                                <v-text-field
+                                    name="qty"
+                                    label="Qty"
+                                    v-model="formData.qty"
+                                ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-combobox
-                                    name="address"
-                                    label="Address"
-                                    v-model="formData.address"
-                                    :items="suggestedAddresses"
-                                ></v-combobox>
+                                <v-text-field
+                                    name="shopWebsiteUrl"
+                                    label="Shop Website URL"
+                                    v-model="formData.shopWebsiteUrl"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="shopAddress"
+                                    label="Shop Address"
+                                    v-model="formData.shopAddress"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="productionDate"
+                                    label="Production Date"
+                                    v-model="formData.productionDate"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="expirationDate"
+                                    label="Expiration Date"
+                                    v-model="formData.expirationDate"
+                                ></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
@@ -135,7 +229,7 @@
             :showModal="removalModal"
             @triggerModal="triggerRemovalModal"
             @remove="remove"
-            title="Delete Refueling"
+            title="Delete Spare Part"
             text="Are you sure you want to delete this record?"
         ></delete-confirmation-modal>
     </v-dialog>
@@ -146,15 +240,15 @@ import { mapGetters } from 'vuex';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import MileageInput from './MileageInput.vue';
 export default {
-    name: 'RefuelingForm',
+    name: 'SparePartForm',
     components: {
         MileageInput,
         DeleteConfirmationModal
     },
     props: {
         showForm: Boolean,
-        suggestedDistributors: Array,
-        suggestedAddresses: Array
+        suggestedCategories: Array,
+        suggestedGroups: Array
     },
     computed: {
         form: {
@@ -202,13 +296,27 @@ export default {
             //alert(JSON.stringify(results, null, 2))
             const payload = {
                 carId: this.$route.params.carId,
-                mileage: this.useExistingMileage
+                installationMileage: this.useExistingMileage
                     ? this.formData.mileage
                     : this.mileageMatch ?? this.formData.newMileage,
-                volume: this.formData.volume,
+                removalMileage: null,
+                category: this.formData.category,
+                orderDate: this.formData.orderDate,
+                purchaseDate: this.formData.purchaseDate,
+                group: this.formData.group,
+                name: this.formData.name,
+                uom: this.formData.uom,
+                isOE: this.formData.isOE,
+                oeNumber: this.formData.oeNumber,
+                replacementNumber: this.formData.replacementNumber,
+                manufacturer: this.formData.manufacturer,
+                countryOfOrigin: this.formData.countryOfOrigin,
+                qty: this.formData.qty,
                 price: this.formData.price,
-                distributor: this.formData.distributor,
-                address: this.formData.address,
+                shopWebsiteUrl: this.formData.shopWebsiteUrl,
+                shopAddress: this.formData.shopAddress,
+                productionDate: this.formData.productionDate,
+                expirationDate: this.formData.expirationDate,
                 comment: this.formData.comment
             };
             if (this.formData.id) {
