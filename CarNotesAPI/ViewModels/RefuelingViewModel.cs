@@ -1,6 +1,6 @@
 ﻿namespace CarNotesAPI.ViewModels
 {
-    public class RefuelingViewModel : MileageViewModel
+    public class RefuelingViewModel : NoteViewModel
     {
         public double Volume { get; set; }
 
@@ -9,7 +9,5 @@
         public string? Distributor { get; set; }
 
         public string? Address { get; set; }
-
-        public string? Comment { get; set; }
     }
 }

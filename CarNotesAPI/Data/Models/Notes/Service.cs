@@ -70,6 +70,7 @@ namespace CarNotesAPI.Data.Models.Notes
             WebsiteUrl = node.TryGetValue("website_url", out object? websiteUrl) ? (string)websiteUrl : null;
             CostOfWork = (double)node["cost_of_work"];
             CostOfSpareParts = (double)node["cost_of_work"];
+            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }
     }
 }

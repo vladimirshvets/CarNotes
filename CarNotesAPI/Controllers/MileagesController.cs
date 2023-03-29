@@ -23,14 +23,19 @@ namespace CarNotesAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<Mileage> Post([FromBody]MileageViewModel viewModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Post(
+            [FromBody]NoteViewModel viewModel)
         {
-            Mileage mileage = new()
+            Mileage mileage = viewModel.Mileage;
+            if (mileage.Id != Guid.Empty)
             {
-                OdometerValue = viewModel.OdometerValue,
-                Date = viewModel.Date
-            };
-            return await _mileageRepository.AddAsync(viewModel.CarId, mileage);
+                return Conflict();
+            }
+            mileage =
+                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
+            return Ok(mileage);
         }
 
         [HttpPut]

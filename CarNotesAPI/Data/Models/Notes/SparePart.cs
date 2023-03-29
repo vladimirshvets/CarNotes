@@ -33,7 +33,6 @@ namespace CarNotesAPI.Data.Models.Notes
             {
                 return Mileage;
             }
-
             set
             {
                 Mileage = value;
@@ -183,6 +182,9 @@ namespace CarNotesAPI.Data.Models.Notes
                                     : null;
             ExpirationDate      = node.TryGetValue("expiration_date", out object? expirationDate)
                                     ? ((LocalDate)expirationDate).ToDateOnly()
+                                    : null;
+            Comment             = node.TryGetValue("comment", out object? comment)
+                                    ? (string)comment
                                     : null;
         }
     }

@@ -1,71 +1,126 @@
-﻿using CarNotesAPI.Data.Models;
+﻿using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.Data.Repositories;
 using CarNotesAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CarNotesAPI.Controllers
+namespace CarNotesAPI.Controllers;
+
+[Route("api/[controller]")]
+public class SparePartsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class SparePartsController : ControllerBase
+    private readonly MileageRepository _mileageRepository;
+
+    private readonly INoteRepository<SparePart> _sparePartRepository;
+
+    public SparePartsController(
+        MileageRepository mileageRepository,
+        INoteRepository<SparePart> sparePartRepository)
     {
-        private readonly MileageRepository _mileageRepository;
+        _mileageRepository = mileageRepository;
+        _sparePartRepository = sparePartRepository;
+    }
 
-        private readonly SparePartRepository _sparePartRepository;
+    [HttpGet]
+    [Route("getByCar/{carId}")]
+    public async Task<IEnumerable<SparePart>> GetByCar(Guid carId)
+    {
+        return await _sparePartRepository.GetListAsync(carId);
+    }
 
-        public SparePartsController(
-            MileageRepository mileageRepository,
-            SparePartRepository sparePartRepository)
+    [HttpPost]
+    public async Task<SparePart> Post([FromBody]SparePartViewModel viewModel)
+    {
+        Mileage mileage = viewModel.Mileage;
+        if (mileage.Id == Guid.Empty)
         {
-            _mileageRepository = mileageRepository;
-            _sparePartRepository = sparePartRepository;
+            mileage = await _mileageRepository.AddAsync(
+                viewModel.CarId, viewModel.Mileage);
         }
 
-        [HttpGet]
-        [Route("getByCar/{carId}")]
-        public async Task<IEnumerable<SparePart>> GetByCar(Guid carId)
+        SparePart sparePart = new()
         {
-            return await _sparePartRepository.GetListAsync(carId);
+            Category            = viewModel.Category,
+            OrderDate           = viewModel.OrderDate,
+            PurchaseDate        = viewModel.PurchaseDate,
+            Group               = viewModel.Group,
+            Name                = viewModel.Name,
+            UoM                 = viewModel.UoM,
+            IsOE                = viewModel.IsOE,
+            OENumber            = viewModel.OENumber,
+            ReplacementNumber   = viewModel.ReplacementNumber,
+            Manufacturer        = viewModel.Manufacturer,
+            CountryOfOrigin     = viewModel.CountryOfOrigin,
+            Price               = viewModel.Price,
+            Qty                 = viewModel.Qty,
+            ShopWebsiteUrl      = viewModel.ShopWebsiteUrl,
+            ShopAddress         = viewModel.ShopAddress,
+            ProductionDate      = viewModel.ProductionDate,
+            ExpirationDate      = viewModel.ExpirationDate,
+            Comment             = viewModel.Comment
+        };
+        sparePart = await _sparePartRepository.AddAsync(
+            viewModel.CarId, mileage.Id, sparePart);
+
+        return sparePart;
+    }
+
+    [HttpPut("{id}")]
+    public async Task<SparePart> Put(
+        Guid id, [FromBody] SparePartViewModel viewModel)
+    {
+        SparePart sparePart = new()
+        {
+            Category = viewModel.Category,
+            OrderDate = viewModel.OrderDate,
+            PurchaseDate = viewModel.PurchaseDate,
+            Group = viewModel.Group,
+            Name = viewModel.Name,
+            UoM = viewModel.UoM,
+            IsOE = viewModel.IsOE,
+            OENumber = viewModel.OENumber,
+            ReplacementNumber = viewModel.ReplacementNumber,
+            Manufacturer = viewModel.Manufacturer,
+            CountryOfOrigin = viewModel.CountryOfOrigin,
+            Price = viewModel.Price,
+            Qty = viewModel.Qty,
+            ShopWebsiteUrl = viewModel.ShopWebsiteUrl,
+            ShopAddress = viewModel.ShopAddress,
+            ProductionDate = viewModel.ProductionDate,
+            ExpirationDate = viewModel.ExpirationDate,
+            Comment = viewModel.Comment
+        };
+
+        sparePart = await _sparePartRepository.UpdateAsync(
+            viewModel.CarId, viewModel.Mileage.Id, id, sparePart);
+
+        return sparePart;
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(
+        Guid id, [FromBody] SparePartViewModel viewModel)
+    {
+        await _sparePartRepository.DeleteAsync(
+            viewModel.CarId, viewModel.Mileage.Id, id);
+
+        bool isMileageDeleted = false;
+        int relatedRecords =
+            await _mileageRepository.GetRelatedRecordsCountAsync(
+                viewModel.CarId, viewModel.Mileage.Id);
+        if (relatedRecords == 0)
+        {
+            await _mileageRepository.DeleteAsync(
+                viewModel.CarId, viewModel.Mileage.Id);
+            isMileageDeleted = true;
         }
 
-        [HttpPost]
-        public async Task<SparePart> Post([FromBody]SparePartViewModel viewModel)
+        return Ok(new
         {
-            // ToDo:
-            // Check if the mileage already exists.
-            // Try to save mileage and refueling together.
-            Mileage mileage = new()
-            {
-                OdometerValue = viewModel.OdometerValue,
-                Date = viewModel.Date
-            };
-            mileage =
-                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
-
-            SparePart sparePart = new()
-            {
-                Category            = viewModel.Category,
-                OrderDate           = viewModel.OrderDate,
-                PurchaseDate        = viewModel.PurchaseDate,
-                Group               = viewModel.Group,
-                Name                = viewModel.Name,
-                UoM                 = viewModel.UoM,
-                IsOE                = viewModel.IsOE,
-                OENumber            = viewModel.OENumber,
-                ReplacementNumber   = viewModel.ReplacementNumber,
-                Manufacturer        = viewModel.Manufacturer,
-                CountryOfOrigin     = viewModel.CountryOfOrigin,
-                Price               = viewModel.Price,
-                Qty                 = viewModel.Qty,
-                ShopWebsiteUrl      = viewModel.ShopWebsiteUrl,
-                ShopAddress         = viewModel.ShopAddress,
-                ProductionDate      = viewModel.ProductionDate,
-                ExpirationDate      = viewModel.ExpirationDate
-            };
-            sparePart = await _sparePartRepository.AddAsync(
-                viewModel.CarId, mileage.Id, sparePart);
-
-            return sparePart;
-        }
+            Id = id,
+            IsMileageDeleted = isMileageDeleted,
+            MileageId = viewModel.Mileage.Id
+        });
     }
 }

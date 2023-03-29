@@ -2,7 +2,7 @@
 
 namespace CarNotesAPI.ViewModels
 {
-    public class SparePartViewModel : MileageViewModel
+    public class SparePartViewModel : NoteViewModel
     {
         public string Category { get; set; } = string.Empty;
 

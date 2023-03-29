@@ -1,61 +1,105 @@
-﻿using CarNotesAPI.Data.Models;
+﻿using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.Data.Repositories;
 using CarNotesAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CarNotesAPI.Controllers
+namespace CarNotesAPI.Controllers;
+
+[Route("api/[controller]")]
+public class WashingsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class WashingsController : ControllerBase
+    private readonly MileageRepository _mileageRepository;
+
+    private readonly INoteRepository<Washing> _washingRepository;
+
+    public WashingsController(
+        MileageRepository mileageRepository,
+        INoteRepository<Washing> washingRepository)
     {
-        private readonly MileageRepository _mileageRepository;
+        _mileageRepository = mileageRepository;
+        _washingRepository = washingRepository;
+    }
 
-        private readonly WashingRepository _washingRepository;
+    [HttpGet]
+    [Route("getByCar/{carId}")]
+    public async Task<IEnumerable<Washing>> GetByCar(Guid carId)
+    {
+        return await _washingRepository.GetListAsync(carId);
+    }
 
-        public WashingsController(
-            MileageRepository mileageRepository,
-            WashingRepository washingRepository)
+    [HttpPost]
+    public async Task<Washing> Post([FromBody]WashingViewModel viewModel)
+    {
+        Mileage mileage = viewModel.Mileage;
+        if (mileage.Id == Guid.Empty)
         {
-            _mileageRepository = mileageRepository;
-            _washingRepository = washingRepository;
+            mileage = await _mileageRepository.AddAsync(
+                viewModel.CarId, viewModel.Mileage);
         }
 
-        [HttpGet]
-        [Route("getByCar/{carId}")]
-        public async Task<IEnumerable<Washing>> GetByCar(Guid carId)
+        Washing washing = new()
         {
-            return await _washingRepository.GetListAsync(carId);
+            Title = viewModel.Title,
+            Address = viewModel.Address,
+            IsContact = viewModel.IsContact,
+            IsDegreaserUsed = viewModel.IsDegreaserUsed,
+            IsPolishUsed = viewModel.IsPolishUsed,
+            IsAntiRainUsed = viewModel.IsAntiRainUsed,
+            TotalAmount = viewModel.TotalAmount,
+            Comment = viewModel.Comment
+        };
+        washing = await _washingRepository.AddAsync(
+            viewModel.CarId, mileage.Id, washing);
+
+        return washing;
+    }
+
+    [HttpPut("{id}")]
+    public async Task<Washing> Put(
+        Guid id, [FromBody] WashingViewModel viewModel)
+    {
+        Washing washing = new()
+        {
+            Title = viewModel.Title,
+            Address = viewModel.Address,
+            IsContact = viewModel.IsContact,
+            IsDegreaserUsed = viewModel.IsDegreaserUsed,
+            IsPolishUsed = viewModel.IsPolishUsed,
+            IsAntiRainUsed = viewModel.IsAntiRainUsed,
+            TotalAmount = viewModel.TotalAmount,
+            Comment = viewModel.Comment
+        };
+        washing = await _washingRepository.UpdateAsync(
+            viewModel.CarId, viewModel.Mileage.Id, id, washing);
+
+        return washing;
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(
+        Guid id, [FromBody] WashingViewModel viewModel)
+    {
+        await _washingRepository.DeleteAsync(
+            viewModel.CarId, viewModel.Mileage.Id, id);
+
+        bool isMileageDeleted = false;
+        int relatedRecords =
+            await _mileageRepository.GetRelatedRecordsCountAsync(
+                viewModel.CarId, viewModel.Mileage.Id);
+        if (relatedRecords == 0)
+        {
+            await _mileageRepository.DeleteAsync(
+                viewModel.CarId, viewModel.Mileage.Id);
+            isMileageDeleted = true;
         }
 
-        [HttpPost]
-        public async Task<Washing> Post([FromBody]WashingViewModel viewModel)
+        return Ok(new
         {
-            // ToDo:
-            // Check if the mileage already exists.
-            // Try to save mileage and refueling together.
-            Mileage mileage = new()
-            {
-                OdometerValue = viewModel.OdometerValue,
-                Date = viewModel.Date
-            };
-            mileage =
-                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
-
-            Washing washing = new()
-            {
-                Title = viewModel.Title,
-                Address = viewModel.Address,
-                IsContact = viewModel.IsContact,
-                IsDegreaserUsed = viewModel.IsDegreaserUsed,
-                IsPolishUsed = viewModel.IsPolishUsed,
-                IsAntiRainUsed = viewModel.IsAntiRainUsed,
-                TotalAmount = viewModel.TotalAmount
-            };
-            washing = await _washingRepository.AddAsync(
-                viewModel.CarId, mileage.Id, washing);
-
-            return washing;
-        }
+            Id = id,
+            IsMileageDeleted = isMileageDeleted,
+            MileageId = viewModel.Mileage.Id
+        });
     }
 }

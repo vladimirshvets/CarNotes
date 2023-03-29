@@ -1,6 +1,6 @@
 ﻿namespace CarNotesAPI.ViewModels
 {
-    public class ServiceViewModel : MileageViewModel
+    public class ServiceViewModel : NoteViewModel
     {
         public string Title { get; set; } = string.Empty;
 

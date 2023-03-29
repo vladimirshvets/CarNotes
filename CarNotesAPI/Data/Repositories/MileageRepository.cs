@@ -7,16 +7,13 @@ public class MileageRepository
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
-    private readonly ILogger<MileageRepository> _logger;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="MileageRepository"/> class.
     /// </summary>
-    public MileageRepository(
-        INeo4jDataAccess neo4jDataAccess, ILogger<MileageRepository> logger)
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public MileageRepository(INeo4jDataAccess neo4jDataAccess)
     {
         _neo4jDataAccess = neo4jDataAccess;
-        _logger = logger;
     }
 
     /// <summary>

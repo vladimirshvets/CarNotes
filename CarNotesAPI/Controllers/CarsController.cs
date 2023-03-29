@@ -13,7 +13,7 @@ public class CarsController : ControllerBase
     // ToDo:
     // get from storage when a user functionality is ready.
     private readonly Guid UserId =
-        new Guid("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
+        new("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
 
     public CarsController(CarRepository carRepository)
     {

@@ -116,7 +116,7 @@ export default {
             );
         },
         groupFilterOptions() {
-            return this.filteredItems
+            return this.items
                 .map(item => item.group)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
@@ -156,10 +156,6 @@ export default {
     async created() {
         this.$store.dispatch('loadMileages', this.$route.params.carId);
         await this.getItems();
-
-        // ToDo: should it be called every time after getItems()?
-        this.categoryFilterState = this.categoryFilterOptions.map(option => option.value);
-        this.applyFilter();
     },
     methods: {
         async getItems() {
@@ -172,6 +168,10 @@ export default {
                 .finally(() => {
                     this.setIsLoading(false);
                 });
+
+            // ToDo: should it be called every time after getItems()?
+            this.categoryFilterState = this.categoryFilterOptions.map(option => option.value);
+            this.applyFilter();
         },
         applyFilter() {
             const categories = this.categoryFilterState;

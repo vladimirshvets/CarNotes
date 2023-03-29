@@ -220,7 +220,9 @@ export default {
         remove() {
             const payload = {
                 carId: this.$route.params.carId,
-                mileageId: this.formData.mileage.id
+                mileage: {
+                    id: this.formData.mileage.id
+                }
             }
             this.$emit('remove', this.formData.id, payload);
         },

@@ -1,6 +1,6 @@
 ﻿namespace CarNotesAPI.ViewModels
 {
-    public class LegalProcedureViewModel : MileageViewModel
+    public class LegalProcedureViewModel : NoteViewModel
     {
         public string? Group { get; set; }
 

@@ -7,16 +7,13 @@ public class CarRepository
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
-    private readonly ILogger<CarRepository> _logger;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="CarRepository"/> class.
     /// </summary>
-    public CarRepository(
-        INeo4jDataAccess neo4jDataAccess, ILogger<CarRepository> logger)
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public CarRepository(INeo4jDataAccess neo4jDataAccess)
     {
         _neo4jDataAccess = neo4jDataAccess;
-        _logger = logger;
     }
 
     /// <summary>

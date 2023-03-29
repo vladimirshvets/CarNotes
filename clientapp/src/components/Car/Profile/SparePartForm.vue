@@ -296,7 +296,7 @@ export default {
             //alert(JSON.stringify(results, null, 2))
             const payload = {
                 carId: this.$route.params.carId,
-                installationMileage: this.useExistingMileage
+                mileage: this.useExistingMileage
                     ? this.formData.mileage
                     : this.mileageMatch ?? this.formData.newMileage,
                 removalMileage: null,
@@ -328,7 +328,9 @@ export default {
         remove() {
             const payload = {
                 carId: this.$route.params.carId,
-                mileageId: this.formData.mileage.id
+                mileage: {
+                    id: this.formData.mileage.id
+                }
             }
             this.$emit('remove', this.formData.id, payload);
         },

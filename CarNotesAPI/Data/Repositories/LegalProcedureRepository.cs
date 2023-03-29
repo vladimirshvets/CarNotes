@@ -4,22 +4,18 @@ using CarNotesAPI.Data.Models.Notes;
 
 namespace CarNotesAPI.Data.Repositories;
 
-public class LegalProcedureRepository
+public class LegalProcedureRepository : INoteRepository<LegalProcedure>
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
-
-    private readonly ILogger<LegalProcedureRepository> _logger;
 
     /// <summary>
     /// Initializes a new instance of the
     /// <see cref="LegalProcedureRepository"/> class.
     /// </summary>
-    public LegalProcedureRepository(
-        INeo4jDataAccess neo4jDataAccess,
-        ILogger<LegalProcedureRepository> logger)
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public LegalProcedureRepository(INeo4jDataAccess neo4jDataAccess)
     {
         _neo4jDataAccess = neo4jDataAccess;
-        _logger = logger;
     }
 
     /// <summary>
@@ -100,5 +96,81 @@ public class LegalProcedureRepository
         };
 
         return newInstance;
+    }
+
+    /// <summary>
+    /// Updates an existing legal procedure record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="legalProcedureId">Legal procedure identifier</param>
+    /// <param name="legalProcedure">Legal procedure data</param>
+    /// <returns>An updated instance of legal procedure.</returns>
+    public async Task<LegalProcedure> UpdateAsync(
+        Guid carId,
+        Guid mileageId,
+        Guid legalProcedureId,
+        LegalProcedure legalProcedure)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(l:LegalProcedure { id: $legalProcedureId })
+            SET
+                l.title = $title,
+                l.group = $group,
+                l.total_amount = $totalAmount,
+                l.expiration_date = $expirationDate,
+                l.comment = $comment
+            RETURN l, m";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "legalProcedureId", legalProcedureId.ToString() },
+            { "title", legalProcedure.Title },
+            { "group", legalProcedure.Group },
+            { "totalAmount", legalProcedure.TotalAmount },
+            { "expirationDate", legalProcedure.ExpirationDate },
+            { "comment", legalProcedure.Comment }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+            query, parameters);
+
+        LegalProcedure updatedInstance = new(response[0])
+        {
+            Mileage = new Mileage(response[1])
+        };
+
+        return updatedInstance;
+    }
+
+    /// <summary>
+    /// Deletes an existing legal procedure record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="legalProcedureId">Legal procedure identifier</param>
+    /// <returns>true on success.</returns>
+    public async Task<bool> DeleteAsync(
+        Guid carId, Guid mileageId, Guid legalProcedureId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(l:LegalProcedure { id: $legalProcedureId })
+            DETACH DELETE l
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "legalProcedureId", legalProcedureId.ToString() }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
+                query, parameters);
+
+        return response;
     }
 }

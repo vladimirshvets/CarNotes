@@ -4,20 +4,17 @@ using CarNotesAPI.Data.Models.Notes;
 
 namespace CarNotesAPI.Data.Repositories;
 
-public class RefuelingRepository
+public class RefuelingRepository : INoteRepository<Refueling>
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
-
-    private readonly ILogger<RefuelingRepository> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RefuelingRepository"/> class.
     /// </summary>
-    public RefuelingRepository(
-        INeo4jDataAccess neo4jDataAccess, ILogger<RefuelingRepository> logger)
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public RefuelingRepository(INeo4jDataAccess neo4jDataAccess)
     {
         _neo4jDataAccess = neo4jDataAccess;
-        _logger = logger;
     }
 
     /// <summary>

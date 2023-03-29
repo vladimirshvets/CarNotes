@@ -53,12 +53,20 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col cols="12" sm="6" md="6">
+                            <v-col cols="12" sm="12" md="12">
                                 <v-combobox
                                     name="title"
                                     label="Title*"
                                     v-model="formData.title"
                                     :items="suggestedTitles"
+                                    required
+                                ></v-combobox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-combobox
+                                    name="stationName"
+                                    label="Station"
+                                    v-model="formData.stationName"
                                     required
                                 ></v-combobox>
                             </v-col>
@@ -215,6 +223,7 @@ export default {
                     ? this.formData.mileage
                     : this.mileageMatch ?? this.formData.newMileage,
                 title: this.formData.title,
+                stationName: this.formData.stationName,
                 address: this.formData.address,
                 websiteUrl: this.formData.websiteUrl,
                 costOfWork: this.formData.costOfWork,
@@ -230,7 +239,9 @@ export default {
         remove() {
             const payload = {
                 carId: this.$route.params.carId,
-                mileageId: this.formData.mileage.id
+                mileage: {
+                    id: this.formData.mileage.id
+                }
             }
             this.$emit('remove', this.formData.id, payload);
         },

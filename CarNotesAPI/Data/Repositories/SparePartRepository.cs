@@ -4,7 +4,7 @@ using CarNotesAPI.Data.Models.Notes;
 
 namespace CarNotesAPI.Data.Repositories;
 
-public class SparePartRepository
+public class SparePartRepository : INoteRepository<SparePart>
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
@@ -14,12 +14,10 @@ public class SparePartRepository
     /// Initializes a new instance of the
     /// <see cref="SparePartRepository"/> class.
     /// </summary>
-    public SparePartRepository(
-        INeo4jDataAccess neo4jDataAccess,
-        ILogger<SparePartRepository> logger)
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public SparePartRepository(INeo4jDataAccess neo4jDataAccess)
     {
         _neo4jDataAccess = neo4jDataAccess;
-        _logger = logger;
     }
 
     /// <summary>
@@ -128,5 +126,104 @@ public class SparePartRepository
         };
 
         return newInstance;
+    }
+
+    /// <summary>
+    /// Updates an existing spare part record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="sparePartId">Spare part identifier</param>
+    /// <param name="sparePart">Spare part data</param>
+    /// <returns>An updated instance of spare part.</returns>
+    public async Task<SparePart> UpdateAsync(
+        Guid carId, Guid mileageId, Guid sparePartId, SparePart sparePart)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(p:SparePart { id: $sparePartId })
+            SET
+                p.category = $category,
+                p.order_date = $orderDate,
+                p.purchase_date = $purchaseDate,
+                p.group = $group,
+                p.name = $name,
+                p.uom = $uom,
+                p.is_oe = $isOE,
+                p.oe_number = $oeNumber,
+                p.replacement_number = $replacementNumber,
+                p.manufacturer = $manufacturer,
+                p.country_of_origin = $countryOfOrigin,
+                p.price = $price,
+                p.qty = $qty,
+                p.shop_website_url = $shopWebsiteUrl,
+                p.shop_address = $shopAddress,
+                p.production_date = $productionDate,
+                p.expiration_date = $expirationDate,
+                p.comment = $comment
+            RETURN p, m";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "sparePartId", sparePartId.ToString() },
+            { "category", sparePart.Category },
+            { "orderDate", sparePart.OrderDate },
+            { "purchaseDate", sparePart.PurchaseDate },
+            { "group", sparePart.Group },
+            { "name", sparePart.Name },
+            { "uom", sparePart.UoM },
+            { "isOE", sparePart.IsOE },
+            { "oeNumber", sparePart.OENumber },
+            { "replacementNumber", sparePart.ReplacementNumber },
+            { "manufacturer", sparePart.Manufacturer },
+            { "countryOfOrigin", sparePart.CountryOfOrigin },
+            { "price", sparePart.Price },
+            { "qty", sparePart.Qty },
+            { "shopWebsiteUrl", sparePart.ShopWebsiteUrl },
+            { "shopAddress", sparePart.ShopAddress },
+            { "productionDate", sparePart.ProductionDate },
+            { "expirationDate", sparePart.ExpirationDate },
+            { "comment", sparePart.Comment }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+            query, parameters);
+
+        SparePart updatedInstance = new(response[0])
+        {
+            Mileage = new Mileage(response[1])
+        };
+
+        return updatedInstance;
+    }
+
+    /// <summary>
+    /// Deletes an existing spare part record.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <param name="mileageId">Mileage identifier</param>
+    /// <param name="sparePartId">Spare part identifier</param>
+    /// <returns>true on success.</returns>
+    public async Task<bool> DeleteAsync(
+        Guid carId, Guid mileageId, Guid sparePartId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[:MILE_MARKER]-(p:SparePart { id: $sparePartId })
+            DETACH DELETE p
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "mileageId", mileageId.ToString() },
+            { "sparePartId", sparePartId.ToString() }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
+                query, parameters);
+
+        return response;
     }
 }

@@ -54,6 +54,7 @@ namespace CarNotesAPI.Data.Models.Notes
             Title = (string)node["title"];
             TotalAmount = (double)node["total_amount"];
             ExpirationDate = node.TryGetValue("expiration_date", out object? expirationDate) ? ((LocalDate)expirationDate).ToDateOnly() : null;
+            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }
     }
 }

@@ -71,6 +71,7 @@ namespace CarNotesAPI.Data.Models.Notes
             IsPolishUsed = node.TryGetValue("is_polish_used", out object? isPolishUsed) ? (bool)isPolishUsed : null;
             IsAntiRainUsed = node.TryGetValue("is_antirain_used", out object? isAntiRainUsed) ? (bool)isAntiRainUsed : null;
             TotalAmount = (double)node["total_amount"];
+            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }
     }
 }

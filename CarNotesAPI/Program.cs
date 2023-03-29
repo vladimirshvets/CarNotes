@@ -1,6 +1,7 @@
 ﻿using CarNotesAPI.Data;
 using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
+using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.Data.Repositories;
 using Neo4j.Driver;
 
@@ -35,14 +36,15 @@ builder.Services.AddSingleton(GraphDatabase.Driver(
 builder.Services.AddScoped<INeo4jDataAccess, Neo4jDataAccess>();
 
 // ToDo:
+// Use services between controllers and repos.
 // Add repository interfaces when repos are ready.
 builder.Services.AddTransient<CarRepository>();
-builder.Services.AddTransient<LegalProcedureRepository>();
 builder.Services.AddTransient<MileageRepository>();
-builder.Services.AddTransient<RefuelingRepository>();
-builder.Services.AddTransient<ServiceRepository>();
-builder.Services.AddTransient<SparePartRepository>();
-builder.Services.AddTransient<WashingRepository>();
+builder.Services.AddTransient<INoteRepository<LegalProcedure>, LegalProcedureRepository>();
+builder.Services.AddTransient<INoteRepository<Refueling>, RefuelingRepository>();
+builder.Services.AddTransient<INoteRepository<Service>, ServiceRepository>();
+builder.Services.AddTransient<INoteRepository<SparePart>, SparePartRepository>();
+builder.Services.AddTransient<INoteRepository<Washing>, WashingRepository>();
 
 var app = builder.Build();
 
