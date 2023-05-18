@@ -20,14 +20,14 @@ namespace CarNotesAPI.Data.Models
         public int OdometerValue { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of Mileage.
+        /// Initializes a new instance of <see cref="Mileage"/>.
         /// </summary>
         public Mileage()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of Mileage
+        /// Initializes a new instance of <see cref="Mileage"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>

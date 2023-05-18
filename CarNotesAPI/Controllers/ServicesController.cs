@@ -10,12 +10,12 @@ namespace CarNotesAPI.Controllers;
 [Route("api/[controller]")]
 public class ServicesController : ControllerBase
 {
-    private readonly MileageRepository _mileageRepository;
+    private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<Service> _serviceRepository;
 
     public ServicesController(
-        MileageRepository mileageRepository,
+        IMileageRepository mileageRepository,
         INoteRepository<Service> serviceRepository)
     {
         _mileageRepository = mileageRepository;

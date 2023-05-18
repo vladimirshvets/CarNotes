@@ -70,6 +70,7 @@ public class WashingRepository : INoteRepository<Washing>
                     is_degreaser_used: $isDegreaserUsed,
                     is_polish_used: $isPolishUsed,
                     is_antirain_used: $isAntiRainUsed,
+                    is_interior_cleaned: $isInteriorCleaned,
                     total_amount: $totalAmount,
                     comment: $comment
                 }),
@@ -87,6 +88,7 @@ public class WashingRepository : INoteRepository<Washing>
             { "isDegreaserUsed", washing.IsDegreaserUsed },
             { "isPolishUsed", washing.IsPolishUsed },
             { "isAntiRainUsed", washing.IsAntiRainUsed },
+            { "isInteriorCleaned", washing.IsInteriorCleaned },
             { "totalAmount", washing.TotalAmount },
             { "comment", washing.Comment }
         };
@@ -122,6 +124,7 @@ public class WashingRepository : INoteRepository<Washing>
                 w.is_degreaser_used = $isDegreaserUsed,
                 w.is_polish_used = $isPolishUsed,
                 w.is_antirain_used = $isAntiRainUsed,
+                w.is_interior_cleaned = $isInteriorCleaned,
                 w.total_amount = $totalAmount,
                 w.comment = $comment
             RETURN w, m";
@@ -137,6 +140,7 @@ public class WashingRepository : INoteRepository<Washing>
             { "isDegreaserUsed", washing.IsDegreaserUsed },
             { "isPolishUsed", washing.IsPolishUsed },
             { "isAntiRainUsed", washing.IsAntiRainUsed },
+            { "isInteriorCleaned", washing.IsInteriorCleaned },
             { "totalAmount", washing.TotalAmount },
             { "comment", washing.Comment }
         };

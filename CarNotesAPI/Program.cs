@@ -34,12 +34,8 @@ builder.Services.AddSingleton(GraphDatabase.Driver(
     settings.Neo4jConnection,
     AuthTokens.Basic(settings.Neo4jUser, settings.Neo4jPassword)));
 builder.Services.AddScoped<INeo4jDataAccess, Neo4jDataAccess>();
-
-// ToDo:
-// Use services between controllers and repos.
-// Add repository interfaces when repos are ready.
-builder.Services.AddTransient<CarRepository>();
-builder.Services.AddTransient<MileageRepository>();
+builder.Services.AddTransient<ICarRepository, CarRepository>();
+builder.Services.AddTransient<IMileageRepository, MileageRepository>();
 builder.Services.AddTransient<INoteRepository<LegalProcedure>, LegalProcedureRepository>();
 builder.Services.AddTransient<INoteRepository<Refueling>, RefuelingRepository>();
 builder.Services.AddTransient<INoteRepository<Service>, ServiceRepository>();

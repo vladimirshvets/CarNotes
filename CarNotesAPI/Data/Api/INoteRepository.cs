@@ -21,7 +21,7 @@ namespace CarNotesAPI.Data.Api
         Task<T> AddAsync(Guid carId, Guid mileageId, T note);
 
         /// <summary>
-        /// Updates an existing refueling record.
+        /// Updates an existing note record.
         /// </summary>
         /// <param name="carId">Car identifier</param>
         /// <param name="mileageId">Mileage identifier</param>

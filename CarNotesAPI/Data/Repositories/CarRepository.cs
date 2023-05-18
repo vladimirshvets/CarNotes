@@ -3,7 +3,7 @@ using CarNotesAPI.Data.Models;
 
 namespace CarNotesAPI.Data.Repositories;
 
-public class CarRepository
+public class CarRepository : ICarRepository
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
@@ -16,11 +16,6 @@ public class CarRepository
         _neo4jDataAccess = neo4jDataAccess;
     }
 
-    /// <summary>
-    /// Returns a list of cars of a specified user.
-    /// </summary>
-    /// <param name="userId">User identifier</param>
-    /// <returns>Collection of cars.</returns>
     public async Task<IEnumerable<Car>> GetListAsync(Guid userId)
     {
         string query =
@@ -68,12 +63,6 @@ public class CarRepository
         return new Car(response[0]);
     }
 
-    /// <summary>
-    /// Creates a new car record.
-    /// </summary>
-    /// <param name="userId">User identifier</param>
-    /// <param name="car">Car data</param>
-    /// <returns>A newly created instance of car.</returns>
     public async Task<Car> AddAsync(Guid userId, Car car)
     {
         string query =
@@ -108,12 +97,6 @@ public class CarRepository
         return new Car(response);
     }
 
-    /// <summary>
-    /// Updates an existing car record.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <param name="car">Updated car data</param>
-    /// <returns>Updated instance of car.</returns>
     public async Task<Car> UpdateAsync(Guid carId, Car car)
     {
         string query =

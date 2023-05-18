@@ -41,14 +41,14 @@ namespace CarNotesAPI.Data.Models.Notes
         public string? Address { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of Refueling.
+        /// Initializes a new instance of <see cref="Refueling"/>.
         /// </summary>
         public Refueling()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of Refueling
+        /// Initializes a new instance of <see cref="Refueling"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>

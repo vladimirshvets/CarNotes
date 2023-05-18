@@ -36,14 +36,14 @@ namespace CarNotesAPI.Data.Models.Notes
         public DateOnly? ExpirationDate { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of LegalProcedure.
+        /// Initializes a new instance of <see cref="LegalProcedure"/>.
         /// </summary>
         public LegalProcedure()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of LegalProcedure
+        /// Initializes a new instance of <see cref="LegalProcedure"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>

@@ -3,7 +3,7 @@ using CarNotesAPI.Data.Models;
 
 namespace CarNotesAPI.Data.Repositories;
 
-public class MileageRepository
+public class MileageRepository : IMileageRepository
 {
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
@@ -16,11 +16,6 @@ public class MileageRepository
         _neo4jDataAccess = neo4jDataAccess;
     }
 
-    /// <summary>
-    /// Returns a list of mileage records of a specified car.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <returns>Collection of mileage records.</returns>
     public async Task<IEnumerable<Mileage>> GetListAsync(Guid carId)
     {
         string query =
@@ -46,12 +41,6 @@ public class MileageRepository
         return mileages;
     }
 
-    /// <summary>
-    /// Creates a new mileage record.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <param name="mileage">Mileage data</param>
-    /// <returns>A newly created instance of mileage.</returns>
     public async Task<Mileage> AddAsync(Guid carId, Mileage mileage)
     {
         string query =
@@ -78,14 +67,6 @@ public class MileageRepository
         return new Mileage(response);
     }
 
-    /// <summary>
-    /// Updates an existing mileage record.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <param name="mileageDate">Current mileage date</param>
-    /// <param name="mileageValue">Current mileage value</param>
-    /// <param name="mileage">Updated mileage data</param>
-    /// <returns>Updated instance of mileage.</returns>
     public async Task<Mileage> UpdateAsync(
         Guid carId, DateOnly mileageDate, long mileageValue, Mileage mileage)
     {
@@ -112,12 +93,6 @@ public class MileageRepository
         return new Mileage(response);
     }
 
-    /// <summary>
-    /// Deletes an existing mileage record.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <param name="mileageId">Mileage identifier</param>
-    /// <returns>true on success.</returns>
     public async Task<bool> DeleteAsync(Guid carId, Guid mileageId)
     {
         string query =
@@ -138,12 +113,6 @@ public class MileageRepository
         return response;
     }
 
-    /// <summary>
-    /// Returns the number of records related to specified mileage record.
-    /// </summary>
-    /// <param name="carId">Car identifier</param>
-    /// <param name="mileageId">Mileage identifier</param>
-    /// <returns>Count of related records.</returns>
     public async Task<int> GetRelatedRecordsCountAsync(
         Guid carId, Guid mileageId)
     {

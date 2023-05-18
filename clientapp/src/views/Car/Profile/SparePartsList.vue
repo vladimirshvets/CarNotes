@@ -154,10 +154,13 @@ export default {
         }
     },
     async created() {
-        this.$store.dispatch('loadMileages', this.$route.params.carId);
-        await this.getItems();
+        await this.actualizeData();
     },
     methods: {
+        async actualizeData() {
+            this.$store.dispatch('loadMileages', this.$route.params.carId);
+            await this.getItems();
+        },
         async getItems() {
             this.setIsLoading(true);
             await axios
@@ -189,7 +192,7 @@ export default {
             await axios
                 .post('/api/spareParts', payload)
                 .then(() => {
-                    this.getItems();
+                    this.actualizeData();
                     this.triggerForm(false);
                     this.snackbar("The record has been saved.");
                 })
@@ -205,7 +208,7 @@ export default {
             await axios
                 .put(`/api/spareParts/${id}`, payload)
                 .then(() => {
-                    this.getItems();
+                    this.actualizeData();
                     this.triggerForm(false);
                     this.snackbar("The record has been updated.")
                 })
@@ -223,7 +226,7 @@ export default {
                     data: payload
                 })
                 .then(() => {
-                    this.getItems();
+                    this.actualizeData();
                     this.triggerForm(false);
                     this.snackbar("The record has been removed.")
                 })

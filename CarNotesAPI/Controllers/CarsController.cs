@@ -1,5 +1,5 @@
-﻿using CarNotesAPI.Data.Models;
-using CarNotesAPI.Data.Repositories;
+﻿using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarNotesAPI.Controllers;
@@ -8,14 +8,14 @@ namespace CarNotesAPI.Controllers;
 [Route("api/[controller]")]
 public class CarsController : ControllerBase
 {
-    private readonly CarRepository _carRepository;
+    private readonly ICarRepository _carRepository;
 
     // ToDo:
     // get from storage when a user functionality is ready.
     private readonly Guid UserId =
         new("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
 
-    public CarsController(CarRepository carRepository)
+    public CarsController(ICarRepository carRepository)
     {
         _carRepository = carRepository;
     }

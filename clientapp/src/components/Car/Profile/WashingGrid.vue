@@ -9,10 +9,11 @@
                 <th class="text-left">Odometer</th>
                 <th class="text-left">Title</th>
                 <th class="text-left">Address</th>
-                <th class="text-left">Contact</th>
-                <th class="text-left">Degreaser</th>
+                <th class="text-left">Contact Washing</th>
+                <th class="text-left">Body Degreaser</th>
                 <th class="text-left">Polish</th>
                 <th class="text-left">Anti-rain</th>
+                <th class="text-left">Interior Cleaning</th>
                 <th class="text-left">Total, BYN</th>
                 <th class="text-left">Total, USD</th>
                 <th class="text-left">Comment</th>

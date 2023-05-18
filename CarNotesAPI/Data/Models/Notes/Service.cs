@@ -50,14 +50,14 @@ namespace CarNotesAPI.Data.Models.Notes
             CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
-        /// Initializes a new instance of Service.
+        /// Initializes a new instance of <see cref="Service"/>.
         /// </summary>
         public Service()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of Service
+        /// Initializes a new instance of <see cref="Service"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
@@ -69,7 +69,7 @@ namespace CarNotesAPI.Data.Models.Notes
             Address = node.TryGetValue("address", out object? address) ? (string)address : null;
             WebsiteUrl = node.TryGetValue("website_url", out object? websiteUrl) ? (string)websiteUrl : null;
             CostOfWork = (double)node["cost_of_work"];
-            CostOfSpareParts = (double)node["cost_of_work"];
+            CostOfSpareParts = (double)node["cost_of_spare_parts"];
             Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }
     }

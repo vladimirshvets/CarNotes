@@ -11,6 +11,7 @@
         <td><span v-if="item.isDegreaserUsed"><v-icon>mdi-check</v-icon></span></td>
         <td><span v-if="item.isPolishUsed"><v-icon>mdi-check</v-icon></span></td>
         <td><span v-if="item.isAntiRainUsed"><v-icon>mdi-check</v-icon></span></td>
+        <td><span v-if="item.isInteriorCleaned"><v-icon>mdi-check</v-icon></span></td>
         <td><span>{{ item.totalAmount?.toFixed(2) }}</span></td>
         <td><span class="base-total">{{ item.baseTotalAmount?.toFixed(2) }}</span></td>
         <td><span>{{ item.comment }}</span></td>

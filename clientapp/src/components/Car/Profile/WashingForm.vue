@@ -71,6 +71,14 @@
                                 ></v-combobox>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                    name="totalAmount"
+                                    label="Total Amount, BYN"
+                                    v-model="formData.totalAmount"
+                                    required
+                                ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
                                 <v-checkbox
                                     name="isContact"
                                     label="Contact Washing"
@@ -103,12 +111,12 @@
                                 ></v-checkbox>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-text-field
-                                    name="totalAmount"
-                                    label="Total Amount, BYN"
-                                    v-model="formData.totalAmount"
-                                    required
-                                ></v-text-field>
+                                <v-checkbox
+                                    name="isInteriorCleaned"
+                                    label="Interior Cleaning"
+                                    v-model="formData.isInteriorCleaned"
+                                    color="info"
+                                ></v-checkbox>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
@@ -236,6 +244,7 @@ export default {
                 isDegreaserUsed: this.formData.isDegreaserUsed,
                 isPolishUsed: this.formData.isPolishUsed,
                 isAntiRainUsed: this.formData.isAntiRainUsed,
+                isInteriorCleaned: this.formData.isInteriorCleaned,
                 totalAmount: this.formData.totalAmount,
                 comment: this.formData.comment
             };

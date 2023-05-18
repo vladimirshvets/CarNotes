@@ -126,14 +126,14 @@ namespace CarNotesAPI.Data.Models.Notes
         public DateOnly? ExpirationDate { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of SparePart.
+        /// Initializes a new instance of <see cref="SparePart"/>.
         /// </summary>
         public SparePart()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of SparePart
+        /// Initializes a new instance of <see cref="SparePart"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>

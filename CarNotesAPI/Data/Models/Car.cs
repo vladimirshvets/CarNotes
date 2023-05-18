@@ -38,7 +38,7 @@
         public string? Plate { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of Car
+        /// Initializes a new instance of <see cref="Car"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>

@@ -1,5 +1,5 @@
-﻿using CarNotesAPI.Data.Models;
-using CarNotesAPI.Data.Repositories;
+﻿using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using CarNotesAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +8,9 @@ namespace CarNotesAPI.Controllers
     [Route("api/[controller]")]
     public class MileagesController : ControllerBase
     {
-        private readonly MileageRepository _mileageRepository;
+        private readonly IMileageRepository _mileageRepository;
 
-        public MileagesController(MileageRepository mileageRepository)
+        public MileagesController(IMileageRepository mileageRepository)
         {
             _mileageRepository = mileageRepository;
         }

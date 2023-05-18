@@ -39,6 +39,11 @@ namespace CarNotesAPI.Data.Models.Notes
         public bool? IsAntiRainUsed { get; set; }
 
         /// <summary>
+        /// Is interior cleaned?
+        /// </summary>
+        public bool? IsInteriorCleaned { get; set; }
+
+        /// <summary>
         /// Price total.
         /// </summary>
         public double TotalAmount { get; set; }
@@ -50,14 +55,14 @@ namespace CarNotesAPI.Data.Models.Notes
             CurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
 
         /// <summary>
-        /// Initializes a new instance of Washing.
+        /// Initializes a new instance of <see cref="Washing"/>.
         /// </summary>
         public Washing()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of Washing
+        /// Initializes a new instance of <see cref="Washing"/>
         /// based on properties represented as a dictionary.
         /// </summary>
         /// <param name="node">Set of property names and their values</param>
@@ -70,6 +75,7 @@ namespace CarNotesAPI.Data.Models.Notes
             IsDegreaserUsed = node.TryGetValue("is_degreaser_used", out object? isDegreaserUser) ? (bool)isDegreaserUser : null;
             IsPolishUsed = node.TryGetValue("is_polish_used", out object? isPolishUsed) ? (bool)isPolishUsed : null;
             IsAntiRainUsed = node.TryGetValue("is_antirain_used", out object? isAntiRainUsed) ? (bool)isAntiRainUsed : null;
+            IsInteriorCleaned = node.TryGetValue("is_interior_cleaned", out object? isInteriorCleaned) ? (bool)isInteriorCleaned : null;
             TotalAmount = (double)node["total_amount"];
             Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
         }

@@ -25,9 +25,6 @@ public class Neo4jDataAccess : INeo4jDataAccess
         _session = driver.AsyncSession(o => o.WithDatabase(database));
     }
 
-    /// <summary>
-    /// Execute read list as an asynchronous operation.
-    /// </summary>
     public async Task<List<string>> ExecuteReadListAsync(
         string query,
         List<string> returnObjectKeys,
@@ -37,9 +34,6 @@ public class Neo4jDataAccess : INeo4jDataAccess
             query, returnObjectKeys, parameters);
     }
 
-    /// <summary>
-    /// Execute read dictionary as an asynchronous operation.
-    /// </summary>
     public async Task<List<Dictionary<string, object>>> ExecuteReadDictionaryAsync(
         string query,
         List<string> returnObjectKeys,
@@ -49,9 +43,6 @@ public class Neo4jDataAccess : INeo4jDataAccess
             query, returnObjectKeys, parameters);
     }
 
-    /// <summary>
-    /// Execute read scalar as an asynchronous operation.
-    /// </summary>
     public async Task<T> ExecuteReadScalarAsync<T>(
         string query,
         IDictionary<string, object>? parameters = null)
@@ -143,7 +134,7 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <param name="query">Query string</param>
     /// <param name="parameters">Query parameters</param>
     /// <returns>List representation of result.</returns>
-    /// /// <exception cref="MatchNotFoundException">
+    /// <exception cref="MatchNotFoundException">
     /// Throws if no node matches the specified parameters.
     /// </exception>
     public async Task<List<Dictionary<string, object>>> ExecuteWriteWithListResultAsync(
