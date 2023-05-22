@@ -14,6 +14,8 @@
 
         public bool? IsAntiRainUsed { get; set; }
 
+        public bool? IsInteriorCleaned { get; set; }
+
         public double TotalAmount { get; set; }
     }
 }

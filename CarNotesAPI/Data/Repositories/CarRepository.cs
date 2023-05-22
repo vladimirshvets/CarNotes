@@ -75,7 +75,10 @@ public class CarRepository : ICarRepository
                     generation: $generation,
                     VIN: $VIN,
                     year: $year,
-                    plate: $plate
+                    plate: $plate,
+                    engine_type: $engineType,
+                    owned_from: $ownedFrom,
+                    owned_to: $ownedTo
                 }),
                 (u)-[rel:OWNS { created_at: timestamp() }]->(c)
             RETURN c";
@@ -88,7 +91,10 @@ public class CarRepository : ICarRepository
             { "generation", car.Generation },
             { "VIN", car.VIN },
             { "year", car.Year },
-            { "plate", car.Plate }
+            { "plate", car.Plate },
+            { "engineType", car.EngineType },
+            { "ownedFrom", car.OwnedFrom },
+            { "ownedTo", car.OwnedTo }
         };
 
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
@@ -108,6 +114,9 @@ public class CarRepository : ICarRepository
                 c.VIN = $VIN,
                 c.year = $year,
                 c.plate = $plate,
+                c.engine_type = $engineType,
+                c.owned_from = $ownedFrom,
+                c.owned_to = $ownedTo,
                 c.updated_at = timestamp()
             RETURN c";
 
@@ -119,7 +128,10 @@ public class CarRepository : ICarRepository
             { "generation", car.Generation },
             { "VIN", car.VIN },
             { "year", car.Year },
-            { "plate", car.Plate }
+            { "plate", car.Plate },
+            { "engineType", car.EngineTypeText },
+            { "ownedFrom", car.OwnedFrom },
+            { "ownedTo", car.OwnedTo }
         };
 
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(

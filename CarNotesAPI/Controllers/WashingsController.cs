@@ -67,6 +67,7 @@ public class WashingsController : ControllerBase
             IsDegreaserUsed = viewModel.IsDegreaserUsed,
             IsPolishUsed = viewModel.IsPolishUsed,
             IsAntiRainUsed = viewModel.IsAntiRainUsed,
+            IsInteriorCleaned = viewModel.IsInteriorCleaned,
             TotalAmount = viewModel.TotalAmount,
             Comment = viewModel.Comment
         };

@@ -45,4 +45,18 @@ public interface IMileageRepository
     /// <param name="mileageId">Mileage identifier</param>
     /// <returns>Count of related records.</returns>
     Task<int> GetRelatedRecordsCountAsync(Guid carId, Guid mileageId);
+
+    /// <summary>
+    /// Returns the minimum odometer value of a specified car.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <returns>Minimum odometer value.</returns>
+    Task<int> GetMinOdometerValueAsync(Guid carId);
+
+    /// <summary>
+    /// Returns the maximum odometer value of a specified car.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <returns>Maximum odometer value.</returns>
+    Task<int> GetMaxOdometerValueAsync(Guid carId);
 }

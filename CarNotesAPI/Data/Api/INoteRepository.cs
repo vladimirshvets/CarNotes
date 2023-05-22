@@ -40,4 +40,3 @@ namespace CarNotesAPI.Data.Api
         Task<bool> DeleteAsync(Guid carId, Guid mileageId, Guid noteId);
     }
 }
-

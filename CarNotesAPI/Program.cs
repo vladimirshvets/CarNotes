@@ -3,6 +3,7 @@ using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
 using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.Data.Repositories;
+using CarNotesAPI.Services;
 using Neo4j.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHealthChecks();
 
 builder.Services.AddCors(options =>
 {
@@ -38,9 +41,12 @@ builder.Services.AddTransient<ICarRepository, CarRepository>();
 builder.Services.AddTransient<IMileageRepository, MileageRepository>();
 builder.Services.AddTransient<INoteRepository<LegalProcedure>, LegalProcedureRepository>();
 builder.Services.AddTransient<INoteRepository<Refueling>, RefuelingRepository>();
+builder.Services.AddTransient<IStatsRepository, StatsRepository>();
 builder.Services.AddTransient<INoteRepository<Service>, ServiceRepository>();
 builder.Services.AddTransient<INoteRepository<SparePart>, SparePartRepository>();
 builder.Services.AddTransient<INoteRepository<Washing>, WashingRepository>();
+builder.Services.AddTransient<IStatsService, StatsService>();
+
 
 var app = builder.Build();
 
@@ -56,6 +62,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.UseCors("allowClientappOrigin");
 

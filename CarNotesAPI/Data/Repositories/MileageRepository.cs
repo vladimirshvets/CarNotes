@@ -130,4 +130,38 @@ public class MileageRepository : IMileageRepository
             query, parameters);
         return response;
     }
+
+    public async Task<int> GetMinOdometerValueAsync(Guid carId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)
+            RETURN MIN(m.odometer)";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() }
+        };
+
+        int? response = await _neo4jDataAccess.ExecuteReadScalarAsync<int?>(
+            query, parameters);
+
+        return response ?? 0;
+    }
+
+    public async Task<int> GetMaxOdometerValueAsync(Guid carId)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)
+            RETURN MAX(m.odometer)";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() }
+        };
+
+        int? response = await _neo4jDataAccess.ExecuteReadScalarAsync<int?>(
+            query, parameters);
+
+        return response ?? 0;
+    }
 }
