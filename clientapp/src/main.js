@@ -9,7 +9,7 @@ import { router } from './router'
 import { vuetify } from './vuetify'
 
 // Vuex store
-import { store } from './store.js';
+import { store } from './store/index.js'
 
 createApp(App)
     .use(router)

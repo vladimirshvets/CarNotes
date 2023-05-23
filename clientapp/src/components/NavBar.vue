@@ -15,14 +15,42 @@
         <v-btn
             icon
         >
-          <v-icon>mdi-card-account-details-star</v-icon>
+            <v-menu>
+                <template v-slot:activator="{ props }">
+                    <v-btn icon="mdi-card-account-details-star" v-bind="props"></v-btn>
+                </template>
+
+                <v-list>
+                    <v-list-item v-if="!isAuthenticated">
+                        <v-list-item-title>
+                            <router-link :to="{ name: 'Login' }">Login</router-link>
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-if="isAuthenticated">
+                        <v-list-item-title>
+                            <router-link :to="{ name: 'Profile' }">Profile</router-link>
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-if="isAuthenticated">
+                        <v-list-item-title>
+                            <router-link :to="{ name: 'Logout' }">Logout</router-link>
+                        </v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </v-btn>
     </v-app-bar>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
     name: 'NavBar',
+    computed: {
+        ...mapGetters([
+            'isAuthenticated'
+        ])
+    }
 }
 </script>
 

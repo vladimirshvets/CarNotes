@@ -57,7 +57,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'isLoading'
+            'isLoading',
+            'jwt'
         ])
     },
     methods: {
@@ -80,7 +81,11 @@ export default {
     mounted() {
         this.setIsLoading(true);
         axios
-            .get('/api/cars/list')
+            .get('/api/cars/list', {
+                headers: {
+                    Authorization: `Bearer ${this.jwt}`,
+                }
+            })
             .then(response => {
                 this.cars = response.data;
             })

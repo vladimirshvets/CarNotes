@@ -74,6 +74,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex';
 //import ProfileTab from '../../components/Car/Profile/ProfileTab.vue'
 
 export default {
@@ -82,6 +83,11 @@ export default {
     //     ProfileTab
     // },
     props: ["id"],
+    computed: {
+        ...mapGetters([
+            'jwt'
+        ])
+    },
     data() {
         return {
             // activeTab: this.$route.path,
@@ -97,7 +103,11 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get(`/api/cars/${this.$route.params.carId}`);
+        const result = await axios.get(`/api/cars/${this.$route.params.carId}`, {
+            headers: {
+                Authorization: `Bearer ${this.jwt}`,
+            }
+        });
         const car = result.data;
         this.carInfo = car;
     }

@@ -1,7 +1,6 @@
-import { createStore } from 'vuex'
 import axios from 'axios';
 
-export const store = createStore({
+const common = {
     state: {
         isLoading: false,
         snackbar: {
@@ -9,14 +8,14 @@ export const store = createStore({
             text: ''
         },
         formData: {},
-        mileages: [],
+        mileages: []
     },
     getters: {
         isLoading: state => state.isLoading,
         snackbar: state => state.snackbar.show,
         snackbarText: state => state.snackbar.text,
         formData: state => state.formData,
-        mileages: state => state.mileages
+        mileages: state => state.mileages,
     },
     mutations: {
         setIsLoading(state, isLoading) {
@@ -43,4 +42,6 @@ export const store = createStore({
             commit('setMileages', mileages);
         }
     }
-});
+}
+
+export default common;
