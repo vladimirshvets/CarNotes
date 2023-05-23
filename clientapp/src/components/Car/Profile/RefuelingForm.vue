@@ -166,7 +166,7 @@ export default {
             }
         },
         formData() {
-            let formData = this.formData;
+            let formData = this.formDataObj;
             formData.newMileage = {
                 date: '',
                 odometerValue: ''
@@ -181,7 +181,7 @@ export default {
         },
         ...mapGetters([
             'mileages',
-            'formData'
+            'formDataObj'
         ])
     },
     data() {

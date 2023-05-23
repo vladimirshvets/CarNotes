@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// ToDo: refactor
 const common = {
     state: {
         isLoading: false,
@@ -14,7 +15,7 @@ const common = {
         isLoading: state => state.isLoading,
         snackbar: state => state.snackbar.show,
         snackbarText: state => state.snackbar.text,
-        formData: state => state.formData,
+        formDataObj: state => state.formData,
         mileages: state => state.mileages,
     },
     mutations: {
