@@ -1,7 +1,7 @@
 <template>
     <v-container>
-        <v-card class="login-form-wrapper">
-            <v-card-title class="title">Login</v-card-title>
+        <v-card class="register-form-wrapper">
+            <v-card-title class="title">Create an account</v-card-title>
             <v-form
                 class="form"
                 v-model="form"
@@ -24,10 +24,18 @@
                     placeholder="Enter your password"
                     type="password"
                 ></v-text-field>
+                <v-text-field
+                    v-model="passwordConfirmation"
+                    :readonly="loading"
+                    :rules="[required, confirmPassword]"
+                    clearable
+                    label="Password Confirmation"
+                    placeholder="Confirm your password"
+                    type="password"
+                ></v-text-field>
                 <br>
-
                 <v-btn
-                    :disabled="!form"
+                    :disabled="!form || password !== passwordConfirmation"
                     :loading="loading"
                     block
                     color="success"
@@ -35,7 +43,7 @@
                     type="submit"
                     variant="elevated"
                 >
-                    Sign In
+                    Sign Up
                 </v-btn>
             </v-form>
             <v-alert
@@ -45,29 +53,10 @@
                 variant="tonal"
                 class="alert"
             ></v-alert>
-            <div class="register-link">
-                Don't have an account yet?
-                <router-link :to="{ name: 'Register' }">Sign Up</router-link>
+            <div class="login-link">
+                Already have an account?
+                <router-link :to="{ name: 'Login' }">Sign In</router-link>
             </div>
-            <v-divider class="divider"></v-divider>
-            <v-card-subtitle>Log in with any popular provider:</v-card-subtitle>
-            <v-card-text>
-                <v-tooltip text="Google" location="bottom">
-                    <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" class="auth-btn google-auth" icon="mdi-google"></v-btn>
-                    </template>
-                </v-tooltip>
-                <v-tooltip text="Facebook" location="bottom">
-                    <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" class="auth-btn facebook-auth" icon="mdi-facebook"></v-btn>
-                    </template>
-                </v-tooltip>
-                <v-tooltip text="GitHub" location="bottom">
-                    <template v-slot:activator="{ props }">
-                        <v-btn v-bind="props" class="auth-btn github-auth" icon="mdi-github"></v-btn>
-                    </template>
-                </v-tooltip>
-            </v-card-text>
         </v-card>
     </v-container>
 </template>
@@ -76,11 +65,12 @@
 import '@/styles/views/user/account/_forms.less';
 import { router } from '@/router.js';
 export default {
-    name: 'LoginPage',
+    name: 'RegisterPage',
     data: () => ({
         form: false,
         email: null,
         password: null,
+        passwordConfirmation: null,
         loading: false,
         outcomeText: null,
         outcomeType: null
@@ -98,8 +88,8 @@ export default {
 
             this.outcomeType = null;
             this.loading = true;
-            this.$store.dispatch('login', payload)
-                .then((result) => {
+            this.$store.dispatch('register', payload)
+                .then(result => {
                     this.loading = false;
                     this.outcomeText = result.message;
                     this.outcomeType = result.type;
@@ -112,6 +102,9 @@ export default {
         },
         required(v) {
             return !!v || 'Field is required'
+        },
+        confirmPassword(v) {
+            return  v === this.password || 'Password confirmation doesn\'t match password'
         }
     }
 }

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '@/api.js';
 
 // ToDo: refactor
 const common = {
@@ -38,7 +38,7 @@ const common = {
     },
     actions: {
         async loadMileages({ commit }, carId) {
-            const result = await axios.get(`/api/mileages/getByCar/${carId}`);
+            const result = await api.get(`/api/mileages/getByCar/${carId}`);
             let mileages = result.data;
             commit('setMileages', mileages);
         }

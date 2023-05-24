@@ -23,4 +23,9 @@ public class AccountService : IAccountService
         return true;
         //throw new NotImplementedException();
     }
+
+    public async Task<User> CreateAsync(User user)
+    {
+        return await _userRepository.AddAsync(user);
+    }
 }

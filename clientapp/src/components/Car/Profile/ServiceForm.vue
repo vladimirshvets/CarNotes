@@ -17,7 +17,7 @@
                     <small>* required fields</small>
                     <v-container>
                         <v-row>
-                            <v-col v-if="!formData.id" cols="12" sm="12">
+                            <v-col v-if="!formData.id" cols="12" md="12" sm="12">
                                 <v-switch
                                     v-model="useExistingMileage"
                                     hide-details
@@ -26,7 +26,7 @@
                                     label="Use existing mileage"
                                 ></v-switch>
                             </v-col>
-                            <v-col v-if="useExistingMileage" col="12" sm="12" md="12">
+                            <v-col v-if="useExistingMileage" cols="12" sm="12" md="12">
                                 <mileage-input
                                     v-model="formData.mileage"
                                     :readonly="Boolean(formData.id)"
@@ -48,7 +48,7 @@
                                     required
                                 ></v-text-field>
                             </v-col>
-                            <v-col  cols="12" sm="12" md="12">
+                            <v-col cols="12" sm="12" md="12">
                                 <span v-if="!useExistingMileage && Boolean(mileageMatch)">Mileage already exists</span>
                             </v-col>
                         </v-row>

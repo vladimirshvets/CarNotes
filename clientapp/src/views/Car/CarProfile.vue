@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import api from '@/api.js';
 import { mapGetters } from 'vuex';
 //import ProfileTab from '../../components/Car/Profile/ProfileTab.vue'
 
@@ -103,13 +103,14 @@ export default {
         }
     },
     async created() {
-        const result = await axios.get(`/api/cars/${this.$route.params.carId}`, {
-            headers: {
-                Authorization: `Bearer ${this.jwt}`,
-            }
+        await api.get(`/api/cars/${this.$route.params.carId}`)
+        .then((response) => {
+            this.carInfo = response.data;
+        })
+        .catch((error) => {
+            console.error(error);
+            this.$router.push({ name: 'Login' });
         });
-        const car = result.data;
-        this.carInfo = car;
     }
 }
 </script>

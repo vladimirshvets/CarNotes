@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using CarNotesAPI.Data.Api;
+using CarNotesAPI.Data.Models;
 using CarNotesAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,39 +25,39 @@ public class AccountController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterViewModel viewModel)
     {
-        var user = await _accountService.FindByEmailAsync(model.Email);
-        if (user == null || !await _accountService.CheckPasswordAsync(user, model.Password))
+        var user = await _accountService.FindByEmailAsync(viewModel.Email);
+        if (user != null)
+        {
+            return Conflict(new { Message = "A user with specified email already exists." });
+        }
+
+        user = new User
+        {
+            Email = viewModel.Email,
+            // ToDo: implement password hasher
+            PasswordHash = viewModel.Password
+        };
+        User newlyCreatedUser = await _accountService.CreateAsync(user);
+
+        return Ok(new { Token = ProduceJWToken(newlyCreatedUser) });
+
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
+    {
+        var user = await _accountService.FindByEmailAsync(viewModel.Email);
+        if (user == null ||
+            !await _accountService.CheckPasswordAsync(user, viewModel.Password))
         {
             return Unauthorized();
         }
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(
-            _configuration["ApplicationSettings:JwtSecret"] ?? throw new ArgumentNullException("JWT Secret must be specified."));
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Issuer = _configuration["ApplicationSettings:WebServerUrl"],
-
-            Audience = _configuration["ApplicationSettings:WebClientUrl"],
-
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
-                // ToDo: Add additional claims here if needed.
-            }),
-
-            Expires = DateTime.UtcNow.AddHours(1),
-
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        return Ok(new { Token = tokenHandler.WriteToken(token) });
+        return Ok(new { Token = ProduceJWToken(user) });
     }
 
     [Authorize]
@@ -72,5 +73,57 @@ public class AccountController : ControllerBase
         }
 
         return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<User?> GetUserData()
+    {
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var emailIdentifierClaim = identity.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.Email);
+
+        if (emailIdentifierClaim != null)
+        {
+            string email = emailIdentifierClaim.Value;
+
+            User? user = await _accountService.FindByEmailAsync(email);
+
+            return user;
+        }
+
+        return null;
+    }
+
+    // ToDo: move to service
+    private string ProduceJWToken(User user)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(
+            _configuration["ApplicationSettings:JwtSecret"]
+            ?? throw new ArgumentNullException("JWT Secret must be specified."));
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Issuer = _configuration["ApplicationSettings:WebServerUrl"],
+
+            Audience = _configuration["ApplicationSettings:WebClientUrl"],
+
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(ClaimTypes.Email, user.Email)
+            }),
+
+            Expires = DateTime.UtcNow.AddHours(1),
+
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
     }
 }

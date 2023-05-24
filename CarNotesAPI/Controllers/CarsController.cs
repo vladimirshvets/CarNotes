@@ -1,4 +1,5 @@
-﻿using CarNotesAPI.Data.Api;
+﻿using System.Security.Claims;
+using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,21 @@ public class CarsController : ControllerBase
 
     [HttpGet]
     [Route("list")]
-    public async Task<IEnumerable<Car>> GetList()
+    public async Task<IEnumerable<Car>?> GetList()
     {
-        return await _carRepository.GetListAsync(UserId);
+        var identity = HttpContext.User.Identity as ClaimsIdentity;
+        var nameIdentifierClaim = identity.Claims.FirstOrDefault(
+            c => c.Type == ClaimTypes.NameIdentifier);
+
+        if (nameIdentifierClaim != null)
+        {
+            if (Guid.TryParse(nameIdentifierClaim.Value, out Guid userId))
+            {
+                return await _carRepository.GetListAsync(userId);
+            }
+        }
+
+        return null;
     }
 
     [HttpGet]

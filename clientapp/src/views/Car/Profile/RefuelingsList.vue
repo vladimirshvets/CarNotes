@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
 import RefuelingForm from '@/components/Car/Profile/RefuelingForm.vue';
@@ -90,7 +90,7 @@ export default {
         },
         async getItems() {
             this.setIsLoading(true);
-            await axios
+            await api
                 .get(`/api/refuelings/getByCar/${this.$route.params.carId}`)
                 .then((response) => {
                     this.items = response.data;
@@ -101,7 +101,7 @@ export default {
         },
         async save(payload) {
             this.setIsLoading(true);
-            await axios
+            await api
                 .post('/api/refuelings', payload)
                 .then(() => {
                     this.actualizeData();
@@ -117,7 +117,7 @@ export default {
         },
         async update(id, payload) {
             this.setIsLoading(true);
-            await axios
+            await api
                 .put(`/api/refuelings/${id}`, payload)
                 .then(() => {
                     this.actualizeData();
@@ -133,7 +133,7 @@ export default {
         },
         async remove(id, payload) {
             this.setIsLoading(true);
-            await axios
+            await api
                 .delete(`/api/refuelings/${id}`, {
                     data: payload
                 })

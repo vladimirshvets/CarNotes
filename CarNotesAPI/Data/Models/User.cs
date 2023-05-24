@@ -17,6 +17,10 @@ namespace CarNotesAPI.Data.Models
 
         public string LastName { get; set; } = string.Empty;
 
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
         /// <summary>
         /// Initializes a new instance of <see cref="User"/>.
         /// </summary>
@@ -37,6 +41,8 @@ namespace CarNotesAPI.Data.Models
             PasswordHash = node.TryGetValue("password_hash", out object? passwordHash) ? (string)passwordHash : string.Empty;
             FirstName = node.TryGetValue("firstname", out object? firstName) ? (string)firstName : string.Empty;
             LastName = node.TryGetValue("lastname", out object? lastName) ? (string)lastName : string.Empty;
+            CreatedAt = ((ZonedDateTime)node["created_at"]).ToDateTimeOffset().DateTime;
+            UpdatedAt = ((ZonedDateTime)node["updated_at"]).ToDateTimeOffset().DateTime;
         }
     }
 }

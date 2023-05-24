@@ -17,7 +17,8 @@
         >
             <v-menu>
                 <template v-slot:activator="{ props }">
-                    <v-btn icon="mdi-card-account-details-star" v-bind="props"></v-btn>
+                    <v-btn v-if="isAuthenticated" icon="mdi-card-account-details-star" v-bind="props"></v-btn>
+                    <v-btn v-if="!isAuthenticated" icon="mdi-login" v-bind="props"></v-btn>
                 </template>
 
                 <v-list>

@@ -2,7 +2,9 @@ import { store } from './store'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from './views/HomePage.vue'
 import LoginPage from './views/User/LoginPage.vue'
-import CarsList from './views/Car/CarsList.vue'
+import RegisterPage from './views/User/RegisterPage.vue'
+import UserProfile from './views/User/UserProfile.vue'
+import CarList from './views/Car/CarList.vue'
 import CarProfile from './views/Car/CarProfile.vue'
 import CarStats from './views/Car/Profile/CarStats'
 import LegalProceduresList from './views/Car/Profile/LegalProceduresList.vue'
@@ -27,48 +29,65 @@ const routes = [
         component: HomePage
     },
     {
+        path: '/account/login',
+        name: 'Login',
+        component: LoginPage,
+        meta: { requiresAuth: false },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isAuthenticated) {
+                next({ name: 'Home' })
+            } else {
+                next()
+            }
+        }
+    },
+    {
+        path: '/account/logout',
+        name: 'Logout',
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isAuthenticated) {
+                store.dispatch('logout')
+                    .then(() => {
+                        next({ name: 'Home' })
+                    })
+                    .catch(error => {
+                        console.log(`Logout error: ${error}`)
+                    });
+            } else {
+                next({ name: 'Home' });
+            }
+        }
+    },
+    {
+        path: '/account/register',
+        name: 'Register',
+        component: RegisterPage,
+        meta: { requiresAuth: false },
+        beforeEnter: (to, from, next) => {
+            if (store.getters.isAuthenticated) {
+                next({ name: 'Home' })
+            } else {
+                next()
+            }
+        }
+    },
+    {
         path: '/account',
         name: 'Profile',
+        component: UserProfile,
         meta: { requiresAuth: true },
-        children: [
-            {
-                path: 'login',
-                name: 'Login',
-                component: LoginPage,
-                meta: { requiresAuth: false },
-                beforeEnter: (to, from, next) => {
-                    if (store.getters.isAuthenticated) {
-                        next({ name: 'Cars' })
-                    } else {
-                        next()
-                    }
-                }
-            },
-            {
-                path: 'logout',
-                name: 'Logout',
-                beforeEnter: (to, from, next) => {
-                    store.dispatch('logout')
-                        .then(() => {
-                            next({ name: 'Home' })
-                        })
-                        .catch(error => {
-                            console.log(`Logout error: ${error}`)
-                        });
-                }
-            }
-        ]
     },
     {
         path: '/cars',
         name: 'Cars',
-        component: CarsList,
+        component: CarList,
         meta: { requiresAuth: true }
     },
     {
         path: '/cars/profile/:carId',
         name: 'CarProfile',
         component: CarProfile,
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'stats',

@@ -2,10 +2,12 @@
 using CarNotesAPI.Data.Models;
 using CarNotesAPI.Data.Models.Notes;
 using CarNotesAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarNotesAPI.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class RefuelingsController : ControllerBase
 {

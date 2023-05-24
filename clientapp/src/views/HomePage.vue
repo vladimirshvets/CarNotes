@@ -15,9 +15,9 @@
                 v-if="isAuthenticated"
                 :to="{ name: 'Cars' }"
                 size="large"
-                color="primary"
+                color="info"
             >
-                Go to my cars right now
+                Go to my garage
             </v-btn>
             <span v-else>Please log in to explore some features.</span>
         </div>

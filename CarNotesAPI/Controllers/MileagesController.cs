@@ -1,10 +1,12 @@
 ﻿using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
 using CarNotesAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarNotesAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class MileagesController : ControllerBase
     {
