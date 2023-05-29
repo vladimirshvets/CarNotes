@@ -34,5 +34,13 @@ namespace CarNotesAPI.Data.Api
         /// <param name="car">Updated car data</param>
         /// <returns>Updated instance of car.</returns>
         Task<Car> UpdateAsync(Guid carId, Car car);
+
+        /// <summary>
+        /// Deletes a car with all relations and related notes.
+        /// </summary>
+        /// <param name="userId">User identifier</param>
+        /// <param name="carId">Car identifier</param>
+        /// <returns>true on success.</returns>
+        Task<bool> DeleteAsync(Guid userId, Guid carId);
     }
 }

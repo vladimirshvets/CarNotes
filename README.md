@@ -3,8 +3,10 @@
 ### Implemented:
 - Login, Register Pages
 - JWT (JSON Web Token) auth
+- User profile Page
 - Garage Page, notes counter (does not count spare parts, actions only)
-- Car profile Page
+- Create/update/delete car
+- Car details Page
 - Mileage chart
 - CRUD actions for Refuelings, Washings, Spare Parts, Services, Legal Procedures
 - Neo4j data storage
@@ -12,12 +14,11 @@
 
 ### ToDo:
 - User password hasher
-- User profile Page
-- New/edit car Page
-- Delete car and all related notes
+- Edit user info
+- New/edit car Page design
 - Add content to Homepage
 - Stats: total mileage, fuel consumption, expenses, etc.
-- User photo, car photo
+- Upload user photo, car photo
 - Filter spare parts by category/group
 - Social auth
 - Allow to add spare parts with no installation date/mileage

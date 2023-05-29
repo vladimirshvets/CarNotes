@@ -5,7 +5,9 @@
     >
         <v-card>
             <v-card-title>{{ title }}</v-card-title>
-            <v-card-text>{{ text }}</v-card-text>
+            <v-card-text>
+                <div v-html="text"></div>
+            </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -51,7 +53,7 @@ export default {
     },
     methods: {
         submit() {
-            this.$emit('remove');
+            this.$emit('submit');
         }
     }
 }

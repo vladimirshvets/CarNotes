@@ -4,9 +4,10 @@ import HomePage from './views/HomePage.vue'
 import LoginPage from './views/User/LoginPage.vue'
 import RegisterPage from './views/User/RegisterPage.vue'
 import UserProfile from './views/User/UserProfile.vue'
+import CarForm from './views/Car/CarForm.vue'
 import CarList from './views/Car/CarList.vue'
 import CarProfile from './views/Car/CarProfile.vue'
-import CarStats from './views/Car/Profile/CarStats'
+import CarStats from './views/Car/Profile/CarStats.vue'
 import LegalProceduresList from './views/Car/Profile/LegalProceduresList.vue'
 import RefuelingsList from './views/Car/Profile/RefuelingsList.vue'
 import ServicesList from './views/Car/Profile/ServicesList.vue'
@@ -32,7 +33,10 @@ const routes = [
         path: '/account/login',
         name: 'Login',
         component: LoginPage,
-        meta: { requiresAuth: false },
+        meta: {
+            title: 'Login',
+            requiresAuth: false
+        },
         beforeEnter: (to, from, next) => {
             if (store.getters.isAuthenticated) {
                 next({ name: 'Home' })
@@ -62,7 +66,10 @@ const routes = [
         path: '/account/register',
         name: 'Register',
         component: RegisterPage,
-        meta: { requiresAuth: false },
+        meta: {
+            title: 'Register',
+            requiresAuth: false
+        },
         beforeEnter: (to, from, next) => {
             if (store.getters.isAuthenticated) {
                 next({ name: 'Home' })
@@ -75,19 +82,37 @@ const routes = [
         path: '/account',
         name: 'Profile',
         component: UserProfile,
-        meta: { requiresAuth: true },
+        meta: {
+            title: 'Driver Profile',
+            requiresAuth: true
+        }
     },
     {
         path: '/cars',
         name: 'Cars',
         component: CarList,
-        meta: { requiresAuth: true }
+        meta: {
+            title: 'My Garage',
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/cars/form/:carId?',
+        name: 'CarForm',
+        component: CarForm,
+        meta: {
+            title: 'Car Profile',
+            requiresAuth: true
+        }
     },
     {
         path: '/cars/profile/:carId',
         name: 'CarProfile',
         component: CarProfile,
-        meta: { requiresAuth: true },
+        meta: {
+            title: 'Car Stats',
+            requiresAuth: true
+        },
         children: [
             {
                 path: 'stats',
@@ -135,6 +160,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    document.title = to.meta.title ?? 'Car Notes';
     if (to.meta.requiresAuth) {
         requireAuth(to, from, next);
     } else {

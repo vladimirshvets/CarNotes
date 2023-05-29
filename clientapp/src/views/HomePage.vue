@@ -38,7 +38,7 @@ export default {
 
 <style lang="less" scoped>
 .v-banner {
-    width: 640px;
+    max-width: 640px;
     margin: auto;
     padding: 2em;
     font-size: 20px;

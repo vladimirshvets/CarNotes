@@ -151,7 +151,7 @@
         <delete-confirmation-modal
             :showModal="removalModal"
             @triggerModal="triggerRemovalModal"
-            @remove="remove"
+            @submit="remove"
             title="Delete Service"
             text="Are you sure you want to delete this record?"
         ></delete-confirmation-modal>

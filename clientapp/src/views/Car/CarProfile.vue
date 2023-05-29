@@ -103,14 +103,14 @@ export default {
         }
     },
     async created() {
-        await api.get(`/api/cars/${this.$route.params.carId}`)
-        .then((response) => {
-            this.carInfo = response.data;
-        })
-        .catch((error) => {
-            console.error(error);
-            this.$router.push({ name: 'Login' });
-        });
+        await api
+            .get(`/api/cars/${this.$route.params.carId}`)
+            .then((response) => {
+                this.carInfo = response.data;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 }
 </script>

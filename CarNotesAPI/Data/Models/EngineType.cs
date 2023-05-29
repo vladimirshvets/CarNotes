@@ -2,12 +2,12 @@
 {
     public enum EngineType
     {
-        Petrol,
+        Diesel = 0,
 
-        Diesel,
+        Petrol = 1,
 
-        Methane,
+        Methane = 2,
 
-        Electric
+        Electric = 3
     }
 }

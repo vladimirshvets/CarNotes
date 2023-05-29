@@ -21,7 +21,7 @@
                     <v-btn v-if="!isAuthenticated" icon="mdi-login" v-bind="props"></v-btn>
                 </template>
 
-                <v-list>
+                <v-list class="account-menu">
                     <v-list-item v-if="!isAuthenticated">
                         <v-list-item-title>
                             <router-link :to="{ name: 'Login' }">Login</router-link>
@@ -60,5 +60,16 @@ export default {
         background-color: #016a59;
         color: #fff;
         border-bottom: 1px solid #ddd;
+    }
+
+    .account-menu {
+        a {
+            color: initial;
+            text-decoration: none;
+
+            &:hover {
+                color: #016a59;
+            }
+        }
     }
 </style>

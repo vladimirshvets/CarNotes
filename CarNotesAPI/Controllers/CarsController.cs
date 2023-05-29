@@ -12,11 +12,6 @@ public class CarsController : ControllerBase
 {
     private readonly ICarRepository _carRepository;
 
-    // ToDo:
-    // get from storage when a user functionality is ready.
-    private readonly Guid UserId =
-        new("48898106-b1b2-4bc1-8f63-3ee777fdeafd");
-
     public CarsController(ICarRepository carRepository)
     {
         _carRepository = carRepository;
@@ -24,7 +19,46 @@ public class CarsController : ControllerBase
 
     [HttpGet]
     [Route("list")]
-    public async Task<IEnumerable<Car>?> GetList()
+    public async Task<IEnumerable<Car>> GetList()
+    {
+        Guid userId = GetUserId();
+        return await _carRepository.GetListAsync(userId);
+    }
+
+    [HttpGet]
+    [Route("{carId}")]
+    public async Task<ActionResult<Car>> Get(Guid carId)
+    {
+        Guid userId = GetUserId();
+        Car? car = await _carRepository.GetAsync(userId, carId);
+        if (car == null)
+        {
+            return BadRequest();
+        }
+        return car;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Car>> Post([FromBody]Car car)
+    {
+        Guid userId = GetUserId();
+        return await _carRepository.AddAsync(userId, car);
+    }
+
+    [HttpPut("{carId}")]
+    public async Task<Car> Put(Guid carId, [FromBody]Car car)
+    {
+        return await _carRepository.UpdateAsync(carId, car);
+    }
+
+    [HttpDelete("{carId}")]
+    public async Task<ActionResult<bool>> Delete(Guid carId)
+    {
+        Guid userId = GetUserId();
+        return await _carRepository.DeleteAsync(userId, carId);
+    }
+
+    private Guid GetUserId()
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var nameIdentifierClaim = identity.Claims.FirstOrDefault(
@@ -34,34 +68,10 @@ public class CarsController : ControllerBase
         {
             if (Guid.TryParse(nameIdentifierClaim.Value, out Guid userId))
             {
-                return await _carRepository.GetListAsync(userId);
+                return userId;
             }
         }
 
-        return null;
-    }
-
-    [HttpGet]
-    [Route("{carId}")]
-    public async Task<ActionResult<Car>> Get(Guid carId)
-    {
-        Car? car = await _carRepository.GetAsync(UserId, carId);
-        if (car == null)
-        {
-            return BadRequest();
-        }
-        return car;
-    }
-
-    [HttpPost]
-    public async Task<Car> Post([FromBody]Car car)
-    {
-        return await _carRepository.AddAsync(UserId, car);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<Car> Put(Guid id, [FromBody]Car car)
-    {
-        return await _carRepository.UpdateAsync(id, car);
+        throw new NotImplementedException();
     }
 }

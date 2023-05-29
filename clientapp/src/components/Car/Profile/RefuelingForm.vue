@@ -134,7 +134,7 @@
         <delete-confirmation-modal
             :showModal="removalModal"
             @triggerModal="triggerRemovalModal"
-            @remove="remove"
+            @submit="remove"
             title="Delete Refueling"
             text="Are you sure you want to delete this record?"
         ></delete-confirmation-modal>

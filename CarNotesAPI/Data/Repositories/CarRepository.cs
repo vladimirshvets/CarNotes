@@ -20,7 +20,8 @@ public class CarRepository : ICarRepository
     {
         string query =
             @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car)
-            RETURN c";
+            RETURN c
+            ORDER BY c.created_at DESC";
 
         var parameters = new Dictionary<string, object>
         {
@@ -129,7 +130,7 @@ public class CarRepository : ICarRepository
             { "VIN", car.VIN },
             { "year", car.Year },
             { "plate", car.Plate },
-            { "engineType", car.EngineTypeText },
+            { "engineType", car.EngineType != null ? car.EngineTypeText : null },
             { "ownedFrom", car.OwnedFrom },
             { "ownedTo", car.OwnedTo }
         };
@@ -138,5 +139,25 @@ public class CarRepository : ICarRepository
                 query, parameters);
 
         return new Car(response);
+    }
+
+    public async Task<bool> DeleteAsync(Guid userId, Guid carId)
+    {
+        string query =
+            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car { id: $carId })-[]->(anynode)
+            DETACH DELETE c, anynode
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "userId", userId.ToString() },
+            { "carId", carId.ToString() }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
+                query, parameters);
+
+        return response;
     }
 }

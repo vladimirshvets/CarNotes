@@ -77,22 +77,24 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpGet("profile")]
-    public async Task<User?> GetUserData()
+    public async Task<ActionResult<User>> GetUserProfile()
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var emailIdentifierClaim = identity.Claims.FirstOrDefault(
             c => c.Type == ClaimTypes.Email);
-
-        if (emailIdentifierClaim != null)
+        if (emailIdentifierClaim == null)
         {
-            string email = emailIdentifierClaim.Value;
-
-            User? user = await _accountService.FindByEmailAsync(email);
-
-            return user;
+            return Unauthorized();
         }
 
-        return null;
+        string email = emailIdentifierClaim.Value;
+        User? user = await _accountService.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user);
     }
 
     // ToDo: move to service
