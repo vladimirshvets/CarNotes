@@ -42,5 +42,11 @@ namespace CarNotesAPI.Data.Api
         /// <param name="carId">Car identifier</param>
         /// <returns>true on success.</returns>
         Task<bool> DeleteAsync(Guid userId, Guid carId);
+
+        /// <summary>
+        /// Returns total number of cars.
+        /// </summary>
+        /// <returns>Total number of cars.</returns>
+        Task<int> GetNumberOfCarsAsync();
     }
 }

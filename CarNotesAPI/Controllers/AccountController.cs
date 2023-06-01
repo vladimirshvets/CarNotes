@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
-using CarNotesAPI.ViewModels;
+using CarNotesAPI.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -93,6 +93,25 @@ public class AccountController : ControllerBase
         {
             return NotFound();
         }
+
+        return Ok(user);
+    }
+
+    [Authorize]
+    [HttpPut("profile/{userId}")]
+    public async Task<ActionResult<User>> UpdateProfile(
+        Guid userId, [FromBody] ProfileViewModel viewModel)
+    {
+        var user = await _accountService.GetAsync(userId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        user.UserName = viewModel.UserName;
+        user.FirstName = viewModel.FirstName;
+        user.LastName = viewModel.LastName;
+        user = await _accountService.UpdateAsync(userId, user);
 
         return Ok(user);
     }

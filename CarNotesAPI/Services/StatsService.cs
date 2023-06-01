@@ -4,16 +4,34 @@ namespace CarNotesAPI.Services;
 
 public class StatsService : IStatsService
 {
+    private readonly ICarRepository _carRepository;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly IStatsRepository _statsRepository;
 
+    private readonly IUserRepository _userRepository;
+
     public StatsService(
+        ICarRepository carRepository,
         IMileageRepository mileageRepository,
-        IStatsRepository statsRepository)
+        IStatsRepository statsRepository,
+        IUserRepository userRepository)
     {
+        _carRepository = carRepository;
         _mileageRepository = mileageRepository;
         _statsRepository = statsRepository;
+        _userRepository = userRepository;
+    }
+
+    public async Task<int> TotalNumberOfUsers()
+    {
+        return await _userRepository.GetNumberOfUsersAsync();
+    }
+
+    public async Task<int> TotalNumberOfCars()
+    {
+        return await _carRepository.GetNumberOfCarsAsync();
     }
 
     public async Task<double> AverageFuelConsumption(Guid carId)

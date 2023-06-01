@@ -1,7 +1,24 @@
 <template>
     <v-container>
         <v-card class="user-form-wrapper">
-            <v-card-title class="title">Driver License</v-card-title>
+            <v-card-title class="title d-flex flex-no-wrap">
+                <span class="mr-auto">Driver License</span>
+                <v-tooltip v-if="!editMode" text="Edit" location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-icon v-bind="props" @click="toggleEditMode(true)">mdi-account-edit</v-icon>
+                    </template>
+                </v-tooltip>
+                <v-tooltip v-if="editMode" text="Save" location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-icon v-bind="props" @click="onSubmit">mdi-check</v-icon>
+                    </template>
+                </v-tooltip>
+                <v-tooltip v-if="editMode" text="Cancel" location="bottom">
+                    <template v-slot:activator="{ props }">
+                        <v-icon v-bind="props" @click="toggleEditMode(false)">mdi-close</v-icon>
+                    </template>
+                </v-tooltip>
+            </v-card-title>
             <v-card-subtitle>{{ user.email }}</v-card-subtitle>
             <v-card-text class="d-flex flex-no-wrap">
                 <v-avatar
@@ -11,24 +28,45 @@
                 >
                     <v-img :src="require(`@/assets/user/profile/avatars/${randomAvatar}.jpg`)" alt="User Avatar"></v-img>
                 </v-avatar>
-                <div>
+                <v-form class="form">
                     <div class="user-prop">
                         <p class="label">Username</p>
-                        <span>{{ user.userName }}</span>
+                        <span v-if="!editMode">{{ user.userName }}</span>
+                        <v-text-field
+                            v-if="editMode"
+                            v-model="formData.userName"
+                            variant="underlined"
+                            density="compact"
+                            hide-details="auto"
+                        ></v-text-field>
                     </div>
                     <div class="user-prop">
                         <p class="label">First Name</p>
-                        <span>{{ user.firstName }}</span>
+                        <span v-if="!editMode">{{ user.firstName }}</span>
+                        <v-text-field
+                            v-if="editMode"
+                            v-model="formData.firstName"
+                            variant="underlined"
+                            density="compact"
+                            hide-details="auto"
+                        ></v-text-field>
                     </div>
                     <div class="user-prop">
                         <p class="label">Last Name</p>
-                        <span>{{ user.lastName }}</span>
+                        <span v-if="!editMode">{{ user.lastName }}</span>
+                        <v-text-field
+                            v-if="editMode"
+                            v-model="formData.lastName"
+                            variant="underlined"
+                            density="compact"
+                            hide-details="auto"
+                        ></v-text-field>
                     </div>
                     <div class="user-prop">
                         <p class="label">Issued</p>
                         <span>{{ formatDate(user.createdAt) }}</span>
                     </div>
-                </div>
+                </v-form>
             </v-card-text>
         </v-card>
     </v-container>
@@ -42,6 +80,8 @@ export default {
     data() {
         return {
             user: {},
+            editMode: false,
+            formData: null,
             randomAvatar: 0
         }
     },
@@ -64,6 +104,30 @@ export default {
                 return null;
             }
             return moment(date).format('LL');
+        },
+        toggleEditMode(state) {
+            if (state) {
+                this.formData = {
+                    userName: this.user.userName,
+                    firstName: this.user.firstName,
+                    lastName: this.user.lastName
+                };
+                this.editMode = true;
+            } else {
+                this.editMode = false;
+                this.formData = false;
+            }
+        },
+        async onSubmit() {
+            await api
+                .put(`/api/account/profile/${this.user.id}`, this.formData)
+                .then(response => {
+                    this.user = response.data;
+                    this.toggleEditMode(false);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     }
 }
@@ -85,12 +149,16 @@ export default {
         max-width: 40%;
     }
 
-    .user-prop {
-        margin-bottom: 3px;
+    .form {
+        width: 100%;
 
-        .label {
-            color: #016a59;
-            font-weight: 600;
+        .user-prop {
+            margin-bottom: 3px;
+
+            .label {
+                color: #016a59;
+                font-weight: 600;
+            }
         }
     }
 }

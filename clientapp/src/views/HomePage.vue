@@ -10,6 +10,12 @@
         <div>
             <span>Description of the website will appear here someday :)</span>
         </div>
+        <div v-if="totalUsers">
+            Total users: {{ totalUsers }}
+        </div>
+        <div v-if="totalCars">
+            Total cars: {{ totalCars }}
+        </div>
         <div>
             <v-btn
                 v-if="isAuthenticated"
@@ -25,13 +31,39 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { mapGetters } from 'vuex';
 export default {
     name: 'HomePage',
+    data() {
+        return {
+            totalUsers: null,
+            totalCars: null
+        }
+    },
     computed: {
         ...mapGetters([
             'isAuthenticated'
         ])
+    },
+    async mounted() {
+        await axios
+            .get(`/api/stats/total-users`)
+            .then(response => {
+                this.totalUsers = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        await axios
+            .get(`/api/stats/total-cars`)
+            .then(response => {
+                this.totalCars = response.data;
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 }
 </script>

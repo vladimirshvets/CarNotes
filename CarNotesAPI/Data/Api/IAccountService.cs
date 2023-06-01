@@ -6,8 +6,12 @@ namespace CarNotesAPI.Data.Api
     {
         Task<User?> FindByEmailAsync(string email);
 
-        Task<bool> CheckPasswordAsync(User user, string password);
+        Task<User?> GetAsync(Guid userId);
 
         Task<User> CreateAsync(User user);
+
+        Task<User> UpdateAsync(Guid userId, User user);
+
+        Task<bool> CheckPasswordAsync(User user, string password);
     }
 }

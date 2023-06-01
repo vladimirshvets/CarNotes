@@ -17,15 +17,25 @@ public class AccountService : IAccountService
         return await _userRepository.GetByEmailAsync(email);
     }
 
-    public async Task<bool> CheckPasswordAsync(User user, string password)
+    public async Task<User?> GetAsync(Guid userId)
     {
-        // ToDo: implement it.
-        return true;
-        //throw new NotImplementedException();
+        return await _userRepository.GetAsync(userId);
     }
 
     public async Task<User> CreateAsync(User user)
     {
         return await _userRepository.AddAsync(user);
+    }
+
+    public async Task<User> UpdateAsync(Guid userId, User user)
+    {
+        return await _userRepository.UpdateAsync(userId, user);
+    }
+
+    public async Task<bool> CheckPasswordAsync(User user, string password)
+    {
+        // ToDo: implement it.
+        return true;
+        //throw new NotImplementedException();
     }
 }

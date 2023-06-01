@@ -17,8 +17,10 @@ public class StatsServiceTests
         int refuelingSum = 65;
         double expectedResult = 0;
 
+        var mockCarRepository = new Mock<ICarRepository>();
         var mockMileageRepository = new Mock<IMileageRepository>();
         var mockStatsRepository = new Mock<IStatsRepository>();
+        var mockUserRepository = new Mock<IUserRepository>();
 
         mockMileageRepository
             .Setup(repo => repo.GetMinOdometerValueAsync(carId))
@@ -31,8 +33,10 @@ public class StatsServiceTests
             .ReturnsAsync(refuelingSum);
 
         var sut = new StatsService(
+            mockCarRepository.Object,
             mockMileageRepository.Object,
-            mockStatsRepository.Object);
+            mockStatsRepository.Object,
+            mockUserRepository.Object);
 
         // Act.
         double result = await sut.AverageFuelConsumption(carId);
@@ -57,8 +61,10 @@ public class StatsServiceTests
         int refuelingSum = 65;
         double expectedResult = 6.5;
 
+        var mockCarRepository = new Mock<ICarRepository>();
         var mockMileageRepository = new Mock<IMileageRepository>();
         var mockStatsRepository = new Mock<IStatsRepository>();
+        var mockUserRepository = new Mock<IUserRepository>();
 
         mockMileageRepository
             .Setup(repo => repo.GetMinOdometerValueAsync(carId))
@@ -71,8 +77,10 @@ public class StatsServiceTests
             .ReturnsAsync(refuelingSum);
 
         var sut = new StatsService(
+            mockCarRepository.Object,
             mockMileageRepository.Object,
-            mockStatsRepository.Object);
+            mockStatsRepository.Object,
+            mockUserRepository.Object);
 
         // Act.
         double result = await sut.AverageFuelConsumption(carId);

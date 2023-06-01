@@ -2,8 +2,8 @@
 
 ### Implemented:
 - Login, Register Pages
-- JWT (JSON Web Token) auth
-- User profile Page
+- JWT auth
+- User profile Page (+ edit info)
 - Garage Page, notes counter (does not count spare parts, actions only)
 - Create/update/delete car
 - Car details Page
@@ -14,7 +14,6 @@
 
 ### ToDo:
 - User password hasher
-- Edit user info
 - New/edit car Page design
 - Add content to Homepage
 - Stats: total mileage, fuel consumption, expenses, etc.

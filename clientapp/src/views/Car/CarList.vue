@@ -56,9 +56,9 @@
                                     </div>
                                 </div>
                             </v-card-text>
-                            <v-card-subtitle>
-                                {{ periodOfOwnership(car.ownedFrom, car.ownedTo) }}
-                            </v-card-subtitle>
+                            <v-card-subtitle
+                                v-html="periodOfOwnership(car.ownedFrom, car.ownedTo)"
+                            ></v-card-subtitle>
                             <v-card-actions class="mt-auto">
                                 <v-tooltip text="Edit" location="right">
                                     <template v-slot:activator="{ props }">
@@ -99,18 +99,33 @@ export default {
             if (!from && !to) {
                 return "";
             }
-            if (!to) {
-                const fromDate = moment(from);
-                const duration = moment().diff(fromDate, 'days');
-                return `Since ${fromDate.format('ll')} (${duration} days)`;
-            }
             if (!from) {
                 return "Till " + moment(to).format('ll');
             }
+
             const fromDate = moment(from);
-            const toDate = moment(to);
-            const duration = toDate.diff(fromDate, 'days');
-            return `${fromDate.format('ll')} - ${toDate.format('ll')} (${duration} days)`;
+            const toDate = to ? moment(to) : moment();
+
+            const duration = moment.duration(toDate.diff(fromDate));
+            const years = duration.years();
+            const months = duration.months();
+            const days = duration.days();
+            let formattedDuration = "";
+            if (years > 0) {
+                formattedDuration += `${years} years `;
+            }
+            if (months > 0) {
+                formattedDuration += `${months} months `;
+            }
+            if (days > 0) {
+                formattedDuration += `${days} days `;
+            }
+            formattedDuration = formattedDuration.trim();
+
+            if (!to) {
+                return `Since ${fromDate.format('ll')}<br/>(${formattedDuration})`;
+            }
+            return `${fromDate.format('ll')} - ${toDate.format('ll')}<br/>(${formattedDuration})`;
         },
         ...mapMutations([
             'setIsLoading'

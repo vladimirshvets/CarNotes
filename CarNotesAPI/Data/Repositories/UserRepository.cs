@@ -56,6 +56,28 @@ public class UserRepository : IUserRepository
         return new User(response[0]);
     }
 
+    public async Task<User?> GetAsync(Guid userId)
+    {
+        string query =
+            @"MATCH (u:User { id: $userId })
+            RETURN u";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "userId", userId.ToString() }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
+                query, new List<string> { "u" }, parameters);
+
+        if (response.Count == 0)
+        {
+            return null;
+        }
+
+        return new User(response[0]);
+    }
+
     public async Task<User> AddAsync(User user)
     {
         string query =
@@ -85,5 +107,46 @@ public class UserRepository : IUserRepository
             query, parameters);
 
         return new User(response);
+    }
+
+    public async Task<User> UpdateAsync(Guid userId, User user)
+    {
+        string query =
+            @"MATCH (u:User { id: $userId })
+            SET
+                u.username = $userName,
+                u.email = $email,
+                u.password_hash = $passwordHash,
+                u.firstname = $firstName,
+                u.lastname = $lastName,
+                u.updated_at = datetime()
+            RETURN u";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "userId", userId.ToString() },
+            { "userName", user.UserName },
+            { "email", user.Email },
+            { "passwordHash", user.PasswordHash },
+            { "firstName", user.FirstName },
+            { "lastName", user.LastName }
+        };
+
+        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+            query, parameters);
+
+        return new User(response);
+    }
+
+    public async Task<int> GetNumberOfUsersAsync()
+    {
+        string query =
+            @"MATCH (u:User)
+            RETURN COUNT(u)";
+
+        int response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<int>(query);
+
+        return response;
     }
 }

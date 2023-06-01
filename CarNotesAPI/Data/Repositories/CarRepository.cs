@@ -160,4 +160,16 @@ public class CarRepository : ICarRepository
 
         return response;
     }
+
+    public async Task<int> GetNumberOfCarsAsync()
+    {
+        string query =
+            @"MATCH (c:Car)
+            RETURN COUNT(c)";
+
+        int response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<int>(query);
+
+        return response;
+    }
 }
