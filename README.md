@@ -13,7 +13,6 @@
 - REST API
 
 ### ToDo:
-- User password hasher
 - New/edit car Page design
 - Add content to Homepage
 - Stats: total mileage, fuel consumption, expenses, etc.

@@ -118,7 +118,10 @@ export default {
                 formattedDuration += `${months} months `;
             }
             if (days > 0) {
-                formattedDuration += `${days} days `;
+                formattedDuration += `${days} days`;
+            }
+            if (days == 0 && months == 0 && years == 0) {
+                formattedDuration = "just created";
             }
             formattedDuration = formattedDuration.trim();
 
