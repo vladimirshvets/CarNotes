@@ -17,7 +17,7 @@ const auth = {
         async login({ commit }, credentials) {
             var result = null;
             await api
-                .post('/api/account/login', credentials)
+                .post('/api/auth/login', credentials)
                 .then((response) => {
                     const jwt = response.data.token;
                     commit('setJwt', jwt);
@@ -49,7 +49,7 @@ const auth = {
         async register({ commit }, credentials) {
             var result = null;
             await api
-                .post('/api/account/register', credentials)
+                .post('/api/auth/register', credentials)
                 .then((response) => {
                     const jwt = response.data.token;
                     commit('setJwt', jwt);
@@ -80,7 +80,7 @@ const auth = {
         },
         async logout({ dispatch }) {
             await api
-                .post('/api/account/logout')
+                .post('/api/auth/logout')
                 .then(() => {
                     dispatch('resetJwt');
                 });

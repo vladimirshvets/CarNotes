@@ -34,6 +34,20 @@ public class StatsService : IStatsService
         return await _carRepository.GetNumberOfCarsAsync();
     }
 
+    public async Task<int> NumberOfActionRecords(Guid carId)
+    {
+        string[] relationTypes = new[]
+        {
+            "FUEL",
+            "WASH",
+            "SERVICE",
+            "LEGAL"
+        };
+
+        return await _statsRepository.GetNumberOfRecordsAsync(
+            carId, relationTypes);
+    }
+
     public async Task<double> AverageFuelConsumption(Guid carId)
     {
         int minOdometerValue =
@@ -52,17 +66,8 @@ public class StatsService : IStatsService
         return totalFuelConsumed * 100 / distance;
     }
 
-    public async Task<int> NumberOfActionRecords(Guid carId)
+    public async Task<int> OdometerDelta(Guid carId)
     {
-        string[] relationTypes = new[]
-        {
-            "FUEL",
-            "WASH",
-            "SERVICE",
-            "LEGAL"
-        };
-
-        return await _statsRepository.GetNumberOfRecordsAsync(
-            carId, relationTypes);
+        return await _mileageRepository.GetDeltaOdometerValueAsync(carId);
     }
 }

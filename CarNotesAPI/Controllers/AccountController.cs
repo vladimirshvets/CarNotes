@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using CarNotesAPI.Data.Api;
 using CarNotesAPI.Data.Models;
 using CarNotesAPI.ViewModels.Account;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarNotesAPI.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
@@ -18,56 +18,6 @@ public class AccountController : ControllerBase
         _accountService = accountService;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(
-        [FromBody] RegisterViewModel viewModel)
-    {
-        var user = await _accountService.FindByEmailAsync(viewModel.Email);
-        if (user != null)
-        {
-            return Conflict(new { Message = "A user with specified email already exists." });
-        }
-
-        user = new User
-        {
-            Email = viewModel.Email
-        };
-        user.PasswordHash = _accountService.HashPassword(user, viewModel.Password);
-        User newlyCreatedUser = await _accountService.CreateAsync(user);
-
-        return Ok(new { Token = _accountService.ProduceJWToken(newlyCreatedUser) });
-
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
-    {
-        var user = await _accountService.FindByEmailAsync(viewModel.Email);
-        if (user == null ||
-            !await _accountService.CheckPasswordAsync(user, viewModel.Password))
-        {
-            return Unauthorized();
-        }
-
-        return Ok(new { Token = _accountService.ProduceJWToken(user) });
-    }
-
-    [Authorize]
-    [HttpPost("logout")]
-    public IActionResult Logout()
-    {
-        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        if (identity != null)
-        {
-            var claims = identity.Claims.Where(c => c.Type != JwtRegisteredClaimNames.Jti);
-            var newIdentity = new ClaimsIdentity(claims, identity.AuthenticationType);
-            HttpContext.User = new ClaimsPrincipal(newIdentity);
-        }
-
-        return Ok();
-    }
-
-    [Authorize]
     [HttpGet("profile")]
     public async Task<ActionResult<User>> GetUserProfile()
     {
@@ -88,8 +38,7 @@ public class AccountController : ControllerBase
 
         return Ok(user);
     }
-
-    [Authorize]
+    
     [HttpPut("profile/{userId}")]
     public async Task<ActionResult<User>> UpdateProfile(
         Guid userId, [FromBody] ProfileViewModel viewModel)

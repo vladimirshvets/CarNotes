@@ -32,5 +32,18 @@ public class StatsController : ControllerBase
     {
         return await _statsService.NumberOfActionRecords(carId);
     }
-}
 
+    [Authorize]
+    [HttpGet("average-consumption/{carId}")]
+    public async Task<double> GetAverageFuelConsumption(Guid carId)
+    {
+        return await _statsService.AverageFuelConsumption(carId);
+    }
+
+    [Authorize]
+    [HttpGet("odometer-delta/{carId}")]
+    public async Task<int> GetOdometerDelta(Guid carId)
+    {
+        return await _statsService.OdometerDelta(carId);
+    }
+}

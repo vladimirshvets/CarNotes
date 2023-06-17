@@ -42,7 +42,7 @@ public class UserRepository : IUserRepository
 
         var parameters = new Dictionary<string, object>
         {
-            { "email", email }
+            { "email", email.ToLower() }
         };
 
         var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
@@ -97,7 +97,7 @@ public class UserRepository : IUserRepository
         var parameters = new Dictionary<string, object>
         {
             { "userName", user.UserName },
-            { "email", user.Email },
+            { "email", user.Email.ToLower() },
             { "passwordHash", user.PasswordHash },
             { "firstName", user.FirstName },
             { "lastName", user.LastName }

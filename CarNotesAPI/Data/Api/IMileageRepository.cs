@@ -59,4 +59,12 @@ public interface IMileageRepository
     /// <param name="carId">Car identifier</param>
     /// <returns>Maximum odometer value.</returns>
     Task<int> GetMaxOdometerValueAsync(Guid carId);
+
+    /// <summary>
+    /// Returns the difference between the maximum and minimum odometer values
+    /// of a specified car.
+    /// </summary>
+    /// <param name="carId">Car identifier</param>
+    /// <returns>Delta odometer value.</returns>
+    Task<int> GetDeltaOdometerValueAsync(Guid carId);
 }

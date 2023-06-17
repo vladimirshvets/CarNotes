@@ -4,9 +4,9 @@ import HomePage from './views/HomePage.vue'
 import LoginPage from './views/User/LoginPage.vue'
 import RegisterPage from './views/User/RegisterPage.vue'
 import UserProfile from './views/User/UserProfile.vue'
-import CarForm from './views/Car/CarForm.vue'
 import CarList from './views/Car/CarList.vue'
 import CarProfile from './views/Car/CarProfile.vue'
+import CarDetails from './views/Car/CarDetails.vue'
 import CarStats from './views/Car/Profile/CarStats.vue'
 import LegalProceduresList from './views/Car/Profile/LegalProceduresList.vue'
 import RefuelingsList from './views/Car/Profile/RefuelingsList.vue'
@@ -97,18 +97,18 @@ const routes = [
         }
     },
     {
-        path: '/cars/form/:carId?',
-        name: 'CarForm',
-        component: CarForm,
+        path: '/cars/profile/:carId?',
+        name: 'CarProfile',
+        component: CarProfile,
         meta: {
             title: 'Car Profile',
             requiresAuth: true
         }
     },
     {
-        path: '/cars/profile/:carId',
-        name: 'CarProfile',
-        component: CarProfile,
+        path: '/cars/details/:carId',
+        name: 'CarDetails',
+        component: CarDetails,
         meta: {
             title: 'Car Stats',
             requiresAuth: true

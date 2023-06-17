@@ -9,7 +9,7 @@
                 <div class="heading">
                     <div class="title">My Garage</div>
                     <div class="actions">
-                        <v-btn :to="{ name: 'CarForm' }">Add car</v-btn>
+                        <v-btn :to="{ name: 'CarProfile' }">Add car</v-btn>
                     </div>
                 </div>
                 <v-row>
@@ -62,7 +62,7 @@
                             <v-card-actions class="mt-auto">
                                 <v-tooltip text="Edit" location="right">
                                     <template v-slot:activator="{ props }">
-                                        <v-btn :to="{ name: 'CarForm', params: { carId: car.id} }" icon="mdi-car-cog" v-bind="props"></v-btn>
+                                        <v-btn :to="{ name: 'CarProfile', params: { carId: car.id} }" icon="mdi-car-cog" v-bind="props"></v-btn>
                                     </template>
                                 </v-tooltip>
                                 <v-btn :to="{ name: 'CarStats', params: { carId: car.id} }" class="ml-auto">Details</v-btn>

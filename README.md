@@ -22,3 +22,5 @@
 - Allow to add spare parts with no installation date/mileage
 - Calculate USD prices based on exchange rate on a specific date
 - Use another mileage chart
+- Datepickers on forms
+- Notifications

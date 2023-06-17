@@ -53,9 +53,9 @@ builder.Services.AddTransient<IStatsRepository, StatsRepository>();
 builder.Services.AddTransient<INoteRepository<Service>, ServiceRepository>();
 builder.Services.AddTransient<INoteRepository<SparePart>, SparePartRepository>();
 builder.Services.AddTransient<INoteRepository<Washing>, WashingRepository>();
+builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IStatsService, StatsService>();
-
 
 builder.Services
     .AddAuthentication(options => {

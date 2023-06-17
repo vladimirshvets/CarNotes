@@ -11,11 +11,5 @@ namespace CarNotesAPI.Data.Api
         Task<User> CreateAsync(User user);
 
         Task<User> UpdateAsync(Guid userId, User user);
-
-        string ProduceJWToken(User user);
-
-        string HashPassword(User user, string password);
-
-        Task<bool> CheckPasswordAsync(User user, string password);
     }
 }
