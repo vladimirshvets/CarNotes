@@ -1,14 +1,30 @@
 <template>
-    <div>
-        Average Fuel Consumption, l. / 100 km: <span v-html="averageConsumption?.toFixed(2)"></span>
-    </div>
-    <div>
-        Total Distance, km: <span v-html="odometerDelta"></span>
-    </div>
-    <div>
-        Monthly Distance, km: {{ monthlyMileageStats?.toFixed(0) }}
-    </div>
-    <br />
+    <v-row>
+        <v-col cols="12" md="4" sm="4">
+            <div class="circle-wrap">
+                <div class="circle-text">
+                    <div class="value">{{ averageConsumption?.toFixed(2) }}</div>
+                    <div class="label">l. / 100 km</div>
+                </div>
+            </div>
+        </v-col>
+        <v-col cols="12" md="4" sm="4">
+            <div class="circle-wrap">
+                <div class="circle-text">
+                    <div class="value">{{ odometerDelta }}</div>
+                    <div class="label">km total</div>
+                </div>
+            </div>
+        </v-col>
+        <v-col cols="12" md="4" sm="4">
+            <div class="circle-wrap">
+                <div class="circle-text">
+                    <div class="value">{{ monthlyMileageStats?.toFixed(0) }}</div>
+                    <div class="label">km per month</div>
+                </div>
+            </div>
+        </v-col>
+    </v-row>
     <MileageChart :key="mileageChartKey" :labels="mileageDates" :values="mileageValues" />
 </template>
 
@@ -76,3 +92,28 @@ export default {
     }
 }
 </script>
+
+<style lang="less" scoped>
+.circle-wrap {
+    margin: auto;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 1px solid #016a59;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        text-align: center;
+
+        &.value {
+            font-size: 28px;
+        }
+
+        &.label {
+            color: #777;
+        }
+    }
+}
+</style>

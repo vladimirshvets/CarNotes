@@ -1,6 +1,25 @@
 <template>
-
     <div class="tab-wrap" id="car-profile">
+        <photo-slider></photo-slider>
+
+        <!-- <v-navigation-drawer expand-on-hover rail>
+            <v-list>
+                <v-list-item
+                    :prepend-avatar="require(`@/assets/car/profile/avatars/0.jpg`)"
+                    :title="carFullName"
+                    :subtitle="carSummary.plate"
+                ></v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list density="compact" nav>
+                <v-list-item prepend-icon="mdi-gas-station" title="Refuelings" value="refuelings" :to="{ name: 'RefuelingsList' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-car-wash" title="Washings" value="washings" :to="{ name: 'WashingsList' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-car-turbocharger" title="Spare Parts" value="spareparts" :to="{ name: 'SparePartsList' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-car-wrench" title="Services" value="services" :to="{ name: 'ServicesList' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-file-document-check" title="Legal Procedures" value="legalprocedures" :to="{ name: 'LegalProceduresList' }"></v-list-item>
+            </v-list>
+        </v-navigation-drawer> -->
+
         <v-card class="car-summary-wrapper">
             <v-card-title>
                 <span>{{ carSummary.make }} {{ carSummary.model }} {{ carSummary.generation }}</span>
@@ -69,15 +88,20 @@
 <script>
 import api from '@/api.js';
 import { mapGetters } from 'vuex';
+import PhotoSlider from '@/components/Car/Profile/PhotoSlider.vue';
 //import ProfileTab from '../../components/Car/Profile/ProfileTab.vue'
 
 export default {
     name: "CarDetails",
-    // components: {
-    //     ProfileTab
-    // },
+    components: {
+        PhotoSlider
+        // ProfileTab
+    },
     props: ["id"],
     computed: {
+        carFullName() {
+            return `${this.carSummary.make} ${this.carSummary.model} ${this.carSummary.generation}`
+        },
         ...mapGetters([
             'jwt'
         ])
@@ -110,59 +134,59 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    .car-summary-wrapper {
-        margin: 1em 2em;
+.car-summary-wrapper {
+    margin: 1em 2em;
 
-        .plate-number {
-            display: inline;
-            margin-left: 10px;
-            padding: 2px;
-            height: 25px;
-            width: 80px;
-            font-size: 16px;
+    .plate-number {
+        display: inline;
+        margin-left: 10px;
+        padding: 2px;
+        height: 25px;
+        width: 80px;
+        font-size: 16px;
+    }
+}
+
+.car-tabs-wrapper {
+    margin: 0 2em;
+
+    .links {
+        background-color: #009688;
+        color: #fff;
+        font-size: 16px;
+
+        .link-separator {
+            margin: 0 10px;
         }
     }
 
-    .car-tabs-wrapper {
-        margin: 0 2em;
+    .car-profile-tab-link {
+        text-decoration: none;
+        cursor: pointer;
+        color: #fff;
+        font-weight: 500;
 
-        .links {
-            background-color: #009688;
-            color: #fff;
+        &:hover {
+            color: #e6ff84;
+        }
+
+        &.router-link-active {
+            color: #cdff07;
+        }
+
+        i {
             font-size: 16px;
-
-            .link-separator {
-                margin: 0 10px;
-            }
+            margin-right: 5px;
+            margin-bottom: 4px;
         }
 
-        .car-profile-tab-link {
-            text-decoration: none;
-            cursor: pointer;
-            color: #fff;
-            font-weight: 500;
-
-            &:hover {
-                color: #e6ff84;
-            }
-
-            &.router-link-active {
-                color: #cdff07;
-            }
-
-            i {
-                font-size: 16px;
-                margin-right: 5px;
-                margin-bottom: 4px;
-            }
-
-            span {
-                text-transform: uppercase;
-            }
-        }
-
-        .car-profile-tab {
-            margin: 1.4em;
+        span {
+            text-transform: uppercase;
         }
     }
+
+    .car-profile-tab {
+        margin: 1.4em;
+    }
+}
 </style>
