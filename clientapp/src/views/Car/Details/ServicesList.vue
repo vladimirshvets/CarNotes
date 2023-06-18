@@ -1,13 +1,15 @@
 <template>
-    <div v-if="isLoading"></div>
-    <div v-else class="tab-wrap" id="car-services">
-        <div class="summary-wrap">
+    <section class="services-list stats-section section-light">
+        <div class="section-title">Services</div>
+        <div class="section-content">
             <total-costs
                 :totalAmount="totalAmountSum"
                 :baseTotalAmount="baseTotalAmountSum"
             />
-        </div>
-        <div class="form-wrap">
+            <service-grid
+                :items="items"
+                @editItem="triggerForm(true)"
+            />
             <service-form
                 :showForm="showForm"
                 @triggerForm="triggerForm"
@@ -17,29 +19,20 @@
                 :suggestedTitles="titleList"
                 :suggestedAddresses="addressList"
             />
-        </div>
-        <div class="grid-wrap">
-            <service-grid
-                :items="items"
-                @editItem="triggerForm(true)"
-            />
-        </div>
-        <div class="actions-wrap">
             <v-btn
                 class="button-add"
                 icon="mdi-plus"
                 size="large"
-                color="primary"
                 @click="triggerForm(true)"
             ></v-btn>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
-import TotalCosts from '@/components/Car/Details/TotalCosts.vue';
+import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
 import ServiceForm from '@/components/Car/Details/ServiceForm.vue';
 import ServiceGrid from '@/components/Car/Details/ServiceGrid.vue';
 
@@ -167,21 +160,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.summary-wrap {
-    padding-bottom: 2em;
-}
+.button-add {
+    background-color: #016a59;
+    color: #fff;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    z-index: 1000;
+    transition: transform 0.3s;
 
-.actions-wrap {
-    .button-add {
-        position: fixed;
-        right: 50px;
-        bottom: 50px;
-        z-index: 1000;
-        transition: transform 0.3s;
-
-        &:hover {
-            transform: rotate(90deg) scale(1.1);
-        }
+    &:hover {
+        transform: rotate(90deg) scale(1.1);
     }
 }
 </style>

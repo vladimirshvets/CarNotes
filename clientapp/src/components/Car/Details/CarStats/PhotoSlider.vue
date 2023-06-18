@@ -33,7 +33,7 @@ export default {
 
 <style land="less" scoped>
 .slider-image {
-    margin: 0 1px;
+    margin: 2px 1px 0;
     max-height: 100%;
 }
 </style>

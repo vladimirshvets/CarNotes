@@ -1,4 +1,5 @@
 <template>
+    <photo-slider />
     <car-summary :carInstance="carInstance"/>
     <distance-stats :carInstance="carInstance" />
     <money-spendings />
@@ -6,7 +7,8 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
+import PhotoSlider from '@/components/Car/Details/CarStats/PhotoSlider.vue';
 import CarSummary from '@/components/Car/Details/CarStats/CarSummary.vue';
 import DistanceStats from '@/components/Car/Details/CarStats/DistanceStats.vue';
 import MoneySpendings from '@/components/Car/Details/CarStats/MoneySpendings.vue';
@@ -17,6 +19,7 @@ export default {
         carInstance: Object
     },
     components: {
+        PhotoSlider,
         CarSummary,
         DistanceStats,
         MoneySpendings,
@@ -38,24 +41,17 @@ export default {
     },
     created() {
         this.$store.dispatch('loadMileages', this.$route.params.carId);
-    },
-    methods: {
-        ...mapMutations([
-            'setMileages',
-        ])
     }
 }
 </script>
 
 <style lang="less">
 .stats-section {
-    padding: 3em 3em;
+    padding: 3em;
 
     &.section-dark {
         background-color: rgba(1, 106, 89, 0.1);
     }
-
-    &.section-light {}
 
     .section-title {
         letter-spacing: 0.1em;

@@ -1,57 +1,57 @@
 <template>
-    <div v-if="isLoading"></div>
-    <div v-else class="tab-wrap" id="car-spare-parts">
-        <div class="summary-wrap">
+    <section class="spare-parts-list stats-section section-light">
+        <div class="section-title">Spare Parts</div>
+        <div class="section-content">
             <total-costs
                 :totalAmount="totalAmountSum"
                 :baseTotalAmount="baseTotalAmountSum"
             />
-        </div>
-        <div class="filter-wrap">
-            <v-row>
-                <v-col cols="12" md="6">
-                    <v-select
-                        v-model="categoryFilterState"
-                        :items="categoryFilterOptions"
-                        @update:model-value="applyFilter()"
-                        item-title="title"
-                        item-value="value"
-                        chips
-                        label="Show Categories"
-                        multiple
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" md="6">
-                    <v-select
-                        v-model="groupFilterState"
-                        :items="groupFilterOptions"
-                        @update:model-value="applyFilter()"
-                        chips
-                        label="Filter by Group"
-                        multiple
-                    >
-                        <template v-slot:selection="{ item, index }">
-                            <v-chip v-if="index < 2">
-                                <span>{{ item.title }}</span>
-                            </v-chip>
-                            <span
-                                v-if="index === 2"
-                                class="text-grey text-caption align-self-center"
-                            >
-                                (+{{ value.length - 2 }} others)
-                            </span>
-                        </template>
-                    </v-select>
-                </v-col>
-            </v-row>
-        </div>
-        <div class="filter-summary-wrap">
+            <div class="filter-wrap">
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-select
+                            v-model="categoryFilterState"
+                            :items="categoryFilterOptions"
+                            @update:model-value="applyFilter()"
+                            item-title="title"
+                            item-value="value"
+                            chips
+                            label="Show Categories"
+                            multiple
+                        ></v-select>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-select
+                            v-model="groupFilterState"
+                            :items="groupFilterOptions"
+                            @update:model-value="applyFilter()"
+                            chips
+                            label="Filter by Group"
+                            multiple
+                        >
+                            <template v-slot:selection="{ item, index }">
+                                <v-chip v-if="index < 2">
+                                    <span>{{ item.title }}</span>
+                                </v-chip>
+                                <span
+                                    v-if="index === 2"
+                                    class="text-grey text-caption align-self-center"
+                                >
+                                    (+{{ value.length - 2 }} others)
+                                </span>
+                            </template>
+                        </v-select>
+                    </v-col>
+                </v-row>
+            </div>
             <total-costs
                 :totalAmount="filteredTotalAmountSum"
                 :baseTotalAmount="filteredBaseTotalAmountSum"
             />
-        </div>
-        <div class="form-wrap">
+            <spare-part-grid
+                :items="filteredItems"
+                @editItem="triggerForm(true)"
+            />
             <!-- ToDo: pass autofill data -->
             <spare-part-form
                 :showForm="showForm"
@@ -62,29 +62,20 @@
                 :suggestedCategories="categoryFilterOptions"
                 :suggestedGroups="groupList"
             />
-        </div>
-        <div class="grid-wrap">
-            <spare-part-grid
-                :items="filteredItems"
-                @editItem="triggerForm(true)"
-            />
-        </div>
-        <div class="actions-wrap">
             <v-btn
                 class="button-add"
                 icon="mdi-plus"
                 size="large"
-                color="primary"
                 @click="triggerForm(true)"
             ></v-btn>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
-import TotalCosts from '@/components/Car/Details/TotalCosts.vue';
+import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
 import SparePartForm from '@/components/Car/Details/SparePartForm.vue';
 import SparePartGrid from '@/components/Car/Details/SparePartGrid.vue';
 export default {
@@ -253,21 +244,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.summary-wrap, .filter-summary-wrap {
-    padding-bottom: 2em;
-}
+.button-add {
+    background-color: #016a59;
+    color: #fff;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    z-index: 1000;
+    transition: transform 0.3s;
 
-.actions-wrap {
-    .button-add {
-        position: fixed;
-        right: 50px;
-        bottom: 50px;
-        z-index: 1000;
-        transition: transform 0.3s;
-
-        &:hover {
-            transform: rotate(90deg) scale(1.1);
-        }
+    &:hover {
+        transform: rotate(90deg) scale(1.1);
     }
 }
 </style>

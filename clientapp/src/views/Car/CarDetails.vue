@@ -19,18 +19,14 @@
             </v-list>
         </v-navigation-drawer>
     </div>
-    <photo-slider />
     <router-view :carInstance="carInstance"></router-view>
 </template>
 
 <script>
+import '@/styles/views/car/details/_common.less';
 import api from '@/api.js';
-import PhotoSlider from '@/components/Car/Details/PhotoSlider.vue';
 export default {
     name: "CarDetails",
-    components: {
-        PhotoSlider
-    },
     computed: {
         carFullName() {
             return `${this.carInstance.make} ${this.carInstance.model} ${this.carInstance.generation}`
