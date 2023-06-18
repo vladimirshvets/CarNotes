@@ -7,19 +7,19 @@
             <v-row>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.make"
+                        v-model="carInstance.make"
                         label="Make"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.model"
+                        v-model="carInstance.model"
                         label="Model"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.generation"
+                        v-model="carInstance.generation"
                         label="Generation"
                     ></v-text-field>
                 </v-col>
@@ -27,19 +27,19 @@
             <v-row>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.year"
+                        v-model="carInstance.year"
                         label="Year"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.ownedFrom"
+                        v-model="carInstance.ownedFrom"
                         label="Owned From"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.ownedTo"
+                        v-model="carInstance.ownedTo"
                         label="Owned To"
                     ></v-text-field>
                 </v-col>
@@ -47,13 +47,13 @@
             <v-row>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.vin"
+                        v-model="carInstance.vin"
                         label="VIN"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.plate"
+                        v-model="carInstance.plate"
                         label="Plate Number"
                     ></v-text-field>
                 </v-col>
@@ -61,28 +61,28 @@
             <v-row>
                 <v-col cols="3">
                     <v-select
-                        v-model="carInfo.engineType"
+                        v-model="carInstance.engineType"
                         label="Engine Type"
                         :items="engineTypes"
                     ></v-select>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.engineDisplacement"
+                        v-model="carInstance.engineDisplacement"
                         label="Engine Displacement"
                         disabled
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.enginePower"
+                        v-model="carInstance.enginePower"
                         label="Engine Power"
                         disabled
                     ></v-text-field>
                 </v-col>
                 <v-col cols="3">
                     <v-text-field
-                        v-model="carInfo.transmissionType"
+                        v-model="carInstance.transmissionType"
                         label="Transmission Type"
                         disabled
                     ></v-text-field>
@@ -135,7 +135,7 @@ export default {
                 { title: "Electric", value: 3 },
             ],
             carId: this.$route.params.carId,
-            carInfo: {},
+            carInstance: {},
             removalModal: false
         }
     },
@@ -144,7 +144,7 @@ export default {
             await api
                 .get(`/api/cars/${this.carId}`)
                 .then((response) => {
-                    this.carInfo = response.data;
+                    this.carInstance = response.data;
                 })
                 .catch((error) => {
                     console.error(error);
@@ -155,7 +155,7 @@ export default {
         async onSubmit() {
             if (!this.carId) {
                 await api
-                    .post(`/api/cars`, this.carInfo)
+                    .post(`/api/cars`, this.carInstance)
                     .then(() => {
                         this.$router.push({ name: 'Cars' });
                     })
@@ -164,7 +164,7 @@ export default {
                     })
             } else {
                 await api
-                    .put(`/api/cars/${this.carId}`, this.carInfo)
+                    .put(`/api/cars/${this.carId}`, this.carInstance)
                     .then(() => {
                         this.$router.push({ name: 'Cars' });
                     })

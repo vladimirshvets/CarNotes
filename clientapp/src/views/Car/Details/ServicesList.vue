@@ -1,6 +1,6 @@
 <template>
     <div v-if="isLoading"></div>
-    <div v-else class="tab-wrap" id="car-legal-procedures">
+    <div v-else class="tab-wrap" id="car-services">
         <div class="summary-wrap">
             <total-costs
                 :totalAmount="totalAmountSum"
@@ -8,18 +8,18 @@
             />
         </div>
         <div class="form-wrap">
-            <legal-procedure-form
+            <service-form
                 :showForm="showForm"
                 @triggerForm="triggerForm"
                 @save="save"
                 @update="update"
                 @remove="remove"
                 :suggestedTitles="titleList"
-                :suggestedGroups="groupList"
+                :suggestedAddresses="addressList"
             />
         </div>
         <div class="grid-wrap">
-            <legal-procedure-grid
+            <service-grid
                 :items="items"
                 @editItem="triggerForm(true)"
             />
@@ -39,16 +39,17 @@
 <script>
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
-import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
-import LegalProcedureForm from '@/components/Car/Profile/LegalProcedureForm.vue';
-import LegalProcedureGrid from '@/components/Car/Profile/LegalProcedureGrid.vue';
+import TotalCosts from '@/components/Car/Details/TotalCosts.vue';
+import ServiceForm from '@/components/Car/Details/ServiceForm.vue';
+import ServiceGrid from '@/components/Car/Details/ServiceGrid.vue';
+
 
 export default {
-    name: 'LegalProceduresList',
+    name: 'ServicesList',
     components: {
         TotalCosts,
-        LegalProcedureForm,
-        LegalProcedureGrid
+        ServiceForm,
+        ServiceGrid
     },
     computed: {
         totalAmountSum() {
@@ -66,9 +67,9 @@ export default {
                 .map(r => r.title)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
-        groupList() {
+        addressList() {
             return this.items
-                .map(r => r.group)
+                .map(r => r.address)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
         ...mapGetters([
@@ -92,7 +93,7 @@ export default {
         async getItems() {
             this.setIsLoading(true);
             await api
-                .get(`/api/legalProcedures/getByCar/${this.$route.params.carId}`)
+                .get(`/api/services/getByCar/${this.$route.params.carId}`)
                 .then((response) => {
                     this.items = response.data;
                 })
@@ -103,7 +104,7 @@ export default {
         async save(payload) {
             this.setIsLoading(true);
             await api
-                .post('/api/legalProcedures', payload)
+                .post('/api/services', payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -119,7 +120,7 @@ export default {
         async update(id, payload) {
             this.setIsLoading(true);
             await api
-                .put(`/api/legalProcedures/${id}`, payload)
+                .put(`/api/services/${id}`, payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -135,7 +136,7 @@ export default {
         async remove(id, payload) {
             this.setIsLoading(true);
             await api
-                .delete(`/api/legalProcedures/${id}`, {
+                .delete(`/api/services/${id}`, {
                     data: payload
                 })
                 .then(() => {

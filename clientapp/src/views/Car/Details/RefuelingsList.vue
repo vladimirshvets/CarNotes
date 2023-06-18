@@ -1,6 +1,6 @@
 <template>
     <div v-if="isLoading"></div>
-    <div v-else class="tab-wrap" id="car-services">
+    <div v-else class="tab-wrap" id="car-refuelings">
         <div class="summary-wrap">
             <total-costs
                 :totalAmount="totalAmountSum"
@@ -8,18 +8,18 @@
             />
         </div>
         <div class="form-wrap">
-            <service-form
+            <refueling-form
                 :showForm="showForm"
                 @triggerForm="triggerForm"
                 @save="save"
                 @update="update"
                 @remove="remove"
-                :suggestedTitles="titleList"
+                :suggestedDistributors="distributorList"
                 :suggestedAddresses="addressList"
             />
         </div>
         <div class="grid-wrap">
-            <service-grid
+            <refueling-grid
                 :items="items"
                 @editItem="triggerForm(true)"
             />
@@ -39,17 +39,15 @@
 <script>
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
-import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
-import ServiceForm from '@/components/Car/Profile/ServiceForm.vue';
-import ServiceGrid from '@/components/Car/Profile/ServiceGrid.vue';
-
-
+import TotalCosts from '@/components/Car/Details/TotalCosts.vue';
+import RefuelingForm from '@/components/Car/Details/RefuelingForm.vue';
+import RefuelingGrid from '@/components/Car/Details/RefuelingGrid.vue';
 export default {
-    name: 'ServicesList',
+    name: 'RefuelingsList',
     components: {
         TotalCosts,
-        ServiceForm,
-        ServiceGrid
+        RefuelingForm,
+        RefuelingGrid
     },
     computed: {
         totalAmountSum() {
@@ -62,9 +60,9 @@ export default {
                 (sum, item) => sum + Number(item.baseTotalAmount), 0
             )
         },
-        titleList() {
+        distributorList() {
             return this.items
-                .map(r => r.title)
+                .map(r => r.distributor)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
         addressList() {
@@ -93,7 +91,7 @@ export default {
         async getItems() {
             this.setIsLoading(true);
             await api
-                .get(`/api/services/getByCar/${this.$route.params.carId}`)
+                .get(`/api/refuelings/getByCar/${this.$route.params.carId}`)
                 .then((response) => {
                     this.items = response.data;
                 })
@@ -104,7 +102,7 @@ export default {
         async save(payload) {
             this.setIsLoading(true);
             await api
-                .post('/api/services', payload)
+                .post('/api/refuelings', payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -120,7 +118,7 @@ export default {
         async update(id, payload) {
             this.setIsLoading(true);
             await api
-                .put(`/api/services/${id}`, payload)
+                .put(`/api/refuelings/${id}`, payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -136,7 +134,7 @@ export default {
         async remove(id, payload) {
             this.setIsLoading(true);
             await api
-                .delete(`/api/services/${id}`, {
+                .delete(`/api/refuelings/${id}`, {
                     data: payload
                 })
                 .then(() => {

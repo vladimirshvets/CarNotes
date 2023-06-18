@@ -7,12 +7,12 @@ import UserProfile from './views/User/UserProfile.vue'
 import CarList from './views/Car/CarList.vue'
 import CarProfile from './views/Car/CarProfile.vue'
 import CarDetails from './views/Car/CarDetails.vue'
-import CarStats from './views/Car/Profile/CarStats.vue'
-import LegalProceduresList from './views/Car/Profile/LegalProceduresList.vue'
-import RefuelingsList from './views/Car/Profile/RefuelingsList.vue'
-import ServicesList from './views/Car/Profile/ServicesList.vue'
-import SparePartsList from './views/Car/Profile/SparePartsList.vue'
-import WashingsList from './views/Car/Profile/WashingsList.vue'
+import CarStats from './views/Car/Details/CarStats.vue'
+import LegalProceduresList from './views/Car/Details/LegalProceduresList.vue'
+import RefuelingsList from './views/Car/Details/RefuelingsList.vue'
+import ServicesList from './views/Car/Details/ServicesList.vue'
+import SparePartsList from './views/Car/Details/SparePartsList.vue'
+import WashingsList from './views/Car/Details/WashingsList.vue'
 
 const requireAuth = (to, from, next) => {
     if (store.getters.isAuthenticated) {

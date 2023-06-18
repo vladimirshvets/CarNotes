@@ -18,7 +18,7 @@ export default {
     },
     data() {
         return {
-            photos: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            photos: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
             sliderOptions: {
                 height: '10em',
                 type: 'loop',

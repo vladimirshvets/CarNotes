@@ -1,12 +1,10 @@
 <template>
-    <div class="stats-section-wrap stats-mileage-chart">
-        <div class="stats-section-title">
-            <h4>Mileage History</h4>
-        </div>
-        <div class="stats-section-content">
+    <section class="distance-stats stats-section section-dark">
+        <div class="section-title">Mileage History</div>
+        <div class="section-content mileage-chart">
             <Line :data="chartData" :options="chartOptions" />
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -19,8 +17,8 @@ import {
     Title,
     Tooltip,
     Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
+} from 'chart.js';
+import { Line } from 'vue-chartjs';
 
 ChartJS.register(
     CategoryScale,
@@ -60,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-    .stats-mileage-chart canvas {
+    .mileage-chart canvas {
         height: 250px;
     }
 </style>

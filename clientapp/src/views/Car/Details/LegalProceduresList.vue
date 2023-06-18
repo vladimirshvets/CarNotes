@@ -1,71 +1,26 @@
 <template>
     <div v-if="isLoading"></div>
-    <div v-else class="tab-wrap" id="car-spare-parts">
+    <div v-else class="tab-wrap" id="car-legal-procedures">
         <div class="summary-wrap">
             <total-costs
                 :totalAmount="totalAmountSum"
                 :baseTotalAmount="baseTotalAmountSum"
             />
         </div>
-        <div class="filter-wrap">
-            <v-row>
-                <v-col cols="12" md="6">
-                    <v-select
-                        v-model="categoryFilterState"
-                        :items="categoryFilterOptions"
-                        @update:model-value="applyFilter()"
-                        item-title="title"
-                        item-value="value"
-                        chips
-                        label="Show Categories"
-                        multiple
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" md="6">
-                    <v-select
-                        v-model="groupFilterState"
-                        :items="groupFilterOptions"
-                        @update:model-value="applyFilter()"
-                        chips
-                        label="Filter by Group"
-                        multiple
-                    >
-                        <template v-slot:selection="{ item, index }">
-                            <v-chip v-if="index < 2">
-                                <span>{{ item.title }}</span>
-                            </v-chip>
-                            <span
-                                v-if="index === 2"
-                                class="text-grey text-caption align-self-center"
-                            >
-                                (+{{ value.length - 2 }} others)
-                            </span>
-                        </template>
-                    </v-select>
-                </v-col>
-            </v-row>
-        </div>
-        <div class="filter-summary-wrap">
-            <total-costs
-                :totalAmount="filteredTotalAmountSum"
-                :baseTotalAmount="filteredBaseTotalAmountSum"
-            />
-        </div>
         <div class="form-wrap">
-            <!-- ToDo: pass autofill data -->
-            <spare-part-form
+            <legal-procedure-form
                 :showForm="showForm"
                 @triggerForm="triggerForm"
                 @save="save"
                 @update="update"
                 @remove="remove"
-                :suggestedCategories="categoryFilterOptions"
+                :suggestedTitles="titleList"
                 :suggestedGroups="groupList"
             />
         </div>
         <div class="grid-wrap">
-            <spare-part-grid
-                :items="filteredItems"
+            <legal-procedure-grid
+                :items="items"
                 @editItem="triggerForm(true)"
             />
         </div>
@@ -84,43 +39,33 @@
 <script>
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
-import TotalCosts from '@/components/Car/Profile/TotalCosts.vue';
-import SparePartForm from '@/components/Car/Profile/SparePartForm.vue';
-import SparePartGrid from '@/components/Car/Profile/SparePartGrid.vue';
+import TotalCosts from '@/components/Car/Details/TotalCosts.vue';
+import LegalProcedureForm from '@/components/Car/Details/LegalProcedureForm.vue';
+import LegalProcedureGrid from '@/components/Car/Details/LegalProcedureGrid.vue';
+
 export default {
-    name: 'SparePartsList',
+    name: 'LegalProceduresList',
     components: {
         TotalCosts,
-        SparePartForm,
-        SparePartGrid
+        LegalProcedureForm,
+        LegalProcedureGrid
     },
     computed: {
         totalAmountSum() {
             return this.items.reduce(
                 (sum, item) => sum + Number(item.totalAmount), 0
-            );
+            )
         },
         baseTotalAmountSum() {
             return this.items.reduce(
                 (sum, item) => sum + Number(item.baseTotalAmount), 0
-            );
+            )
         },
-        filteredTotalAmountSum() {
-            return this.filteredItems.reduce(
-                (sum, item) => sum + Number(item.totalAmount), 0
-            );
-        },
-        filteredBaseTotalAmountSum() {
-            return this.filteredItems.reduce(
-                (sum, item) => sum + Number(item.baseTotalAmount), 0
-            );
-        },
-        groupFilterOptions() {
+        titleList() {
             return this.items
-                .map(item => item.group)
+                .map(r => r.title)
                 .filter((value, index, self) => value && self.indexOf(value) === index);
         },
-        // ToDo: prepare autofill data
         groupList() {
             return this.items
                 .map(r => r.group)
@@ -133,24 +78,7 @@ export default {
     data() {
         return {
             items: [],
-            filteredItems: [],
-            showForm: false,
-            categoryFilterState: [],
-            categoryFilterOptions: [
-                {
-                    title: "Maintenance",
-                    value: "maintenance"
-                },
-                {
-                    title: "Service",
-                    value: "service"
-                },
-                {
-                    title: "Retrofit",
-                    value: "retrofit"
-                }
-            ],
-            groupFilterState: []
+            showForm: false
         }
     },
     async created() {
@@ -164,33 +92,18 @@ export default {
         async getItems() {
             this.setIsLoading(true);
             await api
-                .get(`/api/spareParts/getByCar/${this.$route.params.carId}`)
+                .get(`/api/legalProcedures/getByCar/${this.$route.params.carId}`)
                 .then((response) => {
                     this.items = response.data;
                 })
                 .finally(() => {
                     this.setIsLoading(false);
                 });
-
-            // ToDo: should it be called every time after getItems()?
-            this.categoryFilterState = this.categoryFilterOptions.map(option => option.value);
-            this.applyFilter();
-        },
-        applyFilter() {
-            const categories = this.categoryFilterState;
-            this.filteredItems =
-                this.items.filter(item => categories.includes(item.category));
-
-            const groups = this.groupFilterState;
-            if (groups.length > 0) {
-                this.filteredItems =
-                    this.filteredItems.filter(item => groups.includes(item.group));
-            }
         },
         async save(payload) {
             this.setIsLoading(true);
             await api
-                .post('/api/spareParts', payload)
+                .post('/api/legalProcedures', payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -206,7 +119,7 @@ export default {
         async update(id, payload) {
             this.setIsLoading(true);
             await api
-                .put(`/api/spareParts/${id}`, payload)
+                .put(`/api/legalProcedures/${id}`, payload)
                 .then(() => {
                     this.actualizeData();
                     this.triggerForm(false);
@@ -222,7 +135,7 @@ export default {
         async remove(id, payload) {
             this.setIsLoading(true);
             await api
-                .delete(`/api/spareParts/${id}`, {
+                .delete(`/api/legalProcedures/${id}`, {
                     data: payload
                 })
                 .then(() => {
@@ -253,7 +166,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.summary-wrap, .filter-summary-wrap {
+.summary-wrap {
     padding-bottom: 2em;
 }
 
