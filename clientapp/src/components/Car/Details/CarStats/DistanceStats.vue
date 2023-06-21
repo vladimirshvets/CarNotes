@@ -1,6 +1,9 @@
 <template>
     <section class="distance-stats stats-section section-dark">
-        <div class="section-title">Distance</div>
+        <div class="section-header">
+            <div class="section-title">Distance</div>
+            <div class="section-subtitle">"1/4 times around the world"</div>
+        </div>
         <div class="section-content">
             <v-row>
                 <v-col cols="12" md="4" sm="4">

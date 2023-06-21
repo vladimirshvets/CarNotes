@@ -1,6 +1,8 @@
 <template>
     <section class="services-list stats-section section-light">
-        <div class="section-title">Services</div>
+        <div class="section-header">
+            <div class="section-title">Services</div>
+        </div>
         <div class="section-content">
             <total-costs
                 :totalAmount="totalAmountSum"

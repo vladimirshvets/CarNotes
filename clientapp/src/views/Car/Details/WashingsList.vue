@@ -1,6 +1,8 @@
 <template>
     <section class="washings-list stats-section section-light">
-        <div class="section-title">Washings</div>
+        <div class="section-header">
+            <div class="section-title">Washings</div>
+        </div>
         <div class="section-content">
             <total-costs
                 :totalAmount="totalAmountSum"

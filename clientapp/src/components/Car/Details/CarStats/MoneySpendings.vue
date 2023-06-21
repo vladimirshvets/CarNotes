@@ -1,6 +1,9 @@
 <template>
     <section class="distance-stats stats-section section-light">
-        <div class="section-title">Spendings</div>
+        <div class="section-header">
+            <div class="section-title">Spendings</div>
+            <div class="section-subtitle quote">"an arm and a leg"</div>
+        </div>
         <div class="section-content">
             <div class="spendings-summary">
                 <v-row>

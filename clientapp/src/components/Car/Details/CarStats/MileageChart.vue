@@ -1,8 +1,10 @@
 <template>
     <section class="distance-stats stats-section section-dark">
-        <div class="section-title">Mileage History</div>
-        <div class="section-content mileage-chart">
-            <Line :data="chartData" :options="chartOptions" />
+        <div class="section-header">
+            <div class="section-title">Mileage History</div>
+            <div class="section-content mileage-chart">
+                <Line :data="chartData" :options="chartOptions" />
+            </div>
         </div>
     </section>
 </template>

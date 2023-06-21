@@ -53,13 +53,21 @@ export default {
         background-color: rgba(1, 106, 89, 0.1);
     }
 
-    .section-title {
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        text-align: center;
-        font-size: 28px;
-        font-weight: 200;
+    .section-header {
         padding-bottom: 1.5em;
+        text-align: center;
+        letter-spacing: 0.1em;
+        font-weight: 200;
+
+        .section-title {
+            font-size: 28px;
+            text-transform: uppercase;
+        }
+
+        .section-subtitle {
+            font-size: 22px;
+            font-style: italic;
+        }
     }
 }
 </style>

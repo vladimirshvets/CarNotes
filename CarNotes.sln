@@ -11,9 +11,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		notes.txt = notes.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotesAPI", "CarNotesAPI\CarNotesAPI.csproj", "{5EAB906E-1A30-4553-907C-B1F70D3A29A6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{D6CD07F8-FD2E-41AD-B0D6-F9896CDD1741}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotesAPI.Tests", "CarNotesAPI.Tests\CarNotesAPI.Tests.csproj", "{16F64293-7ED1-4AC7-85B0-2B6ED1850BB2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{7862ACC9-75EE-4029-88E9-ACA37FF70B09}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B67BD266-7B93-44FD-8720-EBFFA6147E95}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{37B5E141-AC06-46EB-8007-B39FC3ED930B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D1242B29-E3A8-42E1-8656-3E50E0210E6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Domain", "src\Core\CarNotes.Domain\CarNotes.Domain.csproj", "{51991B65-105B-4982-96D1-CC28C746EC1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Application", "src\Core\CarNotes.Application\CarNotes.Application.csproj", "{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Persistence.Neo4j", "src\Infrastructure\CarNotes.Persistence.Neo4j\CarNotes.Persistence.Neo4j.csproj", "{F451FBCA-BF8C-4883-9569-BB742CE83DF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.WebAPI", "src\Presentation\CarNotes.WebAPI\CarNotes.WebAPI.csproj", "{9570CD66-8B22-4BE6-9ECE-C2544CA55F12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Application.UnitTests", "tests\CarNotes.Application.UnitTests\CarNotes.Application.UnitTests.csproj", "{C70B559B-4E4A-4A1E-AC26-5160A2D501C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Persistence.Neo4j.UnitTests", "tests\CarNotes.Persistence.Neo4j.UnitTests\CarNotes.Persistence.Neo4j.UnitTests.csproj", "{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,19 +39,46 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5EAB906E-1A30-4553-907C-B1F70D3A29A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EAB906E-1A30-4553-907C-B1F70D3A29A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EAB906E-1A30-4553-907C-B1F70D3A29A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EAB906E-1A30-4553-907C-B1F70D3A29A6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16F64293-7ED1-4AC7-85B0-2B6ED1850BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16F64293-7ED1-4AC7-85B0-2B6ED1850BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16F64293-7ED1-4AC7-85B0-2B6ED1850BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16F64293-7ED1-4AC7-85B0-2B6ED1850BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51991B65-105B-4982-96D1-CC28C746EC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51991B65-105B-4982-96D1-CC28C746EC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51991B65-105B-4982-96D1-CC28C746EC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51991B65-105B-4982-96D1-CC28C746EC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F451FBCA-BF8C-4883-9569-BB742CE83DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F451FBCA-BF8C-4883-9569-BB742CE83DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F451FBCA-BF8C-4883-9569-BB742CE83DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F451FBCA-BF8C-4883-9569-BB742CE83DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF8151E-178A-493D-97E6-3A884972DA72}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6CD07F8-FD2E-41AD-B0D6-F9896CDD1741} = {37B5E141-AC06-46EB-8007-B39FC3ED930B}
+		{7862ACC9-75EE-4029-88E9-ACA37FF70B09} = {37B5E141-AC06-46EB-8007-B39FC3ED930B}
+		{D1242B29-E3A8-42E1-8656-3E50E0210E6B} = {37B5E141-AC06-46EB-8007-B39FC3ED930B}
+		{51991B65-105B-4982-96D1-CC28C746EC1F} = {D1242B29-E3A8-42E1-8656-3E50E0210E6B}
+		{F154871E-ED3A-42A3-BEDB-FFC93A58E7AD} = {D1242B29-E3A8-42E1-8656-3E50E0210E6B}
+		{F451FBCA-BF8C-4883-9569-BB742CE83DF3} = {D6CD07F8-FD2E-41AD-B0D6-F9896CDD1741}
+		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12} = {7862ACC9-75EE-4029-88E9-ACA37FF70B09}
+		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7} = {B67BD266-7B93-44FD-8720-EBFFA6147E95}
+		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86} = {B67BD266-7B93-44FD-8720-EBFFA6147E95}
 	EndGlobalSection
 EndGlobal
