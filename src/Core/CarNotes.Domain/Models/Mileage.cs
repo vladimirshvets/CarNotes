@@ -1,6 +1,4 @@
-﻿using Neo4j.Driver;
-
-namespace CarNotes.Domain.Models
+﻿namespace CarNotes.Domain.Models
 {
     public class Mileage
     {
@@ -18,24 +16,5 @@ namespace CarNotes.Domain.Models
         /// Odometer value.
         /// </summary>
         public int OdometerValue { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Mileage"/>.
-        /// </summary>
-        public Mileage()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Mileage"/>
-        /// based on properties represented as a dictionary.
-        /// </summary>
-        /// <param name="node">Set of property names and their values</param>
-        public Mileage(Dictionary<string, object> node)
-        {
-            Id = new Guid((string)node["id"]);
-            Date = ((LocalDate)node["date"]).ToDateOnly();
-            OdometerValue = (int)(long)node["odometer"];
-        }
     }
 }

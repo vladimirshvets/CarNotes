@@ -1,5 +1,4 @@
 ﻿using CarNotes.Domain.Interfaces.Services;
-using Neo4j.Driver;
 
 namespace CarNotes.Domain.Models.Notes
 {
@@ -34,27 +33,5 @@ namespace CarNotes.Domain.Models.Notes
         /// Expiration date.
         /// </summary>
         public DateOnly? ExpirationDate { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="LegalProcedure"/>.
-        /// </summary>
-        public LegalProcedure()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="LegalProcedure"/>
-        /// based on properties represented as a dictionary.
-        /// </summary>
-        /// <param name="node">Set of property names and their values</param>
-        public LegalProcedure(Dictionary<string, object> node)
-        {
-            Id = new Guid((string)node["id"]);
-            Group = node.TryGetValue("group", out object? group) ? (string)group : null;
-            Title = (string)node["title"];
-            TotalAmount = (double)node["total_amount"];
-            ExpirationDate = node.TryGetValue("expiration_date", out object? expirationDate) ? ((LocalDate)expirationDate).ToDateOnly() : null;
-            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
-        }
     }
 }

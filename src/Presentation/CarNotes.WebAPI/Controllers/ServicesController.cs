@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Repositories;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
@@ -11,14 +12,18 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class ServicesController : ControllerBase
 {
+    private readonly IMapper _mapper;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<Service> _serviceRepository;
 
     public ServicesController(
+        IMapper mapper,
         IMileageRepository mileageRepository,
         INoteRepository<Service> serviceRepository)
     {
+        _mapper = mapper;
         _mileageRepository = mileageRepository;
         _serviceRepository = serviceRepository;
     }
@@ -40,16 +45,7 @@ public class ServicesController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        Service service = new()
-        {
-            Title = viewModel.Title,
-            StationName = viewModel.StationName,
-            Address = viewModel.Address,
-            WebsiteUrl = viewModel.WebsiteUrl,
-            CostOfWork = viewModel.CostOfWork,
-            CostOfSpareParts = viewModel.CostOfSpareParts,
-            Comment = viewModel.Comment
-        };
+        Service service = _mapper.Map<Service>(viewModel);
         service = await _serviceRepository.AddAsync(
             viewModel.CarId, mileage.Id, service);
 
@@ -60,16 +56,7 @@ public class ServicesController : ControllerBase
     public async Task<Service> Put(
         Guid id, [FromBody] ServiceViewModel viewModel)
     {
-        Service service = new()
-        {
-            Title = viewModel.Title,
-            StationName = viewModel.StationName,
-            Address = viewModel.Address,
-            WebsiteUrl = viewModel.WebsiteUrl,
-            CostOfWork = viewModel.CostOfWork,
-            CostOfSpareParts = viewModel.CostOfSpareParts,
-            Comment = viewModel.Comment
-        };
+        Service service = _mapper.Map<Service>(viewModel);
         service = await _serviceRepository.UpdateAsync(
             viewModel.CarId, viewModel.Mileage.Id, id, service);
 

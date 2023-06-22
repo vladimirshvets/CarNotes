@@ -55,12 +55,13 @@ builder.Services
         };
     });
 
+builder.Services.AddAutoMapper(typeof(ViewModelMappingProfile));
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IStatsService, StatsService>();
 
-//Neo4j persistence: data access and repositories.
+// Neo4j persistence: data access and repositories.
 builder.Services.AddNeo4jPersistence(options => {
     options.Connection = settings.Neo4jConnection;
     options.User = settings.Neo4jUser;

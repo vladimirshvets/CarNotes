@@ -38,27 +38,5 @@ namespace CarNotes.Domain.Models.Notes
         /// Address.
         /// </summary>
         public string? Address { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Refueling"/>.
-        /// </summary>
-        public Refueling()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Refueling"/>
-        /// based on properties represented as a dictionary.
-        /// </summary>
-        /// <param name="node">Set of property names and their values</param>
-        public Refueling(Dictionary<string, object> node)
-        {
-            Id = new Guid((string)node["id"]);
-            Volume = (double)node["volume"];
-            Price = (double)node["price"];
-            Distributor = node.TryGetValue("distributor", out object? distributor) ? (string)distributor : null;
-            Address = node.TryGetValue("address", out object? address) ? (string)address : null;
-            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
-        }
     }
 }

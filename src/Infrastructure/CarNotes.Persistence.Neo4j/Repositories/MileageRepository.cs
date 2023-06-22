@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 
@@ -6,14 +7,20 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class MileageRepository : IMileageRepository
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MileageRepository"/> class.
     /// </summary>
+    /// <param name="mapper">Mapper</param>
     /// <param name="neo4jDataAccess">Neo4j storage context</param>
-    public MileageRepository(INeo4jDataAccess neo4jDataAccess)
+    public MileageRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -35,7 +42,7 @@ public class MileageRepository : IMileageRepository
         List<Mileage> mileages = new(response.Count);
         foreach (Dictionary<string, object> mileageObj in response)
         {
-            Mileage mileage = new(mileageObj);
+            Mileage mileage = _mapper.Map<Mileage>(mileageObj);
             mileages.Add(mileage);
         }
 
@@ -65,7 +72,7 @@ public class MileageRepository : IMileageRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return new Mileage(response);
+        return _mapper.Map<Mileage>(response);
     }
 
     public async Task<Mileage> UpdateAsync(
@@ -91,7 +98,7 @@ public class MileageRepository : IMileageRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return new Mileage(response);
+        return _mapper.Map<Mileage>(response);
     }
 
     public async Task<bool> DeleteAsync(Guid carId, Guid mileageId)

@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Repositories;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
@@ -11,14 +12,18 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class RefuelingsController : ControllerBase
 {
+    private readonly IMapper _mapper;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<Refueling> _refuelingRepository;
 
     public RefuelingsController(
+        IMapper mapper,
         IMileageRepository mileageRepository,
         INoteRepository<Refueling> refuelingRepository)
     {
+        _mapper = mapper;
         _mileageRepository = mileageRepository;
         _refuelingRepository = refuelingRepository;
     }
@@ -40,14 +45,7 @@ public class RefuelingsController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        Refueling refueling = new()
-        {
-            Volume = viewModel.Volume,
-            Price = viewModel.Price,
-            Distributor = viewModel.Distributor,
-            Address = viewModel.Address,
-            Comment = viewModel.Comment
-        };
+        Refueling refueling = _mapper.Map<Refueling>(viewModel);
         refueling = await _refuelingRepository.AddAsync(
             viewModel.CarId, mileage.Id, refueling);
 
@@ -58,14 +56,7 @@ public class RefuelingsController : ControllerBase
     public async Task<Refueling> Put(
         Guid id, [FromBody] RefuelingViewModel viewModel)
     {
-        Refueling refueling = new()
-        {
-            Volume = viewModel.Volume,
-            Price = viewModel.Price,
-            Distributor = viewModel.Distributor,
-            Address = viewModel.Address,
-            Comment = viewModel.Comment
-        };
+        Refueling refueling = _mapper.Map<Refueling>(viewModel);
         refueling = await _refuelingRepository.UpdateAsync(
             viewModel.CarId, viewModel.Mileage.Id, id, refueling);
 

@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
@@ -7,15 +8,21 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class LegalProcedureRepository : INoteRepository<LegalProcedure>
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
     /// <summary>
     /// Initializes a new instance of the
     /// <see cref="LegalProcedureRepository"/> class.
     /// </summary>
+    /// <param name="mapper">Mapper</param>
     /// <param name="neo4jDataAccess">Neo4j storage context</param>
-    public LegalProcedureRepository(INeo4jDataAccess neo4jDataAccess)
+    public LegalProcedureRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -43,10 +50,9 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
         List<LegalProcedure> legalProcedures = new(legalProceduresCount);
         for (int i = 0; i < legalProceduresCount; i++)
         {
-            LegalProcedure legalProcedure = new(response[i * 2])
-            {
-                Mileage = new Mileage(response[i * 2 + 1])
-            };
+            LegalProcedure legalProcedure = _mapper.Map<LegalProcedure>(
+                response[i * 2],
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
             legalProcedures.Add(legalProcedure);
         }
 
@@ -91,10 +97,9 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        LegalProcedure newInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        LegalProcedure newInstance = _mapper.Map<LegalProcedure>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return newInstance;
     }
@@ -138,10 +143,9 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        LegalProcedure updatedInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        LegalProcedure updatedInstance = _mapper.Map<LegalProcedure>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return updatedInstance;
     }

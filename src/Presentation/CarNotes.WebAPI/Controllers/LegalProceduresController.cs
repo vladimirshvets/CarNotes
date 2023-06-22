@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Repositories;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
@@ -11,14 +12,18 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class LegalProceduresController : ControllerBase
 {
+    private readonly IMapper _mapper;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<LegalProcedure> _legalProcedureRepository;
 
     public LegalProceduresController(
+        IMapper mapper,
         IMileageRepository mileageRepository,
         INoteRepository<LegalProcedure> legalProcedureRepository)
     {
+        _mapper = mapper;
         _mileageRepository = mileageRepository;
         _legalProcedureRepository = legalProcedureRepository;
     }
@@ -41,14 +46,7 @@ public class LegalProceduresController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        LegalProcedure legalProcedure = new()
-        {
-            Group = viewModel.Group,
-            Title = viewModel.Title,
-            TotalAmount = viewModel.TotalAmount,
-            ExpirationDate = viewModel.ExpirationDate,
-            Comment = viewModel.Comment
-        };
+        LegalProcedure legalProcedure = _mapper.Map<LegalProcedure>(viewModel);
         legalProcedure = await _legalProcedureRepository.AddAsync(
             viewModel.CarId, mileage.Id, legalProcedure);
 
@@ -59,14 +57,7 @@ public class LegalProceduresController : ControllerBase
     public async Task<LegalProcedure> Put(
         Guid id, [FromBody] LegalProcedureViewModel viewModel)
     {
-        LegalProcedure legalProcedure = new()
-        {
-            Group = viewModel.Group,
-            Title = viewModel.Title,
-            TotalAmount = viewModel.TotalAmount,
-            ExpirationDate = viewModel.ExpirationDate,
-            Comment = viewModel.Comment
-        };
+        LegalProcedure legalProcedure = _mapper.Map<LegalProcedure>(viewModel);
         legalProcedure = await _legalProcedureRepository.UpdateAsync(
             viewModel.CarId, viewModel.Mileage.Id, id, legalProcedure);
 

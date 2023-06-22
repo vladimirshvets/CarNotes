@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
@@ -7,14 +8,20 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class RefuelingRepository : INoteRepository<Refueling>
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RefuelingRepository"/> class.
     /// </summary>
+    /// <param name="mapper">Mapper</param>
     /// <param name="neo4jDataAccess">Neo4j storage context</param>
-    public RefuelingRepository(INeo4jDataAccess neo4jDataAccess)
+    public RefuelingRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -42,10 +49,9 @@ public class RefuelingRepository : INoteRepository<Refueling>
         List<Refueling> refuelings = new(refuelingsCount);
         for (int i = 0; i < refuelingsCount; i++)
         {
-            Refueling refueling = new(response[i * 2])
-            {
-                Mileage = new Mileage(response[i * 2 + 1])
-            };
+            Refueling refueling = _mapper.Map<Refueling>(
+                response[i * 2],
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
             refuelings.Add(refueling);
         }
 
@@ -91,10 +97,9 @@ public class RefuelingRepository : INoteRepository<Refueling>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        Refueling newInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        Refueling newInstance = _mapper.Map<Refueling>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return newInstance;
     }
@@ -135,10 +140,9 @@ public class RefuelingRepository : INoteRepository<Refueling>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        Refueling updatedInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        Refueling updatedInstance = _mapper.Map<Refueling>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return updatedInstance;
     }

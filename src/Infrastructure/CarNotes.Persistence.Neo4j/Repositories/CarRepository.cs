@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 
@@ -6,14 +7,20 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class CarRepository : ICarRepository
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CarRepository"/> class.
     /// </summary>
+    /// <param name="mapper">Mapper</param>
     /// <param name="neo4jDataAccess">Neo4j storage context</param>
-    public CarRepository(INeo4jDataAccess neo4jDataAccess)
+    public CarRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -35,7 +42,7 @@ public class CarRepository : ICarRepository
         List<Car> cars = new(response.Count);
         foreach (Dictionary<string, object> carObj in response)
         {
-            Car car = new(carObj);
+            Car car = _mapper.Map<Car>(carObj);
             cars.Add(car);
         }
 
@@ -62,7 +69,7 @@ public class CarRepository : ICarRepository
             return null;
         }
 
-        return new Car(response[0]);
+        return _mapper.Map<Car>(response[0]);
     }
 
     public async Task<Car> AddAsync(Guid userId, Car car)
@@ -102,7 +109,7 @@ public class CarRepository : ICarRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return new Car(response);
+        return _mapper.Map<Car>(response);
     }
 
     public async Task<Car> UpdateAsync(Guid carId, Car car)
@@ -139,7 +146,7 @@ public class CarRepository : ICarRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
                 query, parameters);
 
-        return new Car(response);
+        return _mapper.Map<Car>(response);
     }
 
     public async Task<bool> DeleteAsync(Guid userId, Guid carId)

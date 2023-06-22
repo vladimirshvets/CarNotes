@@ -4,7 +4,8 @@
     {
         static double Convert(double amount, DateOnly? date, string currency = "USD")
         {
-            return 0;
+            // ToDo: requires implementation.
+            return amount / 2.75;
         }
     }
 }

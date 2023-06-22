@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
@@ -7,14 +8,20 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class WashingRepository : INoteRepository<Washing>
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WashingRepository"/> class.
     /// </summary>
+    /// <param name="mapper">Mapper</param>
     /// <param name="neo4jDataAccess">Neo4j storage context</param>
-    public WashingRepository(INeo4jDataAccess neo4jDataAccess)
+    public WashingRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -42,10 +49,9 @@ public class WashingRepository : INoteRepository<Washing>
         List<Washing> washings = new(washingsCount);
         for (int i = 0; i < washingsCount; i++)
         {
-            Washing washing = new(response[i * 2])
-            {
-                Mileage = new Mileage(response[i * 2 + 1])
-            };
+            Washing washing = _mapper.Map<Washing>(
+                response[i * 2],
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
             washings.Add(washing);
         }
 
@@ -97,10 +103,9 @@ public class WashingRepository : INoteRepository<Washing>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        Washing newInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        Washing newInstance = _mapper.Map<Washing>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return newInstance;
     }
@@ -149,10 +154,9 @@ public class WashingRepository : INoteRepository<Washing>
         var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
             query, parameters);
 
-        Washing updatedInstance = new(response[0])
-        {
-            Mileage = new Mileage(response[1])
-        };
+        Washing updatedInstance = _mapper.Map<Washing>(
+            response[0],
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
 
         return updatedInstance;
     }

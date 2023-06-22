@@ -48,29 +48,5 @@ namespace CarNotes.Domain.Models.Notes
         /// </summary>
         public double BaseTotalAmount =>
             ICurrencyService.Convert(TotalAmount, Mileage?.Date, "USD");
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Service"/>.
-        /// </summary>
-        public Service()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="Service"/>
-        /// based on properties represented as a dictionary.
-        /// </summary>
-        /// <param name="node">Set of property names and their values</param>
-        public Service(Dictionary<string, object> node)
-        {
-            Id = new Guid((string)node["id"]);
-            Title = (string)node["title"];
-            StationName = node.TryGetValue("station_name", out object? stationName) ? (string)stationName : null;
-            Address = node.TryGetValue("address", out object? address) ? (string)address : null;
-            WebsiteUrl = node.TryGetValue("website_url", out object? websiteUrl) ? (string)websiteUrl : null;
-            CostOfWork = (double)node["cost_of_work"];
-            CostOfSpareParts = (double)node["cost_of_spare_parts"];
-            Comment = node.TryGetValue("comment", out object? comment) ? (string)comment : null;
-        }
     }
 }

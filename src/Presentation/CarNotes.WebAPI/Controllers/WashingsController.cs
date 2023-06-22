@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Repositories;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
@@ -11,14 +12,18 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class WashingsController : ControllerBase
 {
+    private readonly IMapper _mapper;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<Washing> _washingRepository;
 
     public WashingsController(
+        IMapper mapper,
         IMileageRepository mileageRepository,
         INoteRepository<Washing> washingRepository)
     {
+        _mapper = mapper;
         _mileageRepository = mileageRepository;
         _washingRepository = washingRepository;
     }
@@ -40,17 +45,7 @@ public class WashingsController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        Washing washing = new()
-        {
-            Title = viewModel.Title,
-            Address = viewModel.Address,
-            IsContact = viewModel.IsContact,
-            IsDegreaserUsed = viewModel.IsDegreaserUsed,
-            IsPolishUsed = viewModel.IsPolishUsed,
-            IsAntiRainUsed = viewModel.IsAntiRainUsed,
-            TotalAmount = viewModel.TotalAmount,
-            Comment = viewModel.Comment
-        };
+        Washing washing = _mapper.Map<Washing>(viewModel);
         washing = await _washingRepository.AddAsync(
             viewModel.CarId, mileage.Id, washing);
 
@@ -61,18 +56,7 @@ public class WashingsController : ControllerBase
     public async Task<Washing> Put(
         Guid id, [FromBody] WashingViewModel viewModel)
     {
-        Washing washing = new()
-        {
-            Title = viewModel.Title,
-            Address = viewModel.Address,
-            IsContact = viewModel.IsContact,
-            IsDegreaserUsed = viewModel.IsDegreaserUsed,
-            IsPolishUsed = viewModel.IsPolishUsed,
-            IsAntiRainUsed = viewModel.IsAntiRainUsed,
-            IsInteriorCleaned = viewModel.IsInteriorCleaned,
-            TotalAmount = viewModel.TotalAmount,
-            Comment = viewModel.Comment
-        };
+        Washing washing = _mapper.Map<Washing>(viewModel);
         washing = await _washingRepository.UpdateAsync(
             viewModel.CarId, viewModel.Mileage.Id, id, washing);
 

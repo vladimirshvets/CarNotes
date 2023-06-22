@@ -26,7 +26,4 @@
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Interfaces\Repositories\" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Neo4j.Driver" Version="5.9.0" />
-  </ItemGroup>
 </Project>

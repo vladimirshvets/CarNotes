@@ -1,6 +1,7 @@
 ﻿using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models.Notes;
+using CarNotes.Persistence.Neo4j.Mapping;
 using CarNotes.Persistence.Neo4j.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Neo4j.Driver;
@@ -40,6 +41,9 @@ namespace CarNotes.Persistence.Neo4j
             services.AddTransient<INoteRepository<Service>, ServiceRepository>();
             services.AddTransient<INoteRepository<SparePart>, SparePartRepository>();
             services.AddTransient<INoteRepository<Washing>, WashingRepository>();
+
+            services.AddTransient<LocalDateValueConverter>();
+            services.AddAutoMapper(typeof(DataAccessMappingProfile));
 
             return services;
         }

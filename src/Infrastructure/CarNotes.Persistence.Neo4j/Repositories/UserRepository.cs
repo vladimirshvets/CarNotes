@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 
@@ -6,10 +7,20 @@ namespace CarNotes.Persistence.Neo4j.Repositories;
 
 public class UserRepository : IUserRepository
 {
+    private readonly IMapper _mapper;
+
     private readonly INeo4jDataAccess _neo4jDataAccess;
 
-    public UserRepository(INeo4jDataAccess neo4jDataAccess)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserRepository"/> class.
+    /// </summary>
+    /// <param name="mapper">Mapper</param>
+    /// <param name="neo4jDataAccess">Neo4j storage context</param>
+    public UserRepository(
+        IMapper mapper,
+        INeo4jDataAccess neo4jDataAccess)
     {
+        _mapper = mapper;
         _neo4jDataAccess = neo4jDataAccess;
     }
 
@@ -32,7 +43,7 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        return new User(response[0]);
+        return _mapper.Map<User>(response[0]);
     }
 
     public async Task<User?> GetByEmailAsync(string email)
@@ -54,7 +65,7 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        return new User(response[0]);
+        return _mapper.Map<User>(response[0]);
     }
 
     public async Task<User?> GetAsync(Guid userId)
@@ -76,7 +87,7 @@ public class UserRepository : IUserRepository
             return null;
         }
 
-        return new User(response[0]);
+        return _mapper.Map<User>(response[0]);
     }
 
     public async Task<User> AddAsync(User user)
@@ -107,7 +118,7 @@ public class UserRepository : IUserRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return new User(response);
+        return _mapper.Map<User>(response);
     }
 
     public async Task<User> UpdateAsync(Guid userId, User user)
@@ -136,7 +147,7 @@ public class UserRepository : IUserRepository
         var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
             query, parameters);
 
-        return new User(response);
+        return _mapper.Map<User>(response);
     }
 
     public async Task<int> GetNumberOfUsersAsync()

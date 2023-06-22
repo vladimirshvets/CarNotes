@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Repositories;
+﻿using AutoMapper;
+using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
@@ -11,14 +12,18 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class SparePartsController : ControllerBase
 {
+    private readonly IMapper _mapper;
+
     private readonly IMileageRepository _mileageRepository;
 
     private readonly INoteRepository<SparePart> _sparePartRepository;
 
     public SparePartsController(
+        IMapper mapper,
         IMileageRepository mileageRepository,
         INoteRepository<SparePart> sparePartRepository)
     {
+        _mapper = mapper;
         _mileageRepository = mileageRepository;
         _sparePartRepository = sparePartRepository;
     }
@@ -40,27 +45,7 @@ public class SparePartsController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        SparePart sparePart = new()
-        {
-            Category = viewModel.Category,
-            OrderDate = viewModel.OrderDate,
-            PurchaseDate = viewModel.PurchaseDate,
-            Group = viewModel.Group,
-            Name = viewModel.Name,
-            UoM = viewModel.UoM,
-            IsOE = viewModel.IsOE,
-            OENumber = viewModel.OENumber,
-            ReplacementNumber = viewModel.ReplacementNumber,
-            Manufacturer = viewModel.Manufacturer,
-            CountryOfOrigin = viewModel.CountryOfOrigin,
-            Price = viewModel.Price,
-            Qty = viewModel.Qty,
-            ShopWebsiteUrl = viewModel.ShopWebsiteUrl,
-            ShopAddress = viewModel.ShopAddress,
-            ProductionDate = viewModel.ProductionDate,
-            ExpirationDate = viewModel.ExpirationDate,
-            Comment = viewModel.Comment
-        };
+        SparePart sparePart = _mapper.Map<SparePart>(viewModel);
         sparePart = await _sparePartRepository.AddAsync(
             viewModel.CarId, mileage.Id, sparePart);
 
@@ -71,28 +56,7 @@ public class SparePartsController : ControllerBase
     public async Task<SparePart> Put(
         Guid id, [FromBody] SparePartViewModel viewModel)
     {
-        SparePart sparePart = new()
-        {
-            Category = viewModel.Category,
-            OrderDate = viewModel.OrderDate,
-            PurchaseDate = viewModel.PurchaseDate,
-            Group = viewModel.Group,
-            Name = viewModel.Name,
-            UoM = viewModel.UoM,
-            IsOE = viewModel.IsOE,
-            OENumber = viewModel.OENumber,
-            ReplacementNumber = viewModel.ReplacementNumber,
-            Manufacturer = viewModel.Manufacturer,
-            CountryOfOrigin = viewModel.CountryOfOrigin,
-            Price = viewModel.Price,
-            Qty = viewModel.Qty,
-            ShopWebsiteUrl = viewModel.ShopWebsiteUrl,
-            ShopAddress = viewModel.ShopAddress,
-            ProductionDate = viewModel.ProductionDate,
-            ExpirationDate = viewModel.ExpirationDate,
-            Comment = viewModel.Comment
-        };
-
+        SparePart sparePart = _mapper.Map<SparePart>(viewModel);
         sparePart = await _sparePartRepository.UpdateAsync(
             viewModel.CarId, viewModel.Mileage.Id, id, sparePart);
 

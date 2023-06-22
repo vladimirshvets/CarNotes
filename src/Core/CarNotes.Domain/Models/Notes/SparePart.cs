@@ -1,5 +1,4 @@
 ﻿using CarNotes.Domain.Interfaces.Services;
-using Neo4j.Driver;
 
 namespace CarNotes.Domain.Models.Notes
 {
@@ -124,68 +123,5 @@ namespace CarNotes.Domain.Models.Notes
         /// Expiration date.
         /// </summary>
         public DateOnly? ExpirationDate { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="SparePart"/>.
-        /// </summary>
-        public SparePart()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="SparePart"/>
-        /// based on properties represented as a dictionary.
-        /// </summary>
-        /// <param name="node">Set of property names and their values</param>
-        public SparePart(Dictionary<string, object> node)
-        {
-            Id = new Guid((string)node["id"]);
-            Category = (string)node["category"];
-            OrderDate = node.TryGetValue("order_date", out object? orderDate)
-                                    ? ((LocalDate)orderDate).ToDateOnly()
-                                    : null;
-            PurchaseDate = node.TryGetValue("order_date", out object? purchaseDate)
-                                    ? ((LocalDate)purchaseDate).ToDateOnly()
-                                    : null;
-            Group = node.TryGetValue("group", out object? group)
-                                    ? (string)group
-                                    : null;
-            Name = (string)node["name"];
-            UoM = node.TryGetValue("uom", out object? uom)
-                                    ? (string)uom
-                                    : null;
-            IsOE = node.TryGetValue("is_oe", out object? isOE)
-                                    ? (bool)isOE
-                                    : null;
-            OENumber = node.TryGetValue("oe_number", out object? oeNumber)
-                                    ? (string)oeNumber
-                                    : null;
-            ReplacementNumber = node.TryGetValue("replacement_number", out object? replacementNumber)
-                                    ? (string)replacementNumber
-                                    : null;
-            Manufacturer = node.TryGetValue("manufacturer", out object? manufacturer)
-                                    ? (string)manufacturer
-                                    : null;
-            CountryOfOrigin = node.TryGetValue("country_of_origin", out object? countryOfOrigin)
-                                    ? (string)countryOfOrigin
-                                    : null;
-            Qty = Convert.ToInt32(node["qty"]);
-            Price = (double)node["price"];
-            ShopWebsiteUrl = node.TryGetValue("shop_website_url", out object? shopWebsiteUrl)
-                                    ? (string)shopWebsiteUrl
-                                    : null;
-            ShopAddress = node.TryGetValue("shop_address", out object? shopAddress)
-                                    ? (string)shopAddress
-                                    : null;
-            ProductionDate = node.TryGetValue("production_date", out object? productionDate)
-                                    ? ((LocalDate)productionDate).ToDateOnly()
-                                    : null;
-            ExpirationDate = node.TryGetValue("expiration_date", out object? expirationDate)
-                                    ? ((LocalDate)expirationDate).ToDateOnly()
-                                    : null;
-            Comment = node.TryGetValue("comment", out object? comment)
-                                    ? (string)comment
-                                    : null;
-        }
     }
 }
