@@ -152,8 +152,9 @@ public class CarRepository : ICarRepository
     public async Task<bool> DeleteAsync(Guid userId, Guid carId)
     {
         string query =
-            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car { id: $carId })-[]->(anynode)
-            DETACH DELETE c, anynode
+            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car { id: $carId })
+            OPTIONAL MATCH (c)-->(note)
+            DETACH DELETE c, note
             RETURN true";
 
         var parameters = new Dictionary<string, object>

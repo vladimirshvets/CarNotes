@@ -7,7 +7,7 @@
         <div class="section-content">
             <v-row>
                 <v-col cols="12" md="4">
-                    <div>* {{ carInstance.vin }} *</div>
+                    <div v-if="carInstance.vin">* {{ carInstance.vin }} *</div>
                     <v-sheet v-if="carInstance.plate" border rounded class="plate-number">
                         {{ carInstance.plate }}
                     </v-sheet>
@@ -39,7 +39,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .section-content {
     .avatar-wrap {
         display: flex;
@@ -54,5 +53,4 @@ export default {
         font-size: 16px;
     }
 }
-
 </style>

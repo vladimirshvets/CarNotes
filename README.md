@@ -1,20 +1,18 @@
 # CarNotes
 
-### Implemented:
-- Login, Register Pages
-- JWT auth
-- User profile Page (+ edit info)
-- Garage Page, notes counter (does not count spare parts, actions only)
+### Implemented
+- User login/registration
+- User profile Page, ability to edit profile info
+- Garage Page, notes counter (currently doesn't count spare parts, actions only)
 - Create/update/delete car
 - Car details Page
+- Stats: total mileage, average fuel consumption
 - Mileage chart
-- CRUD actions for Refuelings, Washings, Spare Parts, Services, Legal Procedures
-- Neo4j data storage
-- REST API
-- Stats: total mileage, fuel consumption
+- CRUD actions for Notes: Refuelings, Washings, Spare Parts, Services, Legal Procedures
 
-### ToDo:
+### To Do
 - Details page: add navigation for mobile view
+- Footer
 - New/edit car Page design
 - Add content to Homepage
 - Stats: expenses
@@ -26,3 +24,15 @@
 - Use another mileage chart
 - Datepickers on forms
 - Notifications
+
+### Stack | Features | Libraries
+
+#### Backend
+- C# 11, .NET 7
+- ASP.NET Core WebAPI
+- Neo4j data storage
+- JWT Authentication
+- AutoMapper
+
+#### Frontend
+- Vue.js client app

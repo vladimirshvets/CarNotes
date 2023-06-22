@@ -53,7 +53,7 @@ export default {
         monthlyMileageStats() {
             const from = this.carInstance?.ownedFrom;
             const to = this.carInstance?.ownedTo;
-            const fromDate = moment(from);
+            const fromDate = from ? moment(from) : moment();
             const toDate = to ? moment(to) : moment();
             const duration = moment.duration(toDate.diff(fromDate));
             const days = duration.asDays();

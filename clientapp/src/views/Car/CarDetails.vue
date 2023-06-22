@@ -29,7 +29,7 @@ export default {
     name: "CarDetails",
     computed: {
         carFullName() {
-            return `${this.carInstance.make} ${this.carInstance.model} ${this.carInstance.generation}`
+            return `${this.carInstance.make} ${this.carInstance.model} ${this.carInstance.generation ?? ""}`
         }
     },
     data() {
