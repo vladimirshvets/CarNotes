@@ -78,8 +78,8 @@
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
-import SparePartForm from '@/components/Car/Details/SparePartForm.vue';
-import SparePartGrid from '@/components/Car/Details/SparePartGrid.vue';
+import SparePartForm from '@/components/Car/Details/SparePart/SparePartForm.vue';
+import SparePartGrid from '@/components/Car/Details/SparePart/SparePartGrid.vue';
 export default {
     name: 'SparePartsList',
     components: {

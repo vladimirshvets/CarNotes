@@ -1,6 +1,6 @@
 <template>
     <div class="car-tabs-navigation">
-        <v-navigation-drawer expand-on-hover rail>
+        <v-navigation-drawer permanent expand-on-hover rail>
             <v-list>
                 <v-list-item
                     :prepend-avatar="require(`@/assets/car/profile/avatars/0.jpg`)"
@@ -17,6 +17,16 @@
                 <v-list-item prepend-icon="mdi-car-wrench" title="Services" value="services" :to="{ name: 'ServicesList' }"></v-list-item>
                 <v-list-item prepend-icon="mdi-file-document-check" title="Legal Procedures" value="legalprocedures" :to="{ name: 'LegalProceduresList' }"></v-list-item>
             </v-list>
+            <template v-slot:append>
+                <v-divider></v-divider>
+                <v-list density="compact" nav>
+                    <v-list-item
+                        prepend-icon="mdi-garage"
+                        title="Garage"
+                        :to="{ name: 'Cars' }"
+                    ></v-list-item>
+                </v-list>
+            </template>
         </v-navigation-drawer>
     </div>
     <router-view :carInstance="carInstance"></router-view>
@@ -37,8 +47,8 @@ export default {
             carInstance: {}
         }
     },
-    async created() {
-        await api
+    created() {
+        api
             .get(`/api/cars/${this.$route.params.carId}`)
             .then((response) => {
                 this.carInstance = response.data;

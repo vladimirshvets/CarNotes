@@ -8,11 +8,11 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import PhotoSlider from '@/components/Car/Details/CarStats/PhotoSlider.vue';
-import CarSummary from '@/components/Car/Details/CarStats/CarSummary.vue';
-import DistanceStats from '@/components/Car/Details/CarStats/DistanceStats.vue';
-import MoneySpendings from '@/components/Car/Details/CarStats/MoneySpendings.vue';
-import MileageChart from '@/components/Car/Details/CarStats/MileageChart.vue';
+import PhotoSlider from '@/components/Car/Details/Stats/PhotoSlider.vue';
+import CarSummary from '@/components/Car/Details/Stats/CarSummary.vue';
+import DistanceStats from '@/components/Car/Details/Stats/DistanceStats.vue';
+import MoneySpendings from '@/components/Car/Details/Stats/MoneySpendings.vue';
+import MileageChart from '@/components/Car/Details/Stats/MileageChart.vue';
 export default {
     name: 'CarStats',
     props: {

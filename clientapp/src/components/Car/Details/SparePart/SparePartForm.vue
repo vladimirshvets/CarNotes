@@ -237,8 +237,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
-import MileageInput from './MileageInput.vue';
+import DeleteConfirmationModal from '@/components/Common/DeleteConfirmationModal.vue';
+import MileageInput from '@/components/Car/Details/Common/MileageInput.vue';
 export default {
     name: 'SparePartForm',
     components: {

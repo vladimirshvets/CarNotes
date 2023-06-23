@@ -35,8 +35,8 @@
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
-import RefuelingForm from '@/components/Car/Details/RefuelingForm.vue';
-import RefuelingGrid from '@/components/Car/Details/RefuelingGrid.vue';
+import RefuelingForm from '@/components/Car/Details/Refueling/RefuelingForm.vue';
+import RefuelingGrid from '@/components/Car/Details/Refueling/RefuelingGrid.vue';
 export default {
     name: 'RefuelingsList',
     components: {

@@ -35,8 +35,8 @@
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
-import LegalProcedureForm from '@/components/Car/Details/LegalProcedureForm.vue';
-import LegalProcedureGrid from '@/components/Car/Details/LegalProcedureGrid.vue';
+import LegalProcedureForm from '@/components/Car/Details/LegalProcedure/LegalProcedureForm.vue';
+import LegalProcedureGrid from '@/components/Car/Details/LegalProcedure/LegalProcedureGrid.vue';
 
 export default {
     name: 'LegalProceduresList',

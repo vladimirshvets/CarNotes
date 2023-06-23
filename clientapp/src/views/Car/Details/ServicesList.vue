@@ -35,8 +35,8 @@
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
-import ServiceForm from '@/components/Car/Details/ServiceForm.vue';
-import ServiceGrid from '@/components/Car/Details/ServiceGrid.vue';
+import ServiceForm from '@/components/Car/Details/Service/ServiceForm.vue';
+import ServiceGrid from '@/components/Car/Details/Service/ServiceGrid.vue';
 
 
 export default {

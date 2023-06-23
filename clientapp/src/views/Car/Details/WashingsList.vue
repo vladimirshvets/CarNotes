@@ -35,8 +35,8 @@
 import api from '@/api.js';
 import { mapGetters, mapMutations } from 'vuex';
 import TotalCosts from '@/components/Car/Details/Common/TotalCosts.vue';
-import WashingForm from '@/components/Car/Details/WashingForm.vue';
-import WashingGrid from '@/components/Car/Details/WashingGrid.vue';
+import WashingForm from '@/components/Car/Details/Washing/WashingForm.vue';
+import WashingGrid from '@/components/Car/Details/Washing/WashingGrid.vue';
 
 export default {
     name: 'WashingsList',

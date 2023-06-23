@@ -11,7 +11,7 @@
         >
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">Legal Procedure Info</span>
+                    <span class="text-h5">Washing Info</span>
                 </v-card-title>
                 <v-card-text>
                     <small>* required fields</small>
@@ -64,10 +64,10 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
                                 <v-combobox
-                                    name="group"
-                                    label="Group"
-                                    v-model="formData.group"
-                                    :items="suggestedGroups"
+                                    name="address"
+                                    label="Address"
+                                    v-model="formData.address"
+                                    :items="suggestedAddresses"
                                 ></v-combobox>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
@@ -75,14 +75,48 @@
                                     name="totalAmount"
                                     label="Total Amount, BYN"
                                     v-model="formData.totalAmount"
+                                    required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="6">
-                                <v-text-field
-                                    name="expirationDate"
-                                    label="Expiration Date"
-                                    v-model="formData.expirationDate"
-                                ></v-text-field>
+                                <v-checkbox
+                                    name="isContact"
+                                    label="Contact Washing"
+                                    v-model="formData.isContact"
+                                    color="info"
+                                ></v-checkbox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-checkbox
+                                    name="isDegreaserUsed"
+                                    label="Degreaser used"
+                                    v-model="formData.isDegreaserUsed"
+                                    color="info"
+                                ></v-checkbox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-checkbox
+                                    name="isPolish"
+                                    label="Polish used"
+                                    v-model="formData.isPolishUsed"
+                                    color="info"
+                                ></v-checkbox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-checkbox
+                                    name="isAntiRainUsed"
+                                    label="Anti-rain used"
+                                    v-model="formData.isAntiRainUsed"
+                                    color="info"
+                                ></v-checkbox>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                                <v-checkbox
+                                    name="isInteriorCleaned"
+                                    label="Interior Cleaning"
+                                    v-model="formData.isInteriorCleaned"
+                                    color="info"
+                                ></v-checkbox>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
@@ -134,7 +168,7 @@
             :showModal="removalModal"
             @triggerModal="triggerRemovalModal"
             @submit="remove"
-            title="Delete Legal Procedure"
+            title="Delete Washing"
             text="Are you sure you want to delete this record?"
         ></delete-confirmation-modal>
     </v-dialog>
@@ -142,10 +176,10 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
-import MileageInput from './MileageInput.vue';
+import DeleteConfirmationModal from '@/components/Common/DeleteConfirmationModal.vue';
+import MileageInput from '@/components/Car/Details/Common/MileageInput.vue';
 export default {
-    name: 'LegalProcedureForm',
+    name: 'WashingForm',
     components: {
         MileageInput,
         DeleteConfirmationModal
@@ -153,7 +187,7 @@ export default {
     props: {
         showForm: Boolean,
         suggestedTitles: Array,
-        suggestedGroups: Array
+        suggestedAddresses: Array
     },
     computed: {
         form: {
@@ -206,9 +240,13 @@ export default {
                     ? this.formData.mileage
                     : this.mileageMatch ?? this.formData.newMileage,
                 title: this.formData.title,
-                group: this.formData.group,
+                address: this.formData.address,
+                isContact: this.formData.isContact,
+                isDegreaserUsed: this.formData.isDegreaserUsed,
+                isPolishUsed: this.formData.isPolishUsed,
+                isAntiRainUsed: this.formData.isAntiRainUsed,
+                isInteriorCleaned: this.formData.isInteriorCleaned,
                 totalAmount: this.formData.totalAmount,
-                expirationDate: this.formData.expirationDate,
                 comment: this.formData.comment
             };
             if (this.formData.id) {

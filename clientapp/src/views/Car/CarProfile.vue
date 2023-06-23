@@ -119,7 +119,7 @@
 
 <script>
 import api from '@/api.js';
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
+import DeleteConfirmationModal from '@/components/Common/DeleteConfirmationModal.vue';
 export default {
     name: 'CarProfile',
     components: {
