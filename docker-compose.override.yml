@@ -1,0 +1,15 @@
+﻿version: '3.8'
+
+services:
+  carnotes.webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourStrong@CertificatePassw0rd
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/dev.pfx
+      - ApplicationSettings__Neo4jConnection=bolt://db-neo4j:7687
+      - ApplicationSettings__WebServerUrl=https://localhost:7140
+    ports:
+      - '7140:443'
+    volumes:
+      - ${HOME}/.aspnet/https/carnotes:/https/

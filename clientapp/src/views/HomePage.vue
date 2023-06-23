@@ -23,7 +23,7 @@
                 size="large"
                 color="info"
             >
-                Go to my garage
+                My garage
             </v-btn>
             <span v-else>Please log in to explore some features.</span>
         </div>
@@ -46,8 +46,8 @@ export default {
             'isAuthenticated'
         ])
     },
-    async mounted() {
-        await axios
+    mounted() {
+        axios
             .get(`/api/stats/total-users`)
             .then(response => {
                 this.totalUsers = response.data;
@@ -56,7 +56,7 @@ export default {
                 console.error(error);
             });
 
-        await axios
+        axios
             .get(`/api/stats/total-cars`)
             .then(response => {
                 this.totalCars = response.data;

@@ -1,5 +1,5 @@
 <template>
-    <section class="distance-stats stats-section section-light">
+    <section class="stats-section section-light">
         <div class="section-header">
             <div class="section-title">Spendings</div>
             <div class="section-subtitle quote">"an arm and a leg"</div>
