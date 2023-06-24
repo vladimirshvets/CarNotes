@@ -122,6 +122,13 @@ public class DataAccessMappingProfile : Profile
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
                 node => node.ContainsKey("comment") ? node["comment"] : null));
 
+        CreateMap<Dictionary<string, object>, TextNote>()
+            .ConstructUsing((src, ctx) => new TextNote { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node["title"]))
+            .ForMember(dest => dest.Tag, opt => opt.MapFrom(node => node["tag"]))
+            .ForMember(dest => dest.Text, opt => opt.MapFrom(node => node["text"]));
+
         CreateMap<Dictionary<string, object>, Washing>()
             .ConstructUsing((src, ctx) => new Washing { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
             .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))

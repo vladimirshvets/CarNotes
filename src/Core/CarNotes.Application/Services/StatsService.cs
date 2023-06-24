@@ -42,6 +42,8 @@ public class StatsService : IStatsService
             "FUEL",
             "WASH",
             "SERVICE",
+            "PART",
+            "TEXT",
             "LEGAL"
         };
 

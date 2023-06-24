@@ -19,7 +19,7 @@ namespace CarNotes.Domain.Models.Notes
         public string? Address { get; set; }
 
         /// <summary>
-        /// Is washing contact?
+        /// Is contact washing?
         /// </summary>
         public bool? IsContact { get; set; }
 

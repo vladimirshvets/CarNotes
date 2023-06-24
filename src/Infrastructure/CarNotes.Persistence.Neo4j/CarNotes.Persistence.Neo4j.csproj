@@ -21,9 +21,11 @@
   <ItemGroup>
     <None Remove="Repositories\" />
     <None Remove="Mapping\" />
+    <None Remove="Repositories\Notes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
     <Folder Include="Mapping\" />
+    <Folder Include="Repositories\Notes\" />
   </ItemGroup>
 </Project>

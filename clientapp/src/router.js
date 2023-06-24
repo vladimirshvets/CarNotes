@@ -12,6 +12,7 @@ import LegalProceduresList from './views/Car/Details/LegalProceduresList.vue'
 import RefuelingsList from './views/Car/Details/RefuelingsList.vue'
 import ServicesList from './views/Car/Details/ServicesList.vue'
 import SparePartsList from './views/Car/Details/SparePartsList.vue'
+import TextNotesList from './views/Car/Details/TextNotesList.vue'
 import WashingsList from './views/Car/Details/WashingsList.vue'
 
 const requireAuth = (to, from, next) => {
@@ -143,6 +144,11 @@ const routes = [
                 path: 'legal-procedures',
                 name: 'LegalProceduresList',
                 component: LegalProceduresList
+            },
+            {
+                path: 'text-notes',
+                name: 'TextNotesList',
+                component: TextNotesList
             }
         ]
     },

@@ -4,7 +4,7 @@ using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 
-namespace CarNotes.Persistence.Neo4j.Repositories;
+namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
 public class ServiceRepository : INoteRepository<Service>
 {
@@ -111,7 +111,7 @@ public class ServiceRepository : INoteRepository<Service>
     /// </summary>
     /// <param name="carId">Car identifier</param>
     /// <param name="mileageId">Mileage identifier</param>
-    /// <param name="serviceId">service identifier</param>
+    /// <param name="serviceId">Service identifier</param>
     /// <param name="service">Service data</param>
     /// <returns>An updated instance of service.</returns>
     public async Task<Service> UpdateAsync(

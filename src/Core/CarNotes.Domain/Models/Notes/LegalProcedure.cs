@@ -9,7 +9,7 @@ namespace CarNotes.Domain.Models.Notes
         public override string NoteTitle => $"{NoteType}: {Title}";
 
         /// <summary>
-        /// Washing title.
+        /// Legal procedure title.
         /// </summary>
         public string Title { get; set; } = string.Empty;
 

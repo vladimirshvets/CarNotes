@@ -16,6 +16,7 @@
                 <v-list-item prepend-icon="mdi-car-turbocharger" title="Spare Parts" value="spareparts" :to="{ name: 'SparePartsList' }"></v-list-item>
                 <v-list-item prepend-icon="mdi-car-wrench" title="Services" value="services" :to="{ name: 'ServicesList' }"></v-list-item>
                 <v-list-item prepend-icon="mdi-file-document-check" title="Legal Procedures" value="legalprocedures" :to="{ name: 'LegalProceduresList' }"></v-list-item>
+                <v-list-item prepend-icon="mdi-note-text-outline" title="Text Notes" value="textnotes" :to="{ name: 'TextNotesList' }"></v-list-item>
             </v-list>
             <template v-slot:append>
                 <v-divider></v-divider>

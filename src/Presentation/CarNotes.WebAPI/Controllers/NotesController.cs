@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
-using CarNotes.Domain.Models.Notes;
 using CarNotes.WebAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,33 +9,35 @@ namespace CarNotes.WebAPI.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
-public class SparePartsController : ControllerBase
+public abstract class NotesController<T, V> : ControllerBase
+    where T : Note
+    where V : NoteViewModel
 {
     private readonly IMapper _mapper;
 
     private readonly IMileageRepository _mileageRepository;
 
-    private readonly INoteRepository<SparePart> _sparePartRepository;
+    private readonly INoteRepository<T> _noteRepository;
 
-    public SparePartsController(
+    public NotesController(
         IMapper mapper,
         IMileageRepository mileageRepository,
-        INoteRepository<SparePart> sparePartRepository)
+        INoteRepository<T> noteRepository)
     {
         _mapper = mapper;
         _mileageRepository = mileageRepository;
-        _sparePartRepository = sparePartRepository;
+        _noteRepository = noteRepository;
     }
 
     [HttpGet]
     [Route("getByCar/{carId}")]
-    public async Task<IEnumerable<SparePart>> GetByCar(Guid carId)
+    public async Task<IEnumerable<T>> GetByCar(Guid carId)
     {
-        return await _sparePartRepository.GetListAsync(carId);
+        return await _noteRepository.GetListAsync(carId);
     }
 
     [HttpPost]
-    public async Task<SparePart> Post([FromBody] SparePartViewModel viewModel)
+    public async Task<T> Post([FromBody] V viewModel)
     {
         Mileage mileage = viewModel.Mileage;
         if (mileage.Id == Guid.Empty)
@@ -45,29 +46,26 @@ public class SparePartsController : ControllerBase
                 viewModel.CarId, viewModel.Mileage);
         }
 
-        SparePart sparePart = _mapper.Map<SparePart>(viewModel);
-        sparePart = await _sparePartRepository.AddAsync(
-            viewModel.CarId, mileage.Id, sparePart);
+        T note = _mapper.Map<T>(viewModel);
+        note = await _noteRepository.AddAsync(viewModel.CarId, mileage.Id, note);
 
-        return sparePart;
+        return note;
     }
 
     [HttpPut("{id}")]
-    public async Task<SparePart> Put(
-        Guid id, [FromBody] SparePartViewModel viewModel)
+    public async Task<T> Put(Guid id, [FromBody] V viewModel)
     {
-        SparePart sparePart = _mapper.Map<SparePart>(viewModel);
-        sparePart = await _sparePartRepository.UpdateAsync(
-            viewModel.CarId, viewModel.Mileage.Id, id, sparePart);
+        T note = _mapper.Map<T>(viewModel);
+        note = await _noteRepository.UpdateAsync(
+            viewModel.CarId, viewModel.Mileage.Id, id, note);
 
-        return sparePart;
+        return note;
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(
-        Guid id, [FromBody] SparePartViewModel viewModel)
+    public async Task<IActionResult> Delete(Guid id, [FromBody] V viewModel)
     {
-        await _sparePartRepository.DeleteAsync(
+        await _noteRepository.DeleteAsync(
             viewModel.CarId, viewModel.Mileage.Id, id);
 
         bool isMileageDeleted = false;
@@ -89,3 +87,4 @@ public class SparePartsController : ControllerBase
         });
     }
 }
+

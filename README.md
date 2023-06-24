@@ -3,16 +3,14 @@
 ### Implemented
 - User login/registration
 - User profile Page, ability to edit profile info
-- Garage Page, notes counter (currently doesn't count spare parts, actions only)
+- Garage Page, notes counter
 - Create/update/delete car
 - Car details Page
 - Stats: total mileage, average fuel consumption
 - Mileage chart
-- CRUD actions for Notes: Refuelings, Washings, Spare Parts, Services, Legal Procedures
+- CRUD actions for Notes: Refuelings, Washings, Spare Parts, Services, Legal Procedures, Text Notes
 
 ### To Do
-- Details page: add navigation for mobile view
-- Footer
 - New/edit car Page design
 - Add content to Homepage
 - Stats: expenses

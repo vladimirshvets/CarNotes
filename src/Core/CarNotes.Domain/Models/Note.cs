@@ -1,6 +1,4 @@
-﻿using CarNotes.Domain.Models;
-
-namespace CarNotes.Domain.Models.Notes
+﻿namespace CarNotes.Domain.Models
 {
     public abstract class Note
     {

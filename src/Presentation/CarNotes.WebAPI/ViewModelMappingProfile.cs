@@ -12,6 +12,7 @@ public class ViewModelMappingProfile : Profile
         CreateMap<RefuelingViewModel, Refueling>();
         CreateMap<ServiceViewModel, Service>();
         CreateMap<SparePartViewModel, SparePart>();
+        CreateMap<TextNoteViewModel, TextNote>();
         CreateMap<WashingViewModel, Washing>();
     }
 }

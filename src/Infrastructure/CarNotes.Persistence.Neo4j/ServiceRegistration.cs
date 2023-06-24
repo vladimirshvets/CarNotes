@@ -3,6 +3,7 @@ using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models.Notes;
 using CarNotes.Persistence.Neo4j.Mapping;
 using CarNotes.Persistence.Neo4j.Repositories;
+using CarNotes.Persistence.Neo4j.Repositories.Notes;
 using Microsoft.Extensions.DependencyInjection;
 using Neo4j.Driver;
 
@@ -16,11 +17,11 @@ namespace CarNotes.Persistence.Neo4j
         {
             if (services == null)
             {
-                throw new ArgumentNullException("services");
+                throw new ArgumentNullException(nameof(services));
             }
             if (configureOptions == null)
             {
-                throw new ArgumentNullException("configureOptions");
+                throw new ArgumentNullException(nameof(configureOptions));
             }
 
             var neo4jOptions = new Neo4jOptions();
@@ -40,6 +41,7 @@ namespace CarNotes.Persistence.Neo4j
             services.AddTransient<INoteRepository<Refueling>, RefuelingRepository>();
             services.AddTransient<INoteRepository<Service>, ServiceRepository>();
             services.AddTransient<INoteRepository<SparePart>, SparePartRepository>();
+            services.AddTransient<INoteRepository<TextNote>, TextNoteRepository>();
             services.AddTransient<INoteRepository<Washing>, WashingRepository>();
 
             services.AddTransient<LocalDateValueConverter>();

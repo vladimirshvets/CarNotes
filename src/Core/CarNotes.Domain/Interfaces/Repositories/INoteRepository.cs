@@ -1,5 +1,5 @@
 ﻿
-using CarNotes.Domain.Models.Notes;
+using CarNotes.Domain.Models;
 
 namespace CarNotes.Domain.Interfaces.Repositories
 {

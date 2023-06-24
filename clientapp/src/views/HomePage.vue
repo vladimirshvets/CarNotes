@@ -10,12 +10,6 @@
         <div>
             <span>Description of the website will appear here someday :)</span>
         </div>
-        <div v-if="totalUsers">
-            Total users: {{ totalUsers }}
-        </div>
-        <div v-if="totalCars">
-            Total cars: {{ totalCars }}
-        </div>
         <div>
             <v-btn
                 v-if="isAuthenticated"
@@ -25,7 +19,13 @@
             >
                 My garage
             </v-btn>
-            <span v-else>Please log in to explore some features.</span>
+            <span v-else>Please <router-link :to="{ name: 'Login' }">log in</router-link> to explore some features.</span>
+        </div>
+        <div v-if="totalUsers">
+            Total users: {{ totalUsers }}
+        </div>
+        <div v-if="totalCars">
+            Total cars: {{ totalCars }}
         </div>
     </v-banner>
 </template>

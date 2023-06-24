@@ -4,7 +4,7 @@ using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 
-namespace CarNotes.Persistence.Neo4j.Repositories;
+namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
 public class WashingRepository : INoteRepository<Washing>
 {
