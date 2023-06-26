@@ -101,7 +101,7 @@ public class CarRepository : ICarRepository
             { "VIN", car.VIN },
             { "year", car.Year },
             { "plate", car.Plate },
-            { "engineType", car.EngineType },
+            { "engineType", car.EngineTypeText },
             { "ownedFrom", car.OwnedFrom },
             { "ownedTo", car.OwnedTo }
         };
@@ -138,7 +138,7 @@ public class CarRepository : ICarRepository
             { "VIN", car.VIN },
             { "year", car.Year },
             { "plate", car.Plate },
-            { "engineType", car.EngineType != null ? car.EngineTypeText : null },
+            { "engineType", car.EngineTypeText },
             { "ownedFrom", car.OwnedFrom },
             { "ownedTo", car.OwnedTo }
         };
@@ -178,6 +178,27 @@ public class CarRepository : ICarRepository
 
         int response =
             await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<int>(query);
+
+        return response;
+    }
+
+    public async Task<bool> SetAvatarUrlAsync(Guid carId, string url)
+    {
+        string query =
+            @"MATCH (c:Car { id: $carId })
+            SET
+                c.avatar_url = $avatarUrl,
+                c.updated_at = timestamp()
+            RETURN true";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() },
+            { "avatarUrl", url }
+        };
+
+        bool response =
+            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(query, parameters);
 
         return response;
     }

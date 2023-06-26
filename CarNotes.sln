@@ -34,6 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Application.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.Persistence.Neo4j.UnitTests", "tests\CarNotes.Persistence.Neo4j.UnitTests\CarNotes.Persistence.Neo4j.UnitTests.csproj", "{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.FileStorage.AwsS3", "src\Infrastructure\CarNotes.FileStorage.AwsS3\CarNotes.FileStorage.AwsS3.csproj", "{FDA31517-8251-41FE-A179-94330F166FE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarNotes.FileStorage.Local", "src\Infrastructure\CarNotes.FileStorage.Local\CarNotes.FileStorage.Local.csproj", "{2C8C1D8E-B216-4B87-92C6-247D72EEF869}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,14 @@ Global
 		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDA31517-8251-41FE-A179-94330F166FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDA31517-8251-41FE-A179-94330F166FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDA31517-8251-41FE-A179-94330F166FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDA31517-8251-41FE-A179-94330F166FE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8C1D8E-B216-4B87-92C6-247D72EEF869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8C1D8E-B216-4B87-92C6-247D72EEF869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8C1D8E-B216-4B87-92C6-247D72EEF869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8C1D8E-B216-4B87-92C6-247D72EEF869}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +93,7 @@ Global
 		{9570CD66-8B22-4BE6-9ECE-C2544CA55F12} = {7862ACC9-75EE-4029-88E9-ACA37FF70B09}
 		{C70B559B-4E4A-4A1E-AC26-5160A2D501C7} = {B67BD266-7B93-44FD-8720-EBFFA6147E95}
 		{36B9FCD3-7E74-45C0-AAF7-71D94E9BDE86} = {B67BD266-7B93-44FD-8720-EBFFA6147E95}
+		{FDA31517-8251-41FE-A179-94330F166FE8} = {D6CD07F8-FD2E-41AD-B0D6-F9896CDD1741}
+		{2C8C1D8E-B216-4B87-92C6-247D72EEF869} = {D6CD07F8-FD2E-41AD-B0D6-F9896CDD1741}
 	EndGlobalSection
 EndGlobal

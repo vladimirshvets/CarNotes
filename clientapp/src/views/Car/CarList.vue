@@ -14,27 +14,27 @@
                 </div>
                 <v-row>
                     <v-col
-                        v-for="car in cars"
-                        :key="car.id"
+                        v-for="carInstance in cars"
+                        :key="carInstance.id"
                         cols="12" lg="4" md="6" sm="6"
                     >
                     <!-- ToDo: move card to separate component -->
                         <v-card class="car-card-wrapper d-flex flex-column">
                             <div
-                                v-if="Boolean(car.ownedTo)"
+                                v-if="Boolean(carInstance.ownedTo)"
                                 class="overlay"
                             ></div>
                             <v-card-title>
                                 <v-badge
                                     class="records-number-badge"
-                                    :content="car.numberOfActionRecords"
+                                    :content="carInstance.numberOfActionRecords"
                                     color="#009688"
                                 >
-                                    <span class="title-text">{{ car.make }} {{ car.model?.toString() }} {{ car.generation?.toString() }}</span>
+                                    <span class="title-text">{{ carInstance.make }} {{ carInstance.model?.toString() }} {{ carInstance.generation?.toString() }}</span>
                                 </v-badge>
                             </v-card-title>
                             <v-card-subtitle>
-                                {{ car.year?.toString() }}
+                                {{ carInstance.year?.toString() }}
                             </v-card-subtitle>
                             <v-card-text class="d-flex flex-no-wrap">
                                 <v-avatar
@@ -42,30 +42,40 @@
                                     size="100"
                                     rounded="1"
                                 >
-                                    <v-img :src="require(`@/assets/car/profile/avatars/0.jpg`)" alt="Car Avatar"></v-img>
+                                    <v-img
+                                        v-if="carInstance.avatarUrl"
+                                        :src="`/static/images/${carInstance.avatarUrl}`"
+                                        cover
+                                        alt="Car Avatar"
+                                    ></v-img>
+                                    <v-img
+                                        v-else
+                                        :src="require(`@/assets/car/avatars/logo_480.jpg`)"
+                                        alt="Car Avatar"
+                                    ></v-img>
                                 </v-avatar>
                                 <div>
-                                    <v-sheet v-if="car.plate" border rounded class="plate-number">
-                                        {{ car.plate }}
+                                    <v-sheet v-if="carInstance.plate" border rounded class="plate-number">
+                                        {{ carInstance.plate }}
                                     </v-sheet>
-                                    <div v-if="car.vin">
-                                        * {{ car.vin }} *
+                                    <div v-if="carInstance.vin">
+                                        * {{ carInstance.vin }} *
                                     </div>
                                     <div>
-                                        {{ car.engineTypeText }}
+                                        {{ carInstance.engineTypeText }}
                                     </div>
                                 </div>
                             </v-card-text>
                             <v-card-subtitle
-                                v-html="periodOfOwnership(car.ownedFrom, car.ownedTo)"
+                                v-html="periodOfOwnership(carInstance.ownedFrom, carInstance.ownedTo)"
                             ></v-card-subtitle>
                             <v-card-actions class="mt-auto">
                                 <v-tooltip text="Edit" location="right">
                                     <template v-slot:activator="{ props }">
-                                        <v-btn :to="{ name: 'CarProfile', params: { carId: car.id} }" icon="mdi-car-cog" v-bind="props"></v-btn>
+                                        <v-btn :to="{ name: 'CarProfile', params: { carId: carInstance.id} }" icon="mdi-car-cog" v-bind="props"></v-btn>
                                     </template>
                                 </v-tooltip>
-                                <v-btn :to="{ name: 'CarStats', params: { carId: car.id} }" class="ml-auto">Details</v-btn>
+                                <v-btn :to="{ name: 'CarStats', params: { carId: carInstance.id} }" class="ml-auto">Details</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -140,15 +150,15 @@ export default {
             .get('/api/cars/list')
             .then(response => {
                 this.cars = response.data;
-                this.cars.forEach(car => {
+                this.cars.forEach(carInstance => {
                     api
-                        .get(`/api/stats/action-records/${car.id}`)
+                        .get(`/api/stats/action-records/${carInstance.id}`)
                         .then(response => {
-                            car.numberOfActionRecords = response.data;
+                            carInstance.numberOfActionRecords = response.data;
                         })
                         .catch(err => {
                             console.log(err);
-                            car.numberOfActionRecords = 0;
+                            carInstance.numberOfActionRecords = 0;
                         });
                 });
             })

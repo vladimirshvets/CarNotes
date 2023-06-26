@@ -5,6 +5,7 @@
 
 # Custom rules
 notes.txt
+LocalStorage/
 
 # User-specific files
 *.rsuser

@@ -21,17 +21,25 @@
     <None Remove="ViewModels\" />
     <None Remove="ViewModels\Account\" />
     <None Remove="Controllers\Notes\" />
+    <None Remove="LocalStorage\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Account\" />
     <Folder Include="Controllers\Notes\" />
+    <Folder Include="LocalStorage\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\CarNotes.Application\CarNotes.Application.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\CarNotes.Persistence.Neo4j\CarNotes.Persistence.Neo4j.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\CarNotes.FileStorage.AwsS3\CarNotes.FileStorage.AwsS3.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Infrastructure\CarNotes.FileStorage.Local\CarNotes.FileStorage.Local.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

@@ -48,5 +48,13 @@ namespace CarNotes.Domain.Interfaces.Repositories
         /// </summary>
         /// <returns>Total number of cars.</returns>
         Task<int> GetNumberOfCarsAsync();
+
+        /// <summary>
+        /// Updates an existing car record with provided avatar url.
+        /// </summary>
+        /// <param name="carId">Car identifier.</param>
+        /// <param name="url">Avatar url.</param>
+        /// <returns>true on success.</returns>
+        Task<bool> SetAvatarUrlAsync(Guid carId, string url);
     }
 }

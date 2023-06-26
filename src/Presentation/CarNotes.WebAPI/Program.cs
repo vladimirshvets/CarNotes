@@ -1,10 +1,13 @@
 ﻿using System.Text;
 using CarNotes.Application.Services;
 using CarNotes.Domain.Interfaces.Services;
+using CarNotes.FileStorage.AwsS3;
+using CarNotes.FileStorage.Local;
 using CarNotes.Persistence.Neo4j;
 using CarNotes.WebAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
 [assembly: ApiController]
@@ -59,10 +62,25 @@ builder.Services.AddAutoMapper(typeof(ViewModelMappingProfile));
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IStatsService, StatsService>();
 
+// File storage.
+builder.Services.AddLocalFileStorage(options =>
+{
+    options.StoragePath =
+        builder.Configuration.GetSection("LocalStorageConfiguration").GetValue<string>("StoragePath") ?? "LocalStorage/images";
+});
+//builder.Services.AddAwsS3FileStorage(options =>
+//{
+//    options.AccessKey = builder.Configuration.GetSection("AwsConfiguration").GetValue<string>("AwsAccessKey");
+//    options.SecretKey = builder.Configuration.GetSection("AwsConfiguration").GetValue<string>("AwsSecretKey");
+//    options.BucketName = builder.Configuration.GetSection("AwsConfiguration").GetValue<string>("AwsBucketName");
+//});
+
 // Neo4j persistence: data access and repositories.
-builder.Services.AddNeo4jPersistence(options => {
+builder.Services.AddNeo4jPersistence(options =>
+{
     options.Connection = settings.Neo4jConnection;
     options.User = settings.Neo4jUser;
     options.Password = settings.Neo4jPassword;
@@ -80,6 +98,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Local file storage support.
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "LocalStorage")),
+    RequestPath = "/static",
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+    }
+});
 
 app.UseAuthorization();
 

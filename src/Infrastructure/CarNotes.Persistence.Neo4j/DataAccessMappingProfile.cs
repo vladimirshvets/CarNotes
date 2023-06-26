@@ -40,7 +40,9 @@ public class DataAccessMappingProfile : Profile
             .ForMember(dest => dest.OwnedFrom, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("owned_from"), node => node))
             .ForMember(dest => dest.OwnedTo, opt => opt.ConvertUsing(
-                new LocalDateValueConverter("owned_to"), node => node));
+                new LocalDateValueConverter("owned_to"), node => node))
+            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(
+                node => node.ContainsKey("avatar_url") ? node["avatar_url"] : null));
 
         CreateMap<Dictionary<string, object>, Mileage>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))

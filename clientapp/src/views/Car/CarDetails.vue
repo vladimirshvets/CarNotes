@@ -3,7 +3,7 @@
         <v-navigation-drawer permanent expand-on-hover rail>
             <v-list>
                 <v-list-item
-                    :prepend-avatar="require(`@/assets/car/profile/avatars/0.jpg`)"
+                    :prepend-avatar="carAvatarUrl"
                     :title="carFullName"
                     :subtitle="carInstance.plate"
                 ></v-list-item>
@@ -41,6 +41,11 @@ export default {
     computed: {
         carFullName() {
             return `${this.carInstance.make} ${this.carInstance.model} ${this.carInstance.generation ?? ""}`
+        },
+        carAvatarUrl() {
+            return this.carInstance.avatarUrl
+                ? `/static/images/${this.carInstance.avatarUrl}`
+                : require(`@/assets/car/avatars/logo_480.jpg`);
         }
     },
     data() {

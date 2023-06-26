@@ -47,7 +47,7 @@ namespace CarNotes.Domain.Models
         /// <summary>
         /// Engine type represented as a string.
         /// </summary>
-        public string? EngineTypeText => EngineType.ToString();
+        public string? EngineTypeText => EngineType?.ToString();
 
         /// <summary>
         /// Vehicle in possession since, date.
@@ -58,5 +58,10 @@ namespace CarNotes.Domain.Models
         /// Vehicle in possession till, date.
         /// </summary>
         public DateOnly? OwnedTo { get; set; }
+
+        /// <summary>
+        /// Avatar URL.
+        /// </summary>
+        public string? AvatarUrl { get; set; }
     }
 }

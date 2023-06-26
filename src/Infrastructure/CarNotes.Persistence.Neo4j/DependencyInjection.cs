@@ -9,7 +9,7 @@ using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j
 {
-    public static class ServiceRegistration
+    public static class DependencyInjection
     {
         public static IServiceCollection AddNeo4jPersistence(
             this IServiceCollection services,
