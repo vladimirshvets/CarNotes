@@ -31,8 +31,7 @@ public class StatsRepository : IStatsRepository
 
         var parameters = new Dictionary<string, object>
         {
-            { "carId", carId.ToString() },
-            { "relTypes", relationTypesString }
+            { "carId", carId.ToString() }
         };
 
         int response = await _neo4jDataAccess.ExecuteReadScalarAsync<int>(
@@ -45,6 +44,30 @@ public class StatsRepository : IStatsRepository
         string query =
             @"MATCH (c:Car { id: $carId })-[:FUEL]->(r:Refueling)
             RETURN SUM(r.volume)";
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "carId", carId.ToString() }
+        };
+
+        double response = await _neo4jDataAccess.ExecuteReadScalarAsync<double>(
+            query, parameters);
+
+        return response;
+    }
+
+    public async Task<double> GetTotalMoneySpent(
+        Guid carId, IEnumerable<string> noteTypes)
+    {
+        string noteTypesString = string.Join('|', noteTypes).Trim();
+        if (noteTypesString.Length == 0)
+        {
+            return 0;
+        }
+
+        string query =
+            @"MATCH (c:Car { id: $carId })-->(n: " + noteTypesString + @"$noteTypes)
+            RETURN SUM(n.total_amount)";
 
         var parameters = new Dictionary<string, object>
         {

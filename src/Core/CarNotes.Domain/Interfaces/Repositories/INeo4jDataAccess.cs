@@ -1,6 +1,6 @@
 ﻿namespace CarNotes.Domain.Interfaces
 {
-    public interface INeo4jDataAccess : IAsyncDisposable
+    public interface INeo4jDataAccess
     {
         /// <summary>
         /// Execute read list as an asynchronous operation.

@@ -39,23 +39,6 @@
                 </v-col>
                 <v-col cols="12" md="4">
                     <div>{{ carInstance.engineTypeText }}</div>
-
-                    <v-card class="pa-md-4 pa-sm-4" title="Upload Avatar">
-                        <v-form class="form" @submit.prevent="onSubmit">
-                            <v-file-input
-                                v-model="selectedFile"
-                                label="Avatar"
-                                prepend-icon="mdi-camera"
-                                clearable
-                                show-size
-                                :rules="rules"
-                                accept="image/jpg"
-                                @change="handleFileUpload"
-                            ></v-file-input>
-                            <v-btn type="submit">Upload</v-btn>
-                        </v-form>
-                    </v-card>
-
                 </v-col>
             </v-row>
         </div>
@@ -63,46 +46,10 @@
 </template>
 
 <script>
-import api from '@/api.js';
 export default {
     name: 'CarSummary',
     props: {
         carInstance: Object
-    },
-    data() {
-        return {
-            formData: null,
-            selectedFile: null,
-            rules: [
-                value => {
-                    return !value || !value.length || value[0].size < 10485760 || 'Avatar size should be less than 10 MB.'
-                }
-            ]
-        }
-    },
-    methods: {
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            this.formData = new FormData();
-            this.formData.append('file', file);
-        },
-        onSubmit() {
-            api
-                .post(`/api/images/avatar/${this.carInstance.id}`, this.formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    }
-                })
-                .then((response) => {
-                    // ToDo:
-                    // Update carInstance object
-                    // this.carInstance.avatarUrl = response.data;
-                    console.log(response.data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
     }
 }
 </script>

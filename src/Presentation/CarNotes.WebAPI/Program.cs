@@ -54,7 +54,8 @@ builder.Services
             ValidateIssuerSigningKey = true,
             ValidIssuer = settings.WebServerUrl,
             ValidAudience = settings.WebClientUrl,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.JwtSecret ?? throw new ArgumentNullException("JWT Secret must be specified.")))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.JwtSecret ?? throw new ArgumentNullException("JWT Secret must be specified."))),
+            ClockSkew = TimeSpan.FromMinutes(1)
         };
     });
 
@@ -71,6 +72,7 @@ builder.Services.AddLocalFileStorage(options =>
     options.StoragePath =
         builder.Configuration.GetSection("LocalStorageConfiguration").GetValue<string>("StoragePath") ?? "LocalStorage/images";
 });
+// Not tested.
 //builder.Services.AddAwsS3FileStorage(options =>
 //{
 //    options.AccessKey = builder.Configuration.GetSection("AwsConfiguration").GetValue<string>("AwsAccessKey");
@@ -78,7 +80,7 @@ builder.Services.AddLocalFileStorage(options =>
 //    options.BucketName = builder.Configuration.GetSection("AwsConfiguration").GetValue<string>("AwsBucketName");
 //});
 
-// Neo4j persistence: data access and repositories.
+// Data storage.
 builder.Services.AddNeo4jPersistence(options =>
 {
     options.Connection = settings.Neo4jConnection;

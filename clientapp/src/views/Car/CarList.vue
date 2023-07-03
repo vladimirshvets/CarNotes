@@ -152,7 +152,7 @@ export default {
                 this.cars = response.data;
                 this.cars.forEach(carInstance => {
                     api
-                        .get(`/api/stats/action-records/${carInstance.id}`)
+                        .get(`/api/personal-stats/action-records/${carInstance.id}`)
                         .then(response => {
                             carInstance.numberOfActionRecords = response.data;
                         })

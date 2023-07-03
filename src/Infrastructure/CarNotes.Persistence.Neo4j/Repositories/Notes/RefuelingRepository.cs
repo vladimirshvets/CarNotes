@@ -75,6 +75,7 @@ public class RefuelingRepository : INoteRepository<Refueling>
                     id: apoc.create.uuid(),
                     volume: $volume,
                     price: $price,
+                    total_amount: $totalAmount,
                     distributor: $distributor,
                     address: $address,
                     comment: $comment
@@ -89,6 +90,7 @@ public class RefuelingRepository : INoteRepository<Refueling>
             { "mileageId", mileageId.ToString() },
             { "volume", refueling.Volume },
             { "price", refueling.Price },
+            { "totalAmount", refueling.TotalAmount },
             { "distributor", refueling.Distributor },
             { "address", refueling.Address },
             { "comment", refueling.Comment }
@@ -120,6 +122,7 @@ public class RefuelingRepository : INoteRepository<Refueling>
             SET
                 r.volume = $volume,
                 r.price = $price,
+                r.total_amount = $totalAmount,
                 r.distributor = $distributor,
                 r.address = $address,
                 r.comment = $comment
@@ -132,6 +135,7 @@ public class RefuelingRepository : INoteRepository<Refueling>
             { "refuelingId", refuelingId.ToString() },
             { "volume", refueling.Volume },
             { "price", refueling.Price },
+            { "totalAmount", refueling.TotalAmount },
             { "distributor", refueling.Distributor },
             { "address", refueling.Address },
             { "comment", refueling.Comment }

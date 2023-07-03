@@ -14,10 +14,9 @@ namespace CarNotes.Domain.Interfaces.Repositories
         /// <summary>
         /// Returns a car record by car ID of a specified user.
         /// </summary>
-        /// <param name="userId">User identifier</param>
         /// <param name="carId">Car identifier</param>
         /// <returns>An instance of car.</returns>
-        Task<Car?> GetAsync(Guid userId, Guid carId);
+        Task<Car?> GetAsync(Guid carId);
 
         /// <summary>
         /// Creates a new car record.

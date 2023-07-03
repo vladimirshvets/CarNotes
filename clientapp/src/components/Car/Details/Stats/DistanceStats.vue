@@ -62,12 +62,12 @@ export default {
     },
     created() {
         api
-            .get(`/api/stats/average-consumption/${this.$route.params.carId}`)
+            .get(`/api/personal-stats/average-consumption/${this.$route.params.carId}`)
             .then(response => {
                 this.averageConsumption = response.data;
             });
         api
-            .get(`/api/stats/odometer-delta/${this.$route.params.carId}`)
+            .get(`/api/personal-stats/odometer-delta/${this.$route.params.carId}`)
             .then(response => {
                 this.odometerDelta = response.data;
             });

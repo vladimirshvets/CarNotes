@@ -9,7 +9,9 @@ public class Neo4jDataAccess : INeo4jDataAccess
 {
     const string NEO4J_DATABASE_DEFAULT = "neo4j";
 
-    private readonly IAsyncSession _session;
+    private readonly string _database;
+
+    private readonly IDriver _driver;
 
     private readonly ILogger<Neo4jDataAccess> _logger;
 
@@ -21,9 +23,9 @@ public class Neo4jDataAccess : INeo4jDataAccess
         ILogger<Neo4jDataAccess> logger,
         Neo4jOptions neo4JOptions)
     {
+        _driver = driver;
         _logger = logger;
-        string database = neo4JOptions.Database ?? NEO4J_DATABASE_DEFAULT;
-        _session = driver.AsyncSession(o => o.WithDatabase(database));
+        _database = neo4JOptions.Database ?? NEO4J_DATABASE_DEFAULT;
     }
 
     public async Task<List<string>> ExecuteReadListAsync(
@@ -52,7 +54,10 @@ public class Neo4jDataAccess : INeo4jDataAccess
         {
             parameters ??= new Dictionary<string, object>();
 
-            var result = await _session.ExecuteReadAsync(async tx =>
+            using var session =
+                _driver.AsyncSession(o => o.WithDatabase(_database));
+
+            var result = await session.ExecuteReadAsync(async tx =>
             {
                 T? scalar = default;
 
@@ -172,7 +177,10 @@ public class Neo4jDataAccess : INeo4jDataAccess
         {
             parameters ??= new Dictionary<string, object>();
 
-            var result = await _session.ExecuteWriteAsync(async tx =>
+            using var session =
+                _driver.AsyncSession(o => o.WithDatabase(_database));
+
+            var result = await session.ExecuteWriteAsync(async tx =>
             {
                 // This function can process batch of statements per once.
                 var res = await tx.RunAsync(query, parameters);
@@ -212,7 +220,10 @@ public class Neo4jDataAccess : INeo4jDataAccess
         {
             parameters ??= new Dictionary<string, object>();
 
-            var result = await _session.ExecuteReadAsync(async tx =>
+            using var session =
+                _driver.AsyncSession(o => o.WithDatabase(_database));
+
+            var result = await session.ExecuteReadAsync(async tx =>
             {
                 var data = new List<T>();
 
@@ -243,14 +254,5 @@ public class Neo4jDataAccess : INeo4jDataAccess
                 ex, "There was a problem while executing database query");
             throw;
         }
-    }
-
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing,
-    /// or resetting unmanaged resources asynchronously.
-    /// </summary>
-    async ValueTask IAsyncDisposable.DisposeAsync()
-    {
-        await _session.CloseAsync();
     }
 }

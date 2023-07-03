@@ -11,5 +11,11 @@
         Task<double> AverageFuelConsumption(Guid carId);
 
         Task<int> OdometerDelta(Guid carId);
+
+        Task<double> MoneySpentInTotal(Guid carId);
+
+        Task<double> MoneySpentPerKm(Guid carId);
+
+        Task<double> MoneySpentPerMonth(Guid carId);
     }
 }

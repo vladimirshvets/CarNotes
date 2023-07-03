@@ -29,8 +29,8 @@ public class CarsController : ControllerBase
     [Route("{carId}")]
     public async Task<ActionResult<Car>> Get(Guid carId)
     {
-        Guid userId = GetUserId();
-        Car? car = await _carRepository.GetAsync(userId, carId);
+        //Guid userId = GetUserId();
+        Car? car = await _carRepository.GetAsync(carId);
         if (car == null)
         {
             return BadRequest();

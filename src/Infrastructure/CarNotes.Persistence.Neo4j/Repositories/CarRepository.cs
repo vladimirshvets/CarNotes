@@ -49,15 +49,14 @@ public class CarRepository : ICarRepository
         return cars;
     }
 
-    public async Task<Car?> GetAsync(Guid userId, Guid carId)
+    public async Task<Car?> GetAsync(Guid carId)
     {
         string query =
-            @"MATCH (u:User { id: $userId })-[rel:OWNS]->(c:Car { id: $carId })
+            @"MATCH (c:Car { id: $carId })
             RETURN c";
 
         var parameters = new Dictionary<string, object>
         {
-            { "userId", userId.ToString() },
             { "carId", carId.ToString() }
         };
 

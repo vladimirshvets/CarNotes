@@ -77,6 +77,7 @@ public class ServiceRepository : INoteRepository<Service>
                     website_url: $websiteUrl,
                     cost_of_work: $costOfWork,
                     cost_of_spare_parts: $costOfSpareParts,
+                    total_amount: $totalAmount,
                     comment: $comment
                 }),
                 (c)-[:SERVICE { created_at: timestamp() }]->(s),
@@ -93,6 +94,7 @@ public class ServiceRepository : INoteRepository<Service>
             { "websiteUrl", service.WebsiteUrl },
             { "costOfWork", service.CostOfWork },
             { "costOfSpareParts", service.CostOfSpareParts },
+            { "totalAmount", service.TotalAmount },
             { "comment", service.Comment }
         };
 
@@ -126,6 +128,7 @@ public class ServiceRepository : INoteRepository<Service>
                 s.website_url = $websiteUrl,
                 s.cost_of_work = $costOfWork,
                 s.cost_of_spare_parts = $costOfSpareParts,
+                s.total_amount = $totalAmount,
                 s.comment = $comment
             RETURN s, m";
 
@@ -140,6 +143,7 @@ public class ServiceRepository : INoteRepository<Service>
             { "websiteUrl", service.WebsiteUrl },
             { "costOfWork", service.CostOfWork },
             { "costOfSpareParts", service.CostOfSpareParts },
+            { "totalAmount", service.TotalAmount },
             { "comment", service.Comment }
         };
 

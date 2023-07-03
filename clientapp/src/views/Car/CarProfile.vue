@@ -114,6 +114,23 @@
             title="Delete Car"
             text="Are you sure you want to delete this car with all related notes?<br/><br/>This action can be undone."
         ></delete-confirmation-modal>
+
+        <br>
+        <v-card v-if="carId" class="pa-md-4 pa-sm-4" title="Update Avatar">
+            <v-form class="form" @submit.prevent="onFileFormSubmit">
+                <v-file-input
+                    v-model="selectedFile"
+                    label="Avatar"
+                    prepend-icon="mdi-camera"
+                    clearable
+                    show-size
+                    :rules="rules"
+                    accept="image/jpg"
+                    @change="handleFileUpload"
+                ></v-file-input>
+                <v-btn type="submit">Update</v-btn>
+            </v-form>
+        </v-card>
     </v-container>
 </template>
 
@@ -136,7 +153,14 @@ export default {
             ],
             carId: this.$route.params.carId,
             carInstance: {},
-            removalModal: false
+            removalModal: false,
+
+            selectedFile: null,
+            rules: [
+                value => {
+                    return !value || !value.length || value[0].size < 10485760 || 'Avatar size should be less than 10 MB.'
+                }
+            ]
         }
     },
     async created() {
@@ -185,6 +209,28 @@ export default {
         },
         triggerRemovalModal(state) {
             this.removalModal = state;
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            this.formData = new FormData();
+            this.formData.append('file', file);
+        },
+        onFileFormSubmit() {
+            api
+                .post(`/api/images/avatar/${this.carInstance.id}`, this.formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                })
+                .then((response) => {
+                    // ToDo:
+                    // Update carInstance object
+                    // this.carInstance.avatarUrl = response.data;
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     }
 }

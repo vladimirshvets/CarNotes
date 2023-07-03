@@ -17,5 +17,14 @@
         /// <param name="carId">Car identifier</param>
         /// <returns>Total fuel consumed.</returns>
         Task<double> GetTotalFuelConsumed(Guid carId);
+
+        /// <summary>
+        /// Get total amount of money spent.
+        /// </summary>
+        /// <param name="carId">Car identifier</param>
+        /// <param name="noteTypes">Collection of note types</param>
+        /// <returns>Total amount spent.</returns>
+        Task<double> GetTotalMoneySpent(
+            Guid carId, IEnumerable<string> noteTypes);
     }
 }

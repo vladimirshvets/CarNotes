@@ -48,7 +48,7 @@ export default {
     },
     mounted() {
         axios
-            .get(`/api/stats/total-users`)
+            .get(`/api/global-stats/total-users`)
             .then(response => {
                 this.totalUsers = response.data;
             })
@@ -57,7 +57,7 @@ export default {
             });
 
         axios
-            .get(`/api/stats/total-cars`)
+            .get(`/api/global-stats/total-cars`)
             .then(response => {
                 this.totalCars = response.data;
             })
