@@ -91,6 +91,13 @@ public class StatsService : IStatsService
         return await _statsRepository.GetTotalMoneySpent(carId, noteTypes);
     }
 
+    public async Task<double> MoneySpentByNoteType(Guid carId, string noteType)
+    {
+        string[] noteTypes = new[] { noteType };
+
+        return await _statsRepository.GetTotalMoneySpent(carId, noteTypes);
+    }
+
     public async Task<double> MoneySpentPerKm(Guid carId)
     {
         int odometerDelta = await OdometerDelta(carId);

@@ -1,4 +1,5 @@
 ﻿using CarNotes.Domain.Interfaces.Services;
+using CarNotes.Domain.Models.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,40 @@ public class PersonalStatsController : ControllerBase
                 MoneyTotal = await moneyTotalTask,
                 MoneyPerKm = await moneyPerKmTask,
                 MoneyPerMonth = await moneyPerMonthTask
+            }
+        );
+    }
+
+    [HttpGet("money-spendings/details/{carId:guid}")]
+    public async Task<IActionResult> GetMoneySpendingsDetailedStats(Guid carId)
+    {
+        var legalProcedureSpendingsTask =
+            _statsService.MoneySpentByNoteType(carId, nameof(LegalProcedure));
+        var refuelingSpendingsTask =
+            _statsService.MoneySpentByNoteType(carId, nameof(Refueling));
+        var serviceSpendingsTask =
+            _statsService.MoneySpentByNoteType(carId, nameof(Service));
+        var sparePartSpendingsTask =
+            _statsService.MoneySpentByNoteType(carId, nameof(SparePart));
+        var washingSpendingsTask =
+            _statsService.MoneySpentByNoteType(carId, nameof(Washing));
+
+        await Task.WhenAll(
+            legalProcedureSpendingsTask,
+            refuelingSpendingsTask,
+            serviceSpendingsTask,
+            sparePartSpendingsTask,
+            washingSpendingsTask
+        );
+
+        return Ok(
+            new
+            {
+                LegalProceduresTotal = await legalProcedureSpendingsTask,
+                RefuelingsTotal = await refuelingSpendingsTask,
+                ServicesTotal = await serviceSpendingsTask,
+                SparePartsTotal = await sparePartSpendingsTask,
+                WashingsTotal = await washingSpendingsTask
             }
         );
     }

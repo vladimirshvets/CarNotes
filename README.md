@@ -6,14 +6,13 @@
 - Garage Page, notes counter
 - Create/update/delete car
 - Car details Page
-- Stats: total mileage, average fuel consumption
+- Stats: mileage (total, per month), average fuel consumption, spendings (total, per km, per month, per note type)
 - Mileage chart
 - CRUD actions for Notes: Refuelings, Washings, Spare Parts, Services, Legal Procedures, Text Notes
 
 ### To Do
 - New/edit car Page design
 - Add content to Homepage
-- Stats: expenses
 - Upload user photo, car photo
 - Filter spare parts by category/group
 - Social auth

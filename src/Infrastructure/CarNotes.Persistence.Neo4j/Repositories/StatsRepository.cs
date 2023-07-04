@@ -66,7 +66,7 @@ public class StatsRepository : IStatsRepository
         }
 
         string query =
-            @"MATCH (c:Car { id: $carId })-->(n: " + noteTypesString + @"$noteTypes)
+            @"MATCH (c:Car { id: $carId })-->(n: " + noteTypesString + @")
             RETURN SUM(n.total_amount)";
 
         var parameters = new Dictionary<string, object>

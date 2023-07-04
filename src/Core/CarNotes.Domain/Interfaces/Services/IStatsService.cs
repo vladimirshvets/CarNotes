@@ -14,6 +14,8 @@
 
         Task<double> MoneySpentInTotal(Guid carId);
 
+        Task<double> MoneySpentByNoteType(Guid carId, string noteType);
+
         Task<double> MoneySpentPerKm(Guid carId);
 
         Task<double> MoneySpentPerMonth(Guid carId);
