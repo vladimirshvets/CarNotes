@@ -1,7 +1,7 @@
 <template>
     <photo-slider />
     <car-summary :carInstance="carInstance"/>
-    <distance-stats :carInstance="carInstance" />
+    <distance-stats />
     <money-spendings />
     <mileage-chart :key="mileageChartKey" :labels="mileageDates" :values="mileageValues" />
 </template>

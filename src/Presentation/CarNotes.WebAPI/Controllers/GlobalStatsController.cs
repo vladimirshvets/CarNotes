@@ -15,9 +15,9 @@ public class GlobalStatsController : ControllerBase
 
     [HttpGet("total-cars")]
     public async Task<int> TotalNumberOfCars()
-        => await _statsService.TotalNumberOfCars();
+        => await _statsService.TotalNumberOfCarsAsync();
 
     [HttpGet("total-users")]
     public async Task<int> TotalNumberOfUsers()
-        => await _statsService.TotalNumberOfUsers();
+        => await _statsService.TotalNumberOfUsersAsync();
 }

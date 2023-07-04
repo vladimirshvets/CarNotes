@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="carId">Car identifier</param>
         /// <returns>Total fuel consumed.</returns>
-        Task<double> GetTotalFuelConsumed(Guid carId);
+        Task<double> GetTotalFuelConsumedAsync(Guid carId);
 
         /// <summary>
         /// Get total amount of money spent.
@@ -24,7 +24,7 @@
         /// <param name="carId">Car identifier</param>
         /// <param name="noteTypes">Collection of note types</param>
         /// <returns>Total amount spent.</returns>
-        Task<double> GetTotalMoneySpent(
+        Task<double> GetTotalMoneySpentAsync(
             Guid carId, IEnumerable<string> noteTypes);
     }
 }

@@ -28,7 +28,7 @@ public class StatsServiceTests
             .Setup(repo => repo.GetMaxOdometerValueAsync(carId))
             .ReturnsAsync(maxOdometerValue);
         mockStatsRepository
-            .Setup(repo => repo.GetTotalFuelConsumed(carId))
+            .Setup(repo => repo.GetTotalFuelConsumedAsync(carId))
             .ReturnsAsync(refuelingSum);
 
         var sut = new StatsService(
@@ -38,7 +38,7 @@ public class StatsServiceTests
             mockUserRepository.Object);
 
         // Act.
-        double result = await sut.AverageFuelConsumption(carId);
+        double result = await sut.AverageFuelConsumptionAsync(carId);
 
         // Assert.
         Assert.Equal(expectedResult, result);
@@ -47,7 +47,7 @@ public class StatsServiceTests
         mockMileageRepository.Verify(
             repo => repo.GetMaxOdometerValueAsync(carId), Times.Once);
         mockStatsRepository.Verify(
-            repo => repo.GetTotalFuelConsumed(carId), Times.Never);
+            repo => repo.GetTotalFuelConsumedAsync(carId), Times.Never);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class StatsServiceTests
             .Setup(repo => repo.GetMaxOdometerValueAsync(carId))
             .ReturnsAsync(maxOdometerValue);
         mockStatsRepository
-            .Setup(repo => repo.GetTotalFuelConsumed(carId))
+            .Setup(repo => repo.GetTotalFuelConsumedAsync(carId))
             .ReturnsAsync(refuelingSum);
 
         var sut = new StatsService(
@@ -82,7 +82,7 @@ public class StatsServiceTests
             mockUserRepository.Object);
 
         // Act.
-        double result = await sut.AverageFuelConsumption(carId);
+        double result = await sut.AverageFuelConsumptionAsync(carId);
 
         // Assert.
         Assert.Equal(expectedResult, result);
@@ -91,6 +91,6 @@ public class StatsServiceTests
         mockMileageRepository.Verify(
             repo => repo.GetMaxOdometerValueAsync(carId), Times.Once);
         mockStatsRepository.Verify(
-            repo => repo.GetTotalFuelConsumed(carId), Times.Once);
+            repo => repo.GetTotalFuelConsumedAsync(carId), Times.Once);
     }
 }

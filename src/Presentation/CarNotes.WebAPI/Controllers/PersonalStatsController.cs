@@ -18,25 +18,43 @@ public class PersonalStatsController : ControllerBase
 
     [HttpGet("action-records/{carId}")]
     public async Task<int> GetNumberOfActionRecords(Guid carId)
-        => await _statsService.NumberOfActionRecords(carId);
+        => await _statsService.NumberOfActionRecordsAsync(carId);
 
-    [HttpGet("average-consumption/{carId}")]
-    public async Task<double> GetAverageFuelConsumption(Guid carId)
-        => await _statsService.AverageFuelConsumption(carId);
+    [HttpGet("distance/{carId:guid}")]
+    public async Task<IActionResult> GetDistanceStats(Guid carId)
+    {
+        var totalDistanceTask = _statsService.TotalDistanceAsync(carId);
+        var distancePerMonthTask = _statsService.DistancePerMonthAsync(carId);
+        var avgConsumptionTask = _statsService.AverageFuelConsumptionAsync(carId);
 
-    [HttpGet("odometer-delta/{carId}")]
-    public async Task<int> GetOdometerDelta(Guid carId)
-        => await _statsService.OdometerDelta(carId);
+        await Task.WhenAll(
+            totalDistanceTask,
+            distancePerMonthTask,
+            avgConsumptionTask
+        );
+
+        return Ok(
+            new
+            {
+                TotalDistance = await totalDistanceTask,
+                DistancePerMonth = await distancePerMonthTask,
+                AverageFuelConsumption = await avgConsumptionTask
+            }
+        );
+    }
 
     [HttpGet("money-spendings/{carId:guid}")]
     public async Task<IActionResult> GetMoneySpendingsStats(Guid carId)
     {
-        var moneyTotalTask = _statsService.MoneySpentInTotal(carId);
-        var moneyPerKmTask = _statsService.MoneySpentPerKm(carId);
-        var moneyPerMonthTask = _statsService.MoneySpentPerMonth(carId);
+        var moneyTotalTask = _statsService.MoneySpentInTotalAsync(carId);
+        var moneyPerKmTask = _statsService.MoneySpentPerKmAsync(carId);
+        var moneyPerMonthTask = _statsService.MoneySpentPerMonthAsync(carId);
 
-        // Run tasks in parallel.
-        await Task.WhenAll(moneyTotalTask, moneyPerKmTask, moneyPerMonthTask);
+        await Task.WhenAll(
+            moneyTotalTask,
+            moneyPerKmTask,
+            moneyPerMonthTask
+        );
 
         return Ok(
             new
@@ -52,15 +70,15 @@ public class PersonalStatsController : ControllerBase
     public async Task<IActionResult> GetMoneySpendingsDetailedStats(Guid carId)
     {
         var legalProcedureSpendingsTask =
-            _statsService.MoneySpentByNoteType(carId, nameof(LegalProcedure));
+            _statsService.MoneySpentByNoteTypeAsync(carId, nameof(LegalProcedure));
         var refuelingSpendingsTask =
-            _statsService.MoneySpentByNoteType(carId, nameof(Refueling));
+            _statsService.MoneySpentByNoteTypeAsync(carId, nameof(Refueling));
         var serviceSpendingsTask =
-            _statsService.MoneySpentByNoteType(carId, nameof(Service));
+            _statsService.MoneySpentByNoteTypeAsync(carId, nameof(Service));
         var sparePartSpendingsTask =
-            _statsService.MoneySpentByNoteType(carId, nameof(SparePart));
+            _statsService.MoneySpentByNoteTypeAsync(carId, nameof(SparePart));
         var washingSpendingsTask =
-            _statsService.MoneySpentByNoteType(carId, nameof(Washing));
+            _statsService.MoneySpentByNoteTypeAsync(carId, nameof(Washing));
 
         await Task.WhenAll(
             legalProcedureSpendingsTask,

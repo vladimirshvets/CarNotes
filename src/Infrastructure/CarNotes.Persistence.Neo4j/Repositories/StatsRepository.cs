@@ -39,7 +39,7 @@ public class StatsRepository : IStatsRepository
         return response;
     }
 
-    public async Task<double> GetTotalFuelConsumed(Guid carId)
+    public async Task<double> GetTotalFuelConsumedAsync(Guid carId)
     {
         string query =
             @"MATCH (c:Car { id: $carId })-[:FUEL]->(r:Refueling)
@@ -56,7 +56,7 @@ public class StatsRepository : IStatsRepository
         return response;
     }
 
-    public async Task<double> GetTotalMoneySpent(
+    public async Task<double> GetTotalMoneySpentAsync(
         Guid carId, IEnumerable<string> noteTypes)
     {
         string noteTypesString = string.Join('|', noteTypes).Trim();

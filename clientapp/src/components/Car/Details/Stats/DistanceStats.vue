@@ -9,7 +9,7 @@
                 <v-col cols="12" md="4" sm="4">
                     <div class="circle-wrap">
                         <div class="circle-text">
-                            <div class="value">{{ averageConsumption?.toFixed(2) }}</div>
+                            <div class="value">{{ averageFuelConsumption?.toFixed(2) }}</div>
                             <div class="label">l. / 100 km</div>
                         </div>
                     </div>
@@ -17,7 +17,7 @@
                 <v-col cols="12" md="4" sm="4">
                     <div class="circle-wrap">
                         <div class="circle-text">
-                            <div class="value">{{ odometerDelta }}</div>
+                            <div class="value">{{ totalDistance }}</div>
                             <div class="label">km total</div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                 <v-col cols="12" md="4" sm="4">
                     <div class="circle-wrap">
                         <div class="circle-text">
-                            <div class="value">{{ monthlyMileageStats?.toFixed(0) }}</div>
+                            <div class="value">{{ distancePerMonth }}</div>
                             <div class="label">km / month</div>
                         </div>
                     </div>
@@ -37,39 +37,22 @@
 
 <script>
 import api from '@/api.js';
-import moment from 'moment';
 export default {
     name: 'DistanceStats',
-    props: {
-        carInstance: Object
-    },
     data() {
         return {
-            averageConsumption: 0,
-            odometerDelta: 0
+            totalDistance: 0,
+            distancePerMonth: 0,
+            averageFuelConsumption: 0
         }
-    },
-    computed: {
-        monthlyMileageStats() {
-            const from = this.carInstance?.ownedFrom;
-            const to = this.carInstance?.ownedTo;
-            const fromDate = from ? moment(from) : moment();
-            const toDate = to ? moment(to) : moment();
-            const duration = moment.duration(toDate.diff(fromDate));
-            const days = duration.asDays();
-            return days === 0 ? 0 : this.odometerDelta / days * 30.4375;
-        },
     },
     created() {
         api
-            .get(`/api/personal-stats/average-consumption/${this.$route.params.carId}`)
+            .get(`/api/personal-stats/distance/${this.$route.params.carId}`)
             .then(response => {
-                this.averageConsumption = response.data;
-            });
-        api
-            .get(`/api/personal-stats/odometer-delta/${this.$route.params.carId}`)
-            .then(response => {
-                this.odometerDelta = response.data;
+                this.totalDistance = response.data.totalDistance;
+                this.distancePerMonth = response.data.distancePerMonth;
+                this.averageFuelConsumption = response.data.averageFuelConsumption;
             });
     }
 }

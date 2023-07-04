@@ -2,22 +2,24 @@
 {
     public interface IStatsService
     {
-        Task<int> TotalNumberOfCars();
+        Task<int> TotalNumberOfCarsAsync();
 
-        Task<int> TotalNumberOfUsers();
+        Task<int> TotalNumberOfUsersAsync();
 
-        Task<int> NumberOfActionRecords(Guid carId);
+        Task<int> NumberOfActionRecordsAsync(Guid carId);
 
-        Task<double> AverageFuelConsumption(Guid carId);
+        Task<double> AverageFuelConsumptionAsync(Guid carId);
 
-        Task<int> OdometerDelta(Guid carId);
+        Task<int> TotalDistanceAsync(Guid carId);
 
-        Task<double> MoneySpentInTotal(Guid carId);
+        Task<int> DistancePerMonthAsync(Guid carId);
 
-        Task<double> MoneySpentByNoteType(Guid carId, string noteType);
+        Task<double> MoneySpentInTotalAsync(Guid carId);
 
-        Task<double> MoneySpentPerKm(Guid carId);
+        Task<double> MoneySpentByNoteTypeAsync(Guid carId, string noteType);
 
-        Task<double> MoneySpentPerMonth(Guid carId);
+        Task<double> MoneySpentPerKmAsync(Guid carId);
+
+        Task<double> MoneySpentPerMonthAsync(Guid carId);
     }
 }

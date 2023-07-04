@@ -33,13 +33,13 @@ public class StatsService : IStatsService
         _userRepository = userRepository;
     }
 
-    public async Task<int> TotalNumberOfUsers()
+    public async Task<int> TotalNumberOfUsersAsync()
         => await _userRepository.GetNumberOfUsersAsync();
 
-    public async Task<int> TotalNumberOfCars()
+    public async Task<int> TotalNumberOfCarsAsync()
         => await _carRepository.GetNumberOfCarsAsync();
 
-    public async Task<int> NumberOfActionRecords(Guid carId)
+    public async Task<int> NumberOfActionRecordsAsync(Guid carId)
     {
         string[] relationTypes = new[]
         {
@@ -55,7 +55,7 @@ public class StatsService : IStatsService
             carId, relationTypes);
     }
 
-    public async Task<double> AverageFuelConsumption(Guid carId)
+    public async Task<double> AverageFuelConsumptionAsync(Guid carId)
     {
         int minOdometerValue =
             await _mileageRepository.GetMinOdometerValueAsync(carId);
@@ -68,15 +68,33 @@ public class StatsService : IStatsService
         }
 
         double totalFuelConsumed =
-            await _statsRepository.GetTotalFuelConsumed(carId);
+            await _statsRepository.GetTotalFuelConsumedAsync(carId);
 
         return totalFuelConsumed * 100 / distance;
     }
 
-    public async Task<int> OdometerDelta(Guid carId)
+    public async Task<int> TotalDistanceAsync(Guid carId)
         => await _mileageRepository.GetDeltaOdometerValueAsync(carId);
 
-    public async Task<double> MoneySpentInTotal(Guid carId)
+    public async Task<int> DistancePerMonthAsync(Guid carId)
+    {
+        double monthsOfOwnership = await MonthsOfOwnershipAsync(carId);
+
+        switch (monthsOfOwnership)
+        {
+            case 0:
+                return 0;
+
+            case < 1:
+                return await TotalDistanceAsync(carId);
+
+            default:
+                int totalDistance = await TotalDistanceAsync(carId);
+                return (int)(totalDistance / monthsOfOwnership);
+        }
+    }
+
+    public async Task<double> MoneySpentInTotalAsync(Guid carId)
     {
         // A collection of note types that contain the TotalAmount property.
         string[] noteTypes = new[]
@@ -88,30 +106,49 @@ public class StatsService : IStatsService
             nameof(Washing)
         };
 
-        return await _statsRepository.GetTotalMoneySpent(carId, noteTypes);
+        return await _statsRepository.GetTotalMoneySpentAsync(carId, noteTypes);
     }
 
-    public async Task<double> MoneySpentByNoteType(Guid carId, string noteType)
+    public async Task<double> MoneySpentByNoteTypeAsync(
+        Guid carId, string noteType)
     {
         string[] noteTypes = new[] { noteType };
 
-        return await _statsRepository.GetTotalMoneySpent(carId, noteTypes);
+        return await _statsRepository.GetTotalMoneySpentAsync(carId, noteTypes);
     }
 
-    public async Task<double> MoneySpentPerKm(Guid carId)
+    public async Task<double> MoneySpentPerKmAsync(Guid carId)
     {
-        int odometerDelta = await OdometerDelta(carId);
-        if (odometerDelta == 0)
+        int totalDistance = await TotalDistanceAsync(carId);
+        if (totalDistance == 0)
         {
             return 0;
         }
 
-        double moneyTotal = await MoneySpentInTotal(carId);
+        double moneyTotal = await MoneySpentInTotalAsync(carId);
 
-        return moneyTotal / odometerDelta;
+        return moneyTotal / totalDistance;
     }
 
-    public async Task<double> MoneySpentPerMonth(Guid carId)
+    public async Task<double> MoneySpentPerMonthAsync(Guid carId)
+    {
+        double monthsOfOwnership = await MonthsOfOwnershipAsync(carId);
+
+        switch (monthsOfOwnership)
+        {
+            case 0:
+                return 0;
+
+            case < 1:
+                return await MoneySpentInTotalAsync(carId);
+
+            default:
+                double moneyTotal = await MoneySpentInTotalAsync(carId);
+                return moneyTotal / monthsOfOwnership;
+        }
+    }
+
+    private async Task<double> MonthsOfOwnershipAsync(Guid carId)
     {
         Car car = await _carRepository.GetAsync(carId)
             ?? throw new ModelNotFoundException();
@@ -123,14 +160,12 @@ public class StatsService : IStatsService
 
         DateOnly ownedFrom = (DateOnly)car.OwnedFrom;
         DateOnly ownedTo = car.OwnedTo ?? DateOnly.FromDateTime(DateTime.UtcNow);
-        int ownershipPeriod = ownedTo.DayNumber - ownedFrom.DayNumber;
-        if (ownershipPeriod == 0)
+        int daysOfOwnerShip = ownedTo.DayNumber - ownedFrom.DayNumber;
+        if (daysOfOwnerShip == 0)
         {
             return 0;
         }
 
-        double moneyTotal = await MoneySpentInTotal(carId);
-
-        return moneyTotal / ownershipPeriod * AVG_DAYS_IN_MONTH;
+        return daysOfOwnerShip / AVG_DAYS_IN_MONTH;
     }
 }
