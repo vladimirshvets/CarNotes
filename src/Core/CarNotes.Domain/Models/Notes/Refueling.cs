@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Services;
+﻿using System.Text;
+using CarNotes.Domain.Interfaces.Services;
 
 namespace CarNotes.Domain.Models.Notes
 {
@@ -6,7 +7,30 @@ namespace CarNotes.Domain.Models.Notes
     {
         public override string NoteType => nameof(Refueling);
 
-        public override string NoteTitle => $"Refueling: {Volume} l. * {Price}";
+        public override string NoteTitle
+        {
+            get
+            {
+                var builder = new StringBuilder($"{Volume} l. * {Price}");
+                var secondaryInfo = new List<string>();
+                if (Distributor != null)
+                {
+                    secondaryInfo.Add(Distributor);
+                }
+                if (Address != null)
+                {
+                    secondaryInfo.Add(Address);
+                }
+                string location = string.Join(", ", secondaryInfo);
+                if (location.Length > 0)
+                {
+                    builder.Append($" ({location})");
+                }
+                builder.Append($" | BYN {TotalAmount:F2}");
+
+                return builder.ToString();
+            }
+        }
 
         /// <summary>
         /// Amount of fuel.

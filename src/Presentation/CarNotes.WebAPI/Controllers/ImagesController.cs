@@ -16,7 +16,7 @@ public class ImagesController : ControllerBase
         _imageService = imageService;
     }
 
-    [HttpPost("avatar/{carId}")]
+    [HttpPost("avatar/{carId:guid}")]
     public async Task<ActionResult<string>> UploadCarAvatar(
         Guid carId, [FromForm] IFormFile file)
     {

@@ -1,5 +1,4 @@
 ﻿using CarNotes.Domain.Common.Exceptions;
-using CarNotes.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Neo4j.Driver;
 
@@ -27,6 +26,8 @@ public class Neo4jDataAccess : INeo4jDataAccess
         _logger = logger;
         _database = neo4JOptions.Database ?? NEO4J_DATABASE_DEFAULT;
     }
+
+    #region V1
 
     public async Task<List<string>> ExecuteReadListAsync(
         string query,
@@ -255,4 +256,50 @@ public class Neo4jDataAccess : INeo4jDataAccess
             throw;
         }
     }
+
+    #endregion
+
+    #region V2
+
+    // ToDo:
+    // Add ExecuteWriteTransactionAsync accordingly.
+    // Use them instead of previous version.
+    // Update repositories.
+
+    /// <summary>
+    /// Execute read transaction as an asynchronous operation.
+    /// </summary>
+    /// <param name="query">Query string</param>
+    /// <param name="parameters">Query parameters (optional)</param>
+    /// <returns>Collection that represents the result.</returns>
+    public async Task<IEnumerable<IRecord>> ExecuteReadTransactionAsync(
+        string query,
+        IDictionary<string, object>? parameters = null)
+    {
+        parameters ??= new Dictionary<string, object>();
+
+        try
+        {
+            using var session =
+                _driver.AsyncSession(o => o.WithDatabase(_database));
+
+            var result = await session.ExecuteReadAsync(async tx =>
+            {
+                var res = await tx.RunAsync(query, parameters);
+                List<IRecord> records = await res.ToListAsync();
+
+                return records;
+            });
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex, "There was a problem while executing database query");
+            throw;
+        }
+    }
+
+    #endregion
 }

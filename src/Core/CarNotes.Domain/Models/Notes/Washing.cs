@@ -1,12 +1,26 @@
-﻿using CarNotes.Domain.Interfaces.Services;
+﻿using System.Text;
+using CarNotes.Domain.Interfaces.Services;
 
 namespace CarNotes.Domain.Models.Notes
 {
     public class Washing : Note
     {
-        public override string NoteType => nameof(Service);
+        public override string NoteType => nameof(Washing);
 
-        public override string NoteTitle => $"{NoteType}: {Title}, {Address} ({TotalAmount} BYN)";
+        public override string NoteTitle
+        {
+            get
+            {
+                var builder = new StringBuilder(Title);
+                if (Address != null)
+                {
+                    builder.Append($" ({Address})");
+                }
+                builder.Append($" | BYN {TotalAmount:F2}");
+
+                return builder.ToString();
+            }
+        }
 
         /// <summary>
         /// Washing title.

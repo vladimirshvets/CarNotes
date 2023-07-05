@@ -1,4 +1,6 @@
-﻿namespace CarNotes.Domain.Interfaces
+﻿using Neo4j.Driver;
+
+namespace CarNotes.Persistence.Neo4j
 {
     public interface INeo4jDataAccess
     {
@@ -56,6 +58,16 @@
         /// <param name="parameters">Query parameters</param>
         /// <returns>List representation of result.</returns>
         Task<List<Dictionary<string, object>>> ExecuteWriteWithListResultAsync(
+            string query,
+            IDictionary<string, object>? parameters = null);
+
+        /// <summary>
+        /// Execute read transaction as an asyncronous operation.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<IEnumerable<IRecord>> ExecuteReadTransactionAsync(
             string query,
             IDictionary<string, object>? parameters = null);
     }

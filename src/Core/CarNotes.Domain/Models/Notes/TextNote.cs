@@ -4,7 +4,7 @@
     {
         public override string NoteType => nameof(TextNote);
 
-        public override string NoteTitle => $"{NoteType}: {Title}";
+        public override string NoteTitle => $"{Title} ({Tag})";
 
         /// <summary>
         /// Text note title.

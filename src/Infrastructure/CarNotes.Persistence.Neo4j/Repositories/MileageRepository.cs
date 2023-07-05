@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CarNotes.Domain.Interfaces;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 

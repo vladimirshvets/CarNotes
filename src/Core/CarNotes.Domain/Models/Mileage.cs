@@ -16,5 +16,10 @@
         /// Odometer value.
         /// </summary>
         public int OdometerValue { get; set; }
+
+        /// <summary>
+        /// Related notes.
+        /// </summary>
+        public virtual IEnumerable<Note>? Notes { get; set; }
     }
 }

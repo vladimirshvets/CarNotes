@@ -125,6 +125,7 @@ public class DataAccessMappingProfile : Profile
                 node => node.ContainsKey("comment") ? node["comment"] : null));
 
         CreateMap<Dictionary<string, object>, TextNote>()
+            //.ConstructUsing((src, ctx) => new TextNote { Mileage = ctx.TryGetItems(out var items) ? items.ContainsKey("Mileage") ? items["Mileage"] as Mileage : null : null })
             .ConstructUsing((src, ctx) => new TextNote { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
             .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node["title"]))

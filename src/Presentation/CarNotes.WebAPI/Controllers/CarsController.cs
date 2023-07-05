@@ -26,7 +26,7 @@ public class CarsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{carId}")]
+    [Route("{carId:guid}")]
     public async Task<ActionResult<Car>> Get(Guid carId)
     {
         //Guid userId = GetUserId();
@@ -45,13 +45,13 @@ public class CarsController : ControllerBase
         return await _carRepository.AddAsync(userId, car);
     }
 
-    [HttpPut("{carId}")]
+    [HttpPut("{carId:guid}")]
     public async Task<Car> Put(Guid carId, [FromBody] Car car)
     {
         return await _carRepository.UpdateAsync(carId, car);
     }
 
-    [HttpDelete("{carId}")]
+    [HttpDelete("{carId:guid}")]
     public async Task<ActionResult<bool>> Delete(Guid carId)
     {
         Guid userId = GetUserId();

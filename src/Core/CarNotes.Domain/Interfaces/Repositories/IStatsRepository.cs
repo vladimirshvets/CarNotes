@@ -1,4 +1,6 @@
-﻿namespace CarNotes.Domain.Interfaces.Repositories
+﻿using CarNotes.Domain.Models;
+
+namespace CarNotes.Domain.Interfaces.Repositories
 {
     public interface IStatsRepository
     {
@@ -26,5 +28,19 @@
         /// <returns>Total amount spent.</returns>
         Task<double> GetTotalMoneySpentAsync(
             Guid carId, IEnumerable<string> noteTypes);
+
+        /// <summary>
+        /// Get latest mileages together with related notes.
+        /// </summary>
+        /// <param name="carId">Car identifier</param>
+        /// <param name="noteTypes">Collection of note types</param>
+        /// <param name="skip">Number of mileage records to skip</param>
+        /// <param name="take">Number of mileage records to take</param>
+        /// <returns>Collection of mileages with linked notes.</returns>
+        Task<IEnumerable<Mileage>> GetMileagesWithRelatedNotesAsync(
+            Guid carId,
+            IEnumerable<string> noteTypes,
+            int skip,
+            int take);
     }
 }

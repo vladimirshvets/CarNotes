@@ -1,9 +1,12 @@
 <template>
-    <photo-slider />
-    <car-summary :carInstance="carInstance"/>
-    <distance-stats />
-    <money-spendings />
-    <mileage-chart :key="mileageChartKey" :labels="mileageDates" :values="mileageValues" />
+    <section class="stats-wrapper">
+        <photo-slider />
+        <car-summary :carInstance="carInstance"/>
+        <distance-stats />
+        <money-spendings />
+        <note-history />
+        <mileage-chart :key="mileageChartKey" :labels="mileageDates" :values="mileageValues" />
+    </section>
 </template>
 
 <script>
@@ -12,6 +15,7 @@ import PhotoSlider from '@/components/Car/Details/Stats/PhotoSlider.vue';
 import CarSummary from '@/components/Car/Details/Stats/CarSummary.vue';
 import DistanceStats from '@/components/Car/Details/Stats/DistanceStats.vue';
 import MoneySpendings from '@/components/Car/Details/Stats/MoneySpendings.vue';
+import NoteHistory from '@/components/Car/Details/Stats/NoteHistory.vue';
 import MileageChart from '@/components/Car/Details/Stats/MileageChart.vue';
 export default {
     name: 'CarStats',
@@ -23,6 +27,7 @@ export default {
         CarSummary,
         DistanceStats,
         MoneySpendings,
+        NoteHistory,
         MileageChart
     },
     computed: {
@@ -46,12 +51,14 @@ export default {
 </script>
 
 <style lang="less">
-.stats-section {
-    padding: 3em;
-
-    &.section-dark {
+.stats-wrapper {
+    .stats-section:nth-child(2n+1) {
         background-color: rgba(1, 106, 89, 0.1);
     }
+}
+
+.stats-section {
+    padding: 3em;
 
     .section-header {
         padding-bottom: 1.5em;

@@ -30,7 +30,7 @@ public abstract class NotesController<T, V> : ControllerBase
     }
 
     [HttpGet]
-    [Route("getByCar/{carId}")]
+    [Route("getByCar/{carId:guid}")]
     public async Task<IEnumerable<T>> GetByCar(Guid carId)
     {
         return await _noteRepository.GetListAsync(carId);
@@ -52,7 +52,7 @@ public abstract class NotesController<T, V> : ControllerBase
         return note;
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<T> Put(Guid id, [FromBody] V viewModel)
     {
         T note = _mapper.Map<T>(viewModel);
@@ -62,7 +62,7 @@ public abstract class NotesController<T, V> : ControllerBase
         return note;
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, [FromBody] V viewModel)
     {
         await _noteRepository.DeleteAsync(

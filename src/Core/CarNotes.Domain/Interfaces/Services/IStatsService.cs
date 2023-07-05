@@ -1,4 +1,6 @@
-﻿namespace CarNotes.Domain.Interfaces.Services
+﻿using CarNotes.Domain.Models;
+
+namespace CarNotes.Domain.Interfaces.Services
 {
     public interface IStatsService
     {
@@ -21,5 +23,8 @@
         Task<double> MoneySpentPerKmAsync(Guid carId);
 
         Task<double> MoneySpentPerMonthAsync(Guid carId);
+
+        Task<IEnumerable<Mileage>> GetLatestMileagesAsync(
+            Guid carId, int skip, int take);
     }
 }

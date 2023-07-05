@@ -1,5 +1,5 @@
 <template>
-    <section class="stats-section section-dark">
+    <section class="stats-section">
         <div class="section-header">
             <div class="section-title">Distance</div>
             <div class="section-subtitle">"1/4 times around the world"</div>

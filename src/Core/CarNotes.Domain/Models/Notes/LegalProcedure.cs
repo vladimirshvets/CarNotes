@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Services;
+﻿using System.Text;
+using CarNotes.Domain.Interfaces.Services;
 
 namespace CarNotes.Domain.Models.Notes
 {
@@ -6,7 +7,19 @@ namespace CarNotes.Domain.Models.Notes
     {
         public override string NoteType => nameof(LegalProcedure);
 
-        public override string NoteTitle => $"{NoteType}: {Title}";
+        public override string NoteTitle
+        {
+            get
+            {
+                var builder = new StringBuilder(Title);
+                if (Group != null)
+                {
+                    builder.Append($" ({Group})");
+                }
+                builder.Append($" | BYN {TotalAmount:F2}");
+                return builder.ToString();
+            }
+        }
 
         /// <summary>
         /// Legal procedure title.

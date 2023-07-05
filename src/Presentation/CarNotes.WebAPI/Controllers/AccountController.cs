@@ -39,7 +39,7 @@ public class AccountController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPut("profile/{userId}")]
+    [HttpPut("profile/{userId:guid}")]
     public async Task<ActionResult<User>> UpdateProfile(
         Guid userId, [FromBody] ProfileViewModel viewModel)
     {

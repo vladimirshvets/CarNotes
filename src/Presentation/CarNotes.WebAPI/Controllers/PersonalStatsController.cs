@@ -1,4 +1,5 @@
 ﻿using CarNotes.Domain.Interfaces.Services;
+using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ public class PersonalStatsController : ControllerBase
         _statsService = statsService;
     }
 
-    [HttpGet("action-records/{carId}")]
+    [HttpGet("action-records/{carId:guid}")]
     public async Task<int> GetNumberOfActionRecords(Guid carId)
         => await _statsService.NumberOfActionRecordsAsync(carId);
 
@@ -98,5 +99,16 @@ public class PersonalStatsController : ControllerBase
                 WashingsTotal = await washingSpendingsTask
             }
         );
+    }
+
+    [HttpGet("note-history/{carId:guid}")]
+    public async Task<IEnumerable<Mileage>> GetNoteHistoryAsync(
+        [FromRoute(Name = "carId")] Guid carId,
+        [FromQuery(Name = "skip")] int skip = 0,
+        [FromQuery(Name = "take")] int take = 10)
+    {
+        var result = await _statsService.GetLatestMileagesAsync(carId, skip, take);
+
+        return result;
     }
 }

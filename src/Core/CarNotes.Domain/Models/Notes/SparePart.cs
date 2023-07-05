@@ -1,4 +1,5 @@
-﻿using CarNotes.Domain.Interfaces.Services;
+﻿using System.Text;
+using CarNotes.Domain.Interfaces.Services;
 
 namespace CarNotes.Domain.Models.Notes
 {
@@ -6,7 +7,20 @@ namespace CarNotes.Domain.Models.Notes
     {
         public override string NoteType => nameof(SparePart);
 
-        public override string NoteTitle => $"{NoteType} ({Category}): {Name}";
+        public override string NoteTitle
+        {
+            get
+            {
+                var builder = new StringBuilder($"{Name} ({Category})");
+                if (Qty > 0)
+                {
+                    builder.Append($" * {Qty}");
+                }
+                builder.Append($" | BYN {TotalAmount:F2}");
+
+                return builder.ToString();
+            }
+        }
 
         /// <summary>
         /// Category.

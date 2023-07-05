@@ -1,5 +1,5 @@
 <template>
-    <section class="stats-section section-dark">
+    <section class="stats-section">
         <div class="section-header">
             <div class="section-title">Mileage History</div>
             <div class="section-content mileage-chart">

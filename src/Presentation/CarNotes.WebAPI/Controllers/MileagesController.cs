@@ -18,7 +18,7 @@ namespace CarNotes.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("getByCar/{carId}")]
+        [Route("getByCar/{carId:guid}")]
         public async Task<IEnumerable<Mileage>> GetByCar(Guid carId)
         {
             return await _mileageRepository.GetListAsync(carId);

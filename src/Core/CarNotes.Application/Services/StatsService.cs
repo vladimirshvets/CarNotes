@@ -168,4 +168,21 @@ public class StatsService : IStatsService
 
         return daysOfOwnerShip / AVG_DAYS_IN_MONTH;
     }
+
+    public async Task<IEnumerable<Mileage>> GetLatestMileagesAsync(
+        Guid carId, int skip, int take)
+    {
+        string[] noteTypes = new[]
+        {
+            nameof(LegalProcedure),
+            nameof(Refueling),
+            nameof(TextNote),
+            nameof(Service),
+            nameof(SparePart),
+            nameof(Washing)
+        };
+
+        return await _statsRepository.GetMileagesWithRelatedNotesAsync(
+            carId, noteTypes, skip, take);
+    }
 }
