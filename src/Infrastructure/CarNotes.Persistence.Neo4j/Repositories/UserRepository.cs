@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories;
 
@@ -23,48 +24,28 @@ public class UserRepository : IUserRepository
         _neo4jDataAccess = neo4jDataAccess;
     }
 
-    public async Task<User?> GetByUsernameAsync(string username)
-    {
-        string query =
-            @"MATCH (u:User { username: $username })
-            RETURN u";
-
-        var parameters = new Dictionary<string, object>
-        {
-            { "username", username }
-        };
-
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "u" }, parameters);
-
-        if (response.Count == 0)
-        {
-            return null;
-        }
-
-        return _mapper.Map<User>(response[0]);
-    }
-
     public async Task<User?> GetByEmailAsync(string email)
     {
         string query =
             @"MATCH (u:User { email: $email })
             RETURN u";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "email", email.ToLower() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "u" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        if (response.Count == 0)
+        IRecord record = response.First();
+        if (!record.Values.Any())
         {
             return null;
         }
+        INode userNode = record.Values["u"].As<INode>();
 
-        return _mapper.Map<User>(response[0]);
+        return _mapper.Map<User>(userNode);
     }
 
     public async Task<User?> GetAsync(Guid userId)
@@ -73,20 +54,22 @@ public class UserRepository : IUserRepository
             @"MATCH (u:User { id: $userId })
             RETURN u";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userId", userId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "u" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        if (response.Count == 0)
+        IRecord record = response.First();
+        if (!record.Values.Any())
         {
             return null;
         }
+        INode userNode = record.Values["u"].As<INode>();
 
-        return _mapper.Map<User>(response[0]);
+        return _mapper.Map<User>(userNode);
     }
 
     public async Task<User> AddAsync(User user)
@@ -105,7 +88,7 @@ public class UserRepository : IUserRepository
                 })
             RETURN u";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userName", user.UserName },
             { "email", user.Email.ToLower() },
@@ -114,10 +97,13 @@ public class UserRepository : IUserRepository
             { "lastName", user.LastName }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
-        return _mapper.Map<User>(response);
+        IRecord record = response.First();
+        INode userNode = record.Values["u"].As<INode>();
+
+        return _mapper.Map<User>(userNode);
     }
 
     public async Task<User> UpdateAsync(Guid userId, User user)
@@ -133,7 +119,7 @@ public class UserRepository : IUserRepository
                 u.updated_at = datetime()
             RETURN u";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userId", userId.ToString() },
             { "userName", user.UserName },
@@ -143,10 +129,13 @@ public class UserRepository : IUserRepository
             { "lastName", user.LastName }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
-        return _mapper.Map<User>(response);
+        IRecord record = response.First();
+        INode userNode = record.Values["u"].As<INode>();
+
+        return _mapper.Map<User>(userNode);
     }
 
     public async Task<int> GetNumberOfUsersAsync()
@@ -155,9 +144,11 @@ public class UserRepository : IUserRepository
             @"MATCH (u:User)
             RETURN COUNT(u)";
 
-        int response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<int>(query);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(query);
 
-        return response;
+        IRecord record = response.First();
+        int result = record[0].As<int>();
+
+        return result;
     }
 }

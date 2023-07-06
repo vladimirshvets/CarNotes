@@ -11,146 +11,223 @@ public class DataAccessMappingProfile : Profile
 {
     public DataAccessMappingProfile()
     {
-        CreateMap<Dictionary<string, object>, User>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(node => node["username"]))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(node => node["email"]))
-            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(node => node["password_hash"]))
-            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(node => node["firstname"]))
-            .ForMember(dest => dest.LastName, opt => opt.MapFrom(node => node["lastname"]))
+        CreateMap<INode, User>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(node => node.Properties["username"]))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(node => node.Properties["email"]))
+            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(node => node.Properties["password_hash"]))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(node => node.Properties["firstname"]))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(node => node.Properties["lastname"]))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(
-                node => ((ZonedDateTime)node["created_at"]).ToDateTimeOffset().DateTime))
+                node => ((ZonedDateTime)node.Properties["created_at"]).ToDateTimeOffset().DateTime))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(
-                node => ((ZonedDateTime)node["updated_at"]).ToDateTimeOffset().DateTime));
+                node => ((ZonedDateTime)node.Properties["updated_at"]).ToDateTimeOffset().DateTime));
 
-        CreateMap<Dictionary<string, object>, Car>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Make, opt => opt.MapFrom(node => node["make"]))
-            .ForMember(dest => dest.Model, opt => opt.MapFrom(node => node["model"]))
+        CreateMap<INode, Car>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Make, opt => opt.MapFrom(node => node.Properties["make"]))
+            .ForMember(dest => dest.Model, opt => opt.MapFrom(node => node.Properties["model"]))
             .ForMember(dest => dest.Generation, opt => opt.MapFrom(
-                node => node.ContainsKey("generation") ? node["generation"] : null))
+                node => node.Properties.ContainsKey("generation")
+                        ? node.Properties["generation"]
+                        : null))
             .ForMember(dest => dest.VIN, opt => opt.MapFrom(
-                node => node.ContainsKey("VIN") ? node["VIN"] : null))
+                node => node.Properties.ContainsKey("VIN")
+                        ? node.Properties["VIN"]
+                        : null))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(
-                node =>  node.ContainsKey("year") ? node["year"] : null))
+                node => node.Properties.ContainsKey("year")
+                        ? node.Properties["year"]
+                        : null))
             .ForMember(dest => dest.Plate, opt => opt.MapFrom(
-                node => node.ContainsKey("plate") ? node["plate"] : null))
-            .ForMember(dest => dest.EngineType, opt => opt.MapFrom(node =>
-                node.ContainsKey("engine_type") ? Enum.Parse(typeof(EngineType), (string)node["engine_type"], true): null))
+                node => node.Properties.ContainsKey("plate")
+                        ? node.Properties["plate"]
+                        : null))
+            .ForMember(dest => dest.EngineType, opt => opt.MapFrom(
+                node => node.Properties.ContainsKey("engine_type")
+                        ? Enum.Parse(typeof(EngineType), (string)node.Properties["engine_type"], true)
+                        : null))
             .ForMember(dest => dest.OwnedFrom, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("owned_from"), node => node))
             .ForMember(dest => dest.OwnedTo, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("owned_to"), node => node))
             .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(
-                node => node.ContainsKey("avatar_url") ? node["avatar_url"] : null));
+                node => node.Properties.ContainsKey("avatar_url")
+                        ? node.Properties["avatar_url"]
+                        : null));
 
-        CreateMap<Dictionary<string, object>, Mileage>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Date, opt => opt.MapFrom(node => ((LocalDate)node["date"]).ToDateOnly()))
-            .ForMember(dest => dest.OdometerValue, opt => opt.MapFrom(node => node["odometer"]));
+        CreateMap<INode, Mileage>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(
+                node => ((LocalDate)node.Properties["date"]).ToDateOnly()))
+            .ForMember(dest => dest.OdometerValue, opt => opt.MapFrom(
+                node => node.Properties["odometer"]));
 
-        CreateMap<Dictionary<string, object>, LegalProcedure>()
-            .ConstructUsing((src, ctx) => new LegalProcedure { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
+        CreateMap<INode, LegalProcedure>()
+            .ConstructUsing((src, ctx) => new LegalProcedure
+                { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
             .ForMember(dest => dest.Group, opt => opt.MapFrom(
-                node => node.ContainsKey("group") ? node["group"] : null))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node["title"]))
-            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(node => node["total_amount"]))
+                node => node.Properties.ContainsKey("group")
+                        ? node.Properties["group"]
+                        : null))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node.Properties["title"]))
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(
+                node => node.Properties["total_amount"]))
             .ForMember(dest => dest.ExpirationDate, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("expiration_date"), node => node))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                node => node.ContainsKey("comment") ? node["comment"] : null));
+                node => node.Properties.ContainsKey("comment")
+                        ? node.Properties["comment"]
+                        : null));
 
-        CreateMap<Dictionary<string, object>, Refueling>()
-            .ConstructUsing((src, ctx) => new Refueling { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Volume, opt => opt.MapFrom(node => node["volume"]))
-            .ForMember(dest => dest.Price, opt => opt.MapFrom(node => node["price"]))
+        CreateMap<INode, Refueling>()
+            .ConstructUsing((src, ctx) => new Refueling
+                { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Volume, opt => opt.MapFrom(node => node.Properties["volume"]))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(node => node.Properties["price"]))
             .ForMember(dest => dest.Distributor, opt => opt.MapFrom(
-                node => node.ContainsKey("distributor") ? node["distributor"] : null))
+                node => node.Properties.ContainsKey("distributor")
+                        ? node.Properties["distributor"]
+                        : null))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(
-                node => node.ContainsKey("address") ? node["address"] : null))
+                node => node.Properties.ContainsKey("address")
+                        ? node.Properties["address"]
+                        : null))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                node => node.ContainsKey("comment") ? node["comment"] : null));
+                node => node.Properties.ContainsKey("comment")
+                        ? node.Properties["comment"]
+                        : null));
 
-        CreateMap<Dictionary<string, object>, Service>()
-            .ConstructUsing((src, ctx) => new Service { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node["title"]))
+        CreateMap<INode, Service>()
+            .ConstructUsing((src, ctx) => new Service
+                { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node.Properties["title"]))
             .ForMember(dest => dest.StationName, opt => opt.MapFrom(
-                node => node.ContainsKey("station_name") ? node["station_name"] : null))
+                node => node.Properties.ContainsKey("station_name")
+                        ? node.Properties["station_name"]
+                        : null))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(
-                node => node.ContainsKey("address") ? node["address"] : null))
+                node => node.Properties.ContainsKey("address")
+                        ? node.Properties["address"]
+                        : null))
             .ForMember(dest => dest.WebsiteUrl, opt => opt.MapFrom(
-                node => node.ContainsKey("website_url") ? node["website_url"] : null))
-            .ForMember(dest => dest.CostOfWork, opt => opt.MapFrom(node => node["cost_of_work"]))
-            .ForMember(dest => dest.CostOfSpareParts, opt => opt.MapFrom(node => node["cost_of_spare_parts"]))
+                node => node.Properties.ContainsKey("website_url")
+                        ? node.Properties["website_url"]
+                        : null))
+            .ForMember(dest => dest.CostOfWork, opt => opt.MapFrom(
+                node => node.Properties["cost_of_work"]))
+            .ForMember(dest => dest.CostOfSpareParts, opt => opt.MapFrom(
+                node => node.Properties["cost_of_spare_parts"]))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                node => node.ContainsKey("comment") ? node["comment"] : null));
+                node => node.Properties.ContainsKey("comment")
+                        ? node.Properties["comment"]
+                        : null));
 
-        CreateMap<Dictionary<string, object>, SparePart>()
-            .ConstructUsing((src, ctx) => new SparePart { InstallationMileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Category, opt => opt.MapFrom(node => node["category"]))
+        CreateMap<INode, SparePart>()
+            .ConstructUsing((src, ctx) => new SparePart
+                { InstallationMileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(node => node.Properties["category"]))
             .ForMember(dest => dest.OrderDate, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("order_date"), node => node))
             .ForMember(dest => dest.PurchaseDate, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("purchase_date"), node => node))
             .ForMember(dest => dest.Group, opt => opt.MapFrom(
-                node => node.ContainsKey("group") ? node["group"] : null))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(node => node["name"]))
+                node => node.Properties.ContainsKey("group")
+                        ? node.Properties["group"]
+                        : null))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(node => node.Properties["name"]))
             .ForMember(dest => dest.UoM, opt => opt.MapFrom(
-                node => node.ContainsKey("uom") ? node["uom"] : null))
+                node => node.Properties.ContainsKey("uom")
+                        ? node.Properties["uom"]
+                        : null))
             .ForMember(dest => dest.IsOE, opt => opt.MapFrom(
-                node => node.ContainsKey("is_oe") ? node["is_oe"] : null))
+                node => node.Properties.ContainsKey("is_oe")
+                        ? node.Properties["is_oe"]
+                        : null))
             .ForMember(dest => dest.OENumber, opt => opt.MapFrom(
-                node => node.ContainsKey("oe_number") ? node["oe_number"] : null))
+                node => node.Properties.ContainsKey("oe_number")
+                        ? node.Properties["oe_number"]
+                        : null))
             .ForMember(dest => dest.ReplacementNumber, opt => opt.MapFrom(
-                node => node.ContainsKey("replacement_number") ? node["replacement_number"] : null))
+                node => node.Properties.ContainsKey("replacement_number")
+                        ? node.Properties["replacement_number"]
+                        : null))
             .ForMember(dest => dest.Manufacturer, opt => opt.MapFrom(
-                node => node.ContainsKey("manufacturer") ? node["manufacturer"] : null))
+                node => node.Properties.ContainsKey("manufacturer")
+                        ? node.Properties["manufacturer"]
+                        : null))
             .ForMember(dest => dest.CountryOfOrigin, opt => opt.MapFrom(
-                node => node.ContainsKey("country_of_origin") ? node["country_of_origin"] : null))
-            .ForMember(dest => dest.Qty, opt => opt.MapFrom(node => node["qty"]))
-            .ForMember(dest => dest.Price, opt => opt.MapFrom(node => node["price"]))
+                node => node.Properties.ContainsKey("country_of_origin")
+                        ? node.Properties["country_of_origin"]
+                        : null))
+            .ForMember(dest => dest.Qty, opt => opt.MapFrom(node => node.Properties["qty"]))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(node => node.Properties["price"]))
             .ForMember(dest => dest.ShopWebsiteUrl, opt => opt.MapFrom(
-                node => node.ContainsKey("shop_website_url") ? node["shop_website_url"] : null))
+                node => node.Properties.ContainsKey("shop_website_url")
+                        ? node.Properties["shop_website_url"]
+                        : null))
             .ForMember(dest => dest.ShopAddress, opt => opt.MapFrom(
-                node => node.ContainsKey("shop_address") ? node["shop_address"] : null))
+                node => node.Properties.ContainsKey("shop_address")
+                        ? node.Properties["shop_address"]
+                        : null))
             .ForMember(dest => dest.ProductionDate, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("production_date"), node => node))
             .ForMember(dest => dest.ExpirationDate, opt => opt.ConvertUsing(
                 new LocalDateValueConverter("expiration_date"), node => node))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                node => node.ContainsKey("comment") ? node["comment"] : null));
+                node => node.Properties.ContainsKey("comment")
+                        ? node.Properties["comment"]
+                        : null));
 
-        CreateMap<Dictionary<string, object>, TextNote>()
-            //.ConstructUsing((src, ctx) => new TextNote { Mileage = ctx.TryGetItems(out var items) ? items.ContainsKey("Mileage") ? items["Mileage"] as Mileage : null : null })
-            .ConstructUsing((src, ctx) => new TextNote { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node["title"]))
-            .ForMember(dest => dest.Tag, opt => opt.MapFrom(node => node["tag"]))
-            .ForMember(dest => dest.Text, opt => opt.MapFrom(node => node["text"]));
+        CreateMap<INode, TextNote>()
+            .ConstructUsing((src, ctx) => new TextNote
+                { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(node => node.Properties["title"]))
+            .ForMember(dest => dest.Tag, opt => opt.MapFrom(node => node.Properties["tag"]))
+            .ForMember(dest => dest.Text, opt => opt.MapFrom(node => node.Properties["text"]));
 
-        CreateMap<Dictionary<string, object>, Washing>()
-            .ConstructUsing((src, ctx) => new Washing { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node["id"]))
+        CreateMap<INode, Washing>()
+            .ConstructUsing((src, ctx) => new Washing
+                { Mileage = ctx.Items["Mileage"] as Mileage ?? null })
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(node => node.Properties["id"]))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(
-                node => node.ContainsKey("title") ? node["title"] : null))
+                node => node.Properties.ContainsKey("title")
+                        ? node.Properties["title"]
+                        : null))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(
-                node => node.ContainsKey("address") ? node["address"] : null))
+                node => node.Properties.ContainsKey("address")
+                        ? node.Properties["address"]
+                        : null))
             .ForMember(dest => dest.IsContact, opt => opt.MapFrom(
-                node => node.ContainsKey("is_contact") ? node["is_contact"] : null))
+                node => node.Properties.ContainsKey("is_contact")
+                        ? node.Properties["is_contact"]
+                        : null))
             .ForMember(dest => dest.IsDegreaserUsed, opt => opt.MapFrom(
-                node => node.ContainsKey("is_degreaser_used") ? node["is_degreaser_used"] : null))
+                node => node.Properties.ContainsKey("is_degreaser_used")
+                        ? node.Properties["is_degreaser_used"]
+                        : null))
             .ForMember(dest => dest.IsPolishUsed, opt => opt.MapFrom(
-                node => node.ContainsKey("is_polish_used") ? node["is_polish_used"] : null))
+                node => node.Properties.ContainsKey("is_polish_used")
+                        ? node.Properties["is_polish_used"]
+                        : null))
             .ForMember(dest => dest.IsAntiRainUsed, opt => opt.MapFrom(
-                node => node.ContainsKey("is_antirain_used") ? node["is_antirain_used"] : null))
+                node => node.Properties.ContainsKey("is_antirain_used")
+                        ? node.Properties["is_antirain_used"]
+                        : null))
             .ForMember(dest => dest.IsInteriorCleaned, opt => opt.MapFrom(
-                node => node.ContainsKey("is_interior_cleaned") ? node["is_interior_cleaned"] : null))
-            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(node => node["total_amount"]))
+                node => node.Properties.ContainsKey("is_interior_cleaned")
+                        ? node.Properties["is_interior_cleaned"]
+                        : null))
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(
+                node => node.Properties["total_amount"]))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(
-                node => node.ContainsKey("comment") ? node["comment"] : null));
+                node => node.Properties.ContainsKey("comment")
+                        ? node.Properties["comment"]
+                        : null));
     }
 }

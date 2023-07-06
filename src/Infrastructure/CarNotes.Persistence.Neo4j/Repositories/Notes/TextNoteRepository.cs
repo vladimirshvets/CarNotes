@@ -2,6 +2,7 @@
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
@@ -36,21 +37,22 @@ public class TextNoteRepository : INoteRepository<TextNote>
             RETURN t, m
             ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "t", "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        int textNotesCount = response.Count / 2;
-        List<TextNote> textNotes = new(textNotesCount);
-        for (int i = 0; i < textNotesCount; i++)
+        List<TextNote> textNotes = new(response.Count());
+        foreach (IRecord record in response)
         {
+            INode textNoteNode = record.Values["t"].As<INode>();
+            INode mileageNode = record.Values["m"].As<INode>();
             TextNote textNote = _mapper.Map<TextNote>(
-                response[i * 2],
-                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
+                textNoteNode,
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
             textNotes.Add(textNote);
         }
 
@@ -79,7 +81,7 @@ public class TextNoteRepository : INoteRepository<TextNote>
                 (t)-[:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN t, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -89,12 +91,16 @@ public class TextNoteRepository : INoteRepository<TextNote>
             { "comment", textNote.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode textNoteNode = record.Values["t"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         TextNote newInstance = _mapper.Map<TextNote>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            textNoteNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return newInstance;
     }
@@ -119,7 +125,7 @@ public class TextNoteRepository : INoteRepository<TextNote>
                 t.comment = $comment
             RETURN t, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -130,12 +136,16 @@ public class TextNoteRepository : INoteRepository<TextNote>
             { "comment", textNote.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode textNoteNode = record.Values["t"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         TextNote updatedInstance = _mapper.Map<TextNote>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            textNoteNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return updatedInstance;
     }
@@ -155,17 +165,19 @@ public class TextNoteRepository : INoteRepository<TextNote>
             DETACH DELETE t
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
             { "textNoteId", textNoteId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

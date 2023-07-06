@@ -2,6 +2,7 @@
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
@@ -34,25 +35,26 @@ public class SparePartRepository : INoteRepository<SparePart>
     {
         string query =
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)<-[:MILE_MARKER { tag: $tag }]-(p:SparePart)
-                RETURN p, m
-                ORDER BY m.odometer DESC, m.date DESC";
+            RETURN p, m
+            ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "tag", "installation" }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "p", "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        int sparePartsCount = response.Count / 2;
-        List<SparePart> spareParts = new(sparePartsCount);
-        for (int i = 0; i < sparePartsCount; i++)
+        List<SparePart> spareParts = new(response.Count());
+        foreach (IRecord record in response)
         {
+            INode sparePartNode = record.Values["p"].As<INode>();
+            INode mileageNode = record.Values["m"].As<INode>();
             SparePart sparePart = _mapper.Map<SparePart>(
-                response[i * 2],
-                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
+                sparePartNode,
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
             spareParts.Add(sparePart);
         }
 
@@ -97,7 +99,7 @@ public class SparePartRepository : INoteRepository<SparePart>
                 (p)-[:MILE_MARKER { created_at: timestamp(), tag: $tag }]->(m)
             RETURN p, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "tag", "installation" },
@@ -123,12 +125,16 @@ public class SparePartRepository : INoteRepository<SparePart>
             { "comment", sparePart.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode sparePartNode = record.Values["p"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         SparePart newInstance = _mapper.Map<SparePart>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            sparePartNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return newInstance;
     }
@@ -168,7 +174,7 @@ public class SparePartRepository : INoteRepository<SparePart>
                 p.comment = $comment
             RETURN p, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -194,12 +200,16 @@ public class SparePartRepository : INoteRepository<SparePart>
             { "comment", sparePart.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode sparePartNode = record.Values["p"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         SparePart updatedInstance = _mapper.Map<SparePart>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            sparePartNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return updatedInstance;
     }
@@ -219,17 +229,19 @@ public class SparePartRepository : INoteRepository<SparePart>
             DETACH DELETE p
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
             { "sparePartId", sparePartId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

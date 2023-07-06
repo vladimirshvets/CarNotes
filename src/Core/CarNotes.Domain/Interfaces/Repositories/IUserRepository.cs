@@ -5,13 +5,6 @@ namespace CarNotes.Domain.Interfaces.Repositories
     public interface IUserRepository
     {
         /// <summary>
-        /// Returns an user record by username.
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <returns>An instance of user if exists.</returns>
-        Task<User?> GetByUsernameAsync(string username);
-
-        /// <summary>
         /// Returns an user record by email.
         /// </summary>
         /// <param name="email">Email</param>

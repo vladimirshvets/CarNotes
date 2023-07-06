@@ -2,6 +2,7 @@
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
@@ -37,21 +38,22 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
             RETURN l, m
             ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-            query, new List<string> { "l", "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        int legalProceduresCount = response.Count / 2;
-        List<LegalProcedure> legalProcedures = new(legalProceduresCount);
-        for (int i = 0; i < legalProceduresCount; i++)
+        List<LegalProcedure> legalProcedures = new(response.Count());
+        foreach (IRecord record in response)
         {
+            INode legalProcedureNode = record.Values["l"].As<INode>();
+            INode mileageNode = record.Values["m"].As<INode>();
             LegalProcedure legalProcedure = _mapper.Map<LegalProcedure>(
-                response[i * 2],
-                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
+                legalProcedureNode,
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
             legalProcedures.Add(legalProcedure);
         }
 
@@ -82,7 +84,7 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
                 (l)-[:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN l, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -93,12 +95,16 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
             { "comment", legalProcedure.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode legalProcedureNode = record.Values["l"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         LegalProcedure newInstance = _mapper.Map<LegalProcedure>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            legalProcedureNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return newInstance;
     }
@@ -127,7 +133,7 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
                 l.comment = $comment
             RETURN l, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -139,12 +145,16 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
             { "comment", legalProcedure.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode legalProcedureNode = record.Values["l"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         LegalProcedure updatedInstance = _mapper.Map<LegalProcedure>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            legalProcedureNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return updatedInstance;
     }
@@ -164,17 +174,19 @@ public class LegalProcedureRepository : INoteRepository<LegalProcedure>
             DETACH DELETE l
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
             { "legalProcedureId", legalProcedureId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

@@ -2,6 +2,7 @@
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
@@ -36,21 +37,22 @@ public class ServiceRepository : INoteRepository<Service>
             RETURN s, m
             ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "s", "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        int servicesCount = response.Count / 2;
-        List<Service> services = new(servicesCount);
-        for (int i = 0; i < servicesCount; i++)
+        List<Service> services = new(response.Count());
+        foreach (IRecord record in response)
         {
+            INode serviceNode = record.Values["s"].As<INode>();
+            INode mileageNode = record.Values["m"].As<INode>();
             Service service = _mapper.Map<Service>(
-                response[i * 2],
-                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
+                serviceNode,
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
             services.Add(service);
         }
 
@@ -83,7 +85,7 @@ public class ServiceRepository : INoteRepository<Service>
                 (s)-[:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN s, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -97,12 +99,16 @@ public class ServiceRepository : INoteRepository<Service>
             { "comment", service.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode serviceNode = record.Values["s"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         Service newInstance = _mapper.Map<Service>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            serviceNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return newInstance;
     }
@@ -131,7 +137,7 @@ public class ServiceRepository : INoteRepository<Service>
                 s.comment = $comment
             RETURN s, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -146,12 +152,16 @@ public class ServiceRepository : INoteRepository<Service>
             { "comment", service.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode serviceNode = record.Values["s"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         Service updatedInstance = _mapper.Map<Service>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            serviceNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return updatedInstance;
     }
@@ -171,17 +181,19 @@ public class ServiceRepository : INoteRepository<Service>
             DETACH DELETE s
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
             { "serviceId", serviceId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

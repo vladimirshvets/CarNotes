@@ -2,6 +2,7 @@
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
 using CarNotes.Domain.Models.Notes;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories.Notes;
 
@@ -33,24 +34,25 @@ public class WashingRepository : INoteRepository<Washing>
     {
         string query =
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)<-[:MILE_MARKER]-(w:Washing)
-                RETURN w, m
-                ORDER BY m.odometer DESC, m.date DESC";
+            RETURN w, m
+            ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "w", "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        int washingsCount = response.Count / 2;
-        List<Washing> washings = new(washingsCount);
-        for (int i = 0; i < washingsCount; i++)
+        List<Washing> washings = new(response.Count());
+        foreach (IRecord record in response)
         {
+            INode washingNode = record.Values["w"].As<INode>();
+            INode mileageNode = record.Values["m"].As<INode>();
             Washing washing = _mapper.Map<Washing>(
-                response[i * 2],
-                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[i * 2 + 1]));
+                washingNode,
+                opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
             washings.Add(washing);
         }
 
@@ -84,7 +86,7 @@ public class WashingRepository : INoteRepository<Washing>
                 (w)-[:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN w, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -99,12 +101,16 @@ public class WashingRepository : INoteRepository<Washing>
             { "comment", washing.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode washingNode = record.Values["w"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         Washing newInstance = _mapper.Map<Washing>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            washingNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return newInstance;
     }
@@ -134,7 +140,7 @@ public class WashingRepository : INoteRepository<Washing>
                 w.comment = $comment
             RETURN w, m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
@@ -150,12 +156,16 @@ public class WashingRepository : INoteRepository<Washing>
             { "comment", washing.Comment }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithListResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
+        IRecord record = response.First();
+        INode washingNode = record.Values["w"].As<INode>();
+        INode mileageNode = record.Values["m"].As<INode>();
+
         Washing updatedInstance = _mapper.Map<Washing>(
-            response[0],
-            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(response[1]));
+            washingNode,
+            opt => opt.Items["Mileage"] = _mapper.Map<Mileage>(mileageNode));
 
         return updatedInstance;
     }
@@ -175,17 +185,19 @@ public class WashingRepository : INoteRepository<Washing>
             DETACH DELETE w
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() },
             { "washingId", washingId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

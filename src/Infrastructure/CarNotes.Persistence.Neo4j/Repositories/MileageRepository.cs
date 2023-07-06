@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories;
 
@@ -30,18 +31,19 @@ public class MileageRepository : IMileageRepository
             RETURN m
             ORDER BY m.odometer DESC, m.date DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-            query, new List<string> { "m" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        List<Mileage> mileages = new(response.Count);
-        foreach (Dictionary<string, object> mileageObj in response)
+        List<Mileage> mileages = new(response.Count());
+        foreach (IRecord record in response)
         {
-            Mileage mileage = _mapper.Map<Mileage>(mileageObj);
+            INode mileageNode = record.Values["m"].As<INode>();
+            Mileage mileage = _mapper.Map<Mileage>(mileageNode);
             mileages.Add(mileage);
         }
 
@@ -61,17 +63,20 @@ public class MileageRepository : IMileageRepository
                 (c)-[rel:MILE_MARKER { created_at: timestamp() }]->(m)
             RETURN m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageDate", mileage.Date },
             { "mileageValue", mileage.OdometerValue }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
-        return _mapper.Map<Mileage>(response);
+        IRecord record = response.First();
+        INode mileageNode = record.Values["m"].As<INode>();
+
+        return _mapper.Map<Mileage>(mileageNode);
     }
 
     public async Task<Mileage> UpdateAsync(
@@ -85,7 +90,7 @@ public class MileageRepository : IMileageRepository
                 rel.updated_at = timestamp()
             RETURN m";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageDate", mileageDate },
@@ -94,10 +99,13 @@ public class MileageRepository : IMileageRepository
             { "updatedMileageValue", mileage.OdometerValue }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
-        return _mapper.Map<Mileage>(response);
+        IRecord record = response.First();
+        INode mileageNode = record.Values["m"].As<INode>();
+
+        return _mapper.Map<Mileage>(mileageNode);
     }
 
     public async Task<bool> DeleteAsync(Guid carId, Guid mileageId)
@@ -107,17 +115,19 @@ public class MileageRepository : IMileageRepository
             DETACH DELETE m
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 
     public async Task<int> GetRelatedRecordsCountAsync(
@@ -127,15 +137,19 @@ public class MileageRepository : IMileageRepository
             @"MATCH (:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage { id: $mileageId })<-[rel:MILE_MARKER]-()
             RETURN COUNT(rel)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "mileageId", mileageId.ToString() }
         };
 
-        int response = await _neo4jDataAccess.ExecuteReadScalarAsync<int>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
-        return response;
+
+        IRecord record = response.First();
+        int result = record[0].As<int>();
+
+        return result;
     }
 
     public async Task<int> GetMinOdometerValueAsync(Guid carId)
@@ -144,15 +158,18 @@ public class MileageRepository : IMileageRepository
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)
             RETURN MIN(m.odometer)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        int? response = await _neo4jDataAccess.ExecuteReadScalarAsync<int?>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
 
-        return response ?? 0;
+        IRecord record = response.First();
+        int? result = record[0].As<int?>();
+
+        return result ?? 0;
     }
 
     public async Task<int> GetMaxOdometerValueAsync(Guid carId)
@@ -161,15 +178,18 @@ public class MileageRepository : IMileageRepository
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)
             RETURN MAX(m.odometer)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        int? response = await _neo4jDataAccess.ExecuteReadScalarAsync<int?>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
 
-        return response ?? 0;
+        IRecord record = response.First();
+        int? result = record[0].As<int?>();
+
+        return result ?? 0;
     }
 
     public async Task<int> GetDeltaOdometerValueAsync(Guid carId)
@@ -178,14 +198,17 @@ public class MileageRepository : IMileageRepository
             @"MATCH (c:Car { id: $carId })-[:MILE_MARKER]->(m:Mileage)
             RETURN MAX(m.odometer) - MIN(m.odometer)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        int? response = await _neo4jDataAccess.ExecuteReadScalarAsync<int?>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
 
-        return response ?? 0;
+        IRecord record = response.First();
+        int? result = record[0].As<int?>();
+
+        return result ?? 0;
     }
 }

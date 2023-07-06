@@ -12,7 +12,16 @@ namespace CarNotes.Domain.Models.Notes
             get
             {
                 var builder = new StringBuilder(Title);
-                string location = string.Join(", ", StationName, Address);
+                var secondaryInfo = new List<string>();
+                if (StationName != null)
+                {
+                    secondaryInfo.Add(StationName);
+                }
+                if (Address != null)
+                {
+                    secondaryInfo.Add(Address);
+                }
+                string location = string.Join(", ", secondaryInfo);
                 if (location.Length > 0)
                 {
                     builder.Append($" ({location})");

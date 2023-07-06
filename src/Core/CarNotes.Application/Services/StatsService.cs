@@ -11,7 +11,7 @@ public class StatsService : IStatsService
     /// <summary>
     /// The average number of days in a month, calculated as 365.25 / 12.
     /// </summary>
-    const double AVG_DAYS_IN_MONTH = 30.4375;
+    const double AverageDaysInMonth = 30.4375;
 
     private readonly ICarRepository _carRepository;
 
@@ -166,7 +166,7 @@ public class StatsService : IStatsService
             return 0;
         }
 
-        return daysOfOwnerShip / AVG_DAYS_IN_MONTH;
+        return daysOfOwnerShip / AverageDaysInMonth;
     }
 
     public async Task<IEnumerable<Mileage>> GetLatestMileagesAsync(

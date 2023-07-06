@@ -38,14 +38,18 @@ public class StatsRepository : IStatsRepository
             @"MATCH (:Car { id: $carId })-[rel:" + relationTypesString + @"]->()
             RETURN COUNT(rel)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        int response = await _neo4jDataAccess.ExecuteReadScalarAsync<int>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
-        return response;
+
+        IRecord record = response.First();
+        int result = record[0].As<int>();
+
+        return result;
     }
 
     public async Task<double> GetTotalFuelConsumedAsync(Guid carId)
@@ -54,15 +58,18 @@ public class StatsRepository : IStatsRepository
             @"MATCH (c:Car { id: $carId })-[:FUEL]->(r:Refueling)
             RETURN SUM(r.volume)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        double response = await _neo4jDataAccess.ExecuteReadScalarAsync<double>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        double result = record[0].As<double>();
+
+        return result;
     }
 
     public async Task<double> GetTotalMoneySpentAsync(
@@ -78,15 +85,18 @@ public class StatsRepository : IStatsRepository
             @"MATCH (c:Car { id: $carId })-->(n:" + noteTypesString + @")
             RETURN SUM(n.total_amount)";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        double response = await _neo4jDataAccess.ExecuteReadScalarAsync<double>(
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
             query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        double result = record[0].As<double>();
+
+        return result;
     }
 
     public async Task<IEnumerable<Mileage>> GetMileagesWithRelatedNotesAsync(
@@ -108,7 +118,7 @@ public class StatsRepository : IStatsRepository
             ORDER BY m.odometer DESC, m.date DESC
             SKIP $skip LIMIT $take";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "skip", skip },
@@ -124,16 +134,15 @@ public class StatsRepository : IStatsRepository
         var mileages = new List<Mileage>();
         foreach (IRecord record in response)
         {
-            IReadOnlyDictionary<string, object> values = record.Values;
-            var mileageNode = values["m"].As<INode>();
-            Mileage mileage = _mapper.Map<Mileage>(mileageNode.Properties);
+            INode mileageNode = record.Values["m"].As<INode>();
+            Mileage mileage = _mapper.Map<Mileage>(mileageNode);
 
             var notes = new List<Note>();
-            var noteNodeCollection = values["notes"].As<IEnumerable<INode>>();
+            var noteNodeCollection = record.Values["notes"].As<IEnumerable<INode>>();
             foreach (INode node in noteNodeCollection)
             {
                 string noteTypeName = node.Labels[0];
-                Note note = MakeNoteByType(noteTypeName, node.Properties);
+                Note note = MakeNoteByType(noteTypeName, node);
                 notes.Add(note);
             }
             mileage.Notes = notes;
@@ -161,7 +170,7 @@ public class StatsRepository : IStatsRepository
     /// Throws if the specified type is not derived from the <see cref="Note"/>.
     /// </exception>
     private Note MakeNoteByType(
-        string noteType, IReadOnlyDictionary<string, object> source)
+        string noteType, INode source)
     {
         // ToDo:
         // Try to convert note type name to Type variable

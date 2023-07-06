@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
+using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j.Repositories;
 
@@ -30,18 +31,19 @@ public class CarRepository : ICarRepository
             RETURN c
             ORDER BY c.created_at DESC";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userId", userId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "c" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        List<Car> cars = new(response.Count);
-        foreach (Dictionary<string, object> carObj in response)
+        List<Car> cars = new(response.Count());
+        foreach (IRecord record in response)
         {
-            Car car = _mapper.Map<Car>(carObj);
+            INode carNode = record.Values["c"].As<INode>();
+            Car car = _mapper.Map<Car>(carNode);
             cars.Add(car);
         }
 
@@ -54,20 +56,22 @@ public class CarRepository : ICarRepository
             @"MATCH (c:Car { id: $carId })
             RETURN c";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() }
         };
 
-        var response = await _neo4jDataAccess.ExecuteReadDictionaryAsync(
-                query, new List<string> { "c" }, parameters);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(
+            query, parameters);
 
-        if (response.Count == 0)
+        IRecord record = response.First();
+        if (!record.Values.Any())
         {
             return null;
         }
+        INode carNode = record.Values["c"].As<INode>();
 
-        return _mapper.Map<Car>(response[0]);
+        return _mapper.Map<Car>(carNode);
     }
 
     public async Task<Car> AddAsync(Guid userId, Car car)
@@ -90,7 +94,7 @@ public class CarRepository : ICarRepository
                 (u)-[rel:OWNS { created_at: timestamp() }]->(c)
             RETURN c";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userId", userId.ToString() },
             { "make", car.Make },
@@ -104,10 +108,13 @@ public class CarRepository : ICarRepository
             { "ownedTo", car.OwnedTo }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
             query, parameters);
 
-        return _mapper.Map<Car>(response);
+        IRecord record = response.First();
+        INode carNode = record.Values["c"].As<INode>();
+
+        return _mapper.Map<Car>(carNode);
     }
 
     public async Task<Car> UpdateAsync(Guid carId, Car car)
@@ -127,7 +134,7 @@ public class CarRepository : ICarRepository
                 c.updated_at = timestamp()
             RETURN c";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "make", car.Make },
@@ -141,10 +148,13 @@ public class CarRepository : ICarRepository
             { "ownedTo", car.OwnedTo }
         };
 
-        var response = await _neo4jDataAccess.ExecuteWriteWithDictionaryResultAsync(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return _mapper.Map<Car>(response);
+        IRecord record = response.First();
+        INode carNode = record.Values["c"].As<INode>();
+
+        return _mapper.Map<Car>(carNode);
     }
 
     public async Task<bool> DeleteAsync(Guid userId, Guid carId)
@@ -155,17 +165,19 @@ public class CarRepository : ICarRepository
             DETACH DELETE c, note
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "userId", userId.ToString() },
             { "carId", carId.ToString() }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(
-                query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 
     public async Task<int> GetNumberOfCarsAsync()
@@ -174,10 +186,12 @@ public class CarRepository : ICarRepository
             @"MATCH (c:Car)
             RETURN COUNT(c)";
 
-        int response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<int>(query);
+        var response = await _neo4jDataAccess.ExecuteReadTransactionAsync(query);
 
-        return response;
+        IRecord record = response.First();
+        int result = record[0].As<int>();
+
+        return result;
     }
 
     public async Task<bool> SetAvatarUrlAsync(Guid carId, string url)
@@ -189,15 +203,18 @@ public class CarRepository : ICarRepository
                 c.updated_at = timestamp()
             RETURN true";
 
-        var parameters = new Dictionary<string, object>
+        var parameters = new Dictionary<string, object?>
         {
             { "carId", carId.ToString() },
             { "avatarUrl", url }
         };
 
-        bool response =
-            await _neo4jDataAccess.ExecuteWriteWithScalarResultAsync<bool>(query, parameters);
+        var response = await _neo4jDataAccess.ExecuteWriteTransactionAsync(
+            query, parameters);
 
-        return response;
+        IRecord record = response.First();
+        bool result = record[0].As<bool>();
+
+        return result;
     }
 }

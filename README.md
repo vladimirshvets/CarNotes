@@ -15,6 +15,7 @@
 - CRUD actions for Notes: Refuelings, Washings, Spare Parts, Services, Legal Procedures, Text Notes
 
 ### To Do
+- Remove car avatar and carousel photos from storage on car removal
 - New/edit car Page design
 - Add content to Homepage
 - Upload user photo, car photo
