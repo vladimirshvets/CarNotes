@@ -18,16 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ViewModels\" />
-    <None Remove="ViewModels\Account\" />
     <None Remove="Controllers\Notes\" />
     <None Remove="LocalStorage\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-    <Folder Include="ViewModels\Account\" />
     <Folder Include="Controllers\Notes\" />
     <Folder Include="LocalStorage\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\CarNotes.Application\CarNotes.Application.csproj">

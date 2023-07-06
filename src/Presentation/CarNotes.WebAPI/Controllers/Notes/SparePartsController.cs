@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models.Notes;
-using CarNotes.WebAPI.ViewModels;
+using CarNotes.WebAPI.Models;
 
 namespace CarNotes.WebAPI.Controllers.Notes;
 
-public class SparePartsController : NotesController<SparePart, SparePartViewModel>
+public class SparePartsController : NotesController<SparePart, SparePartDto>
 {
     public SparePartsController(
         IMapper mapper,

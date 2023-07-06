@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using CarNotes.Domain.Interfaces.Services;
 using CarNotes.Domain.Models;
-using CarNotes.WebAPI.ViewModels.Account;
+using CarNotes.WebAPI.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,9 +25,9 @@ public class AuthController : ControllerBase
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(
-        [FromBody] RegisterViewModel viewModel)
+        [FromBody] RegisterDto dto)
     {
-        var user = await _accountService.FindByEmailAsync(viewModel.Email);
+        var user = await _accountService.FindByEmailAsync(dto.Email);
         if (user != null)
         {
             return Conflict(new { Message = "A user with specified email already exists." });
@@ -35,20 +35,20 @@ public class AuthController : ControllerBase
 
         user = new User
         {
-            Email = viewModel.Email
+            Email = dto.Email
         };
-        user.PasswordHash = _authService.HashPassword(user, viewModel.Password);
+        user.PasswordHash = _authService.HashPassword(user, dto.Password);
         User newlyCreatedUser = await _accountService.CreateAsync(user);
 
         return Ok(new { Token = _authService.GenerateTokenString(newlyCreatedUser) });
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel viewModel)
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
-        var user = await _accountService.FindByEmailAsync(viewModel.Email);
+        var user = await _accountService.FindByEmailAsync(dto.Email);
         if (user == null ||
-            !await _authService.CheckPasswordAsync(user, viewModel.Password))
+            !await _authService.CheckPasswordAsync(user, dto.Password))
         {
             return Unauthorized();
         }

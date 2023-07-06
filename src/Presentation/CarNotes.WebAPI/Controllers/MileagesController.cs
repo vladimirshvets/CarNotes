@@ -1,6 +1,6 @@
 ﻿using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
-using CarNotes.WebAPI.ViewModels;
+using CarNotes.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,15 +28,15 @@ namespace CarNotes.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Post(
-            [FromBody] NoteViewModel viewModel)
+            [FromBody] NoteDto dto)
         {
-            Mileage mileage = viewModel.Mileage;
+            Mileage mileage = dto.Mileage;
             if (mileage.Id != Guid.Empty)
             {
                 return Conflict();
             }
             mileage =
-                await _mileageRepository.AddAsync(viewModel.CarId, mileage);
+                await _mileageRepository.AddAsync(dto.CarId, mileage);
             return Ok(mileage);
         }
 

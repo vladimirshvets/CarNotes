@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels
+﻿namespace CarNotes.WebAPI.Models
 {
-    public class LegalProcedureViewModel : NoteViewModel
+    public class LegalProcedureDto : NoteDto
     {
         public string? Group { get; set; }
 

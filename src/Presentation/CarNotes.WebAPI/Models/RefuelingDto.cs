@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels
+﻿namespace CarNotes.WebAPI.Models
 {
-    public class RefuelingViewModel : NoteViewModel
+    public class RefuelingDto : NoteDto
     {
         public double Volume { get; set; }
 

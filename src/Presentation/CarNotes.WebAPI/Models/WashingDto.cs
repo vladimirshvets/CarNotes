@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels
+﻿namespace CarNotes.WebAPI.Models
 {
-    public class WashingViewModel : NoteViewModel
+    public class WashingDto : NoteDto
     {
         public string? Title { get; set; }
 
@@ -19,4 +19,3 @@
         public double TotalAmount { get; set; }
     }
 }
-

@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels.Account
+﻿namespace CarNotes.WebAPI.Models.Account
 {
-    public class RegisterViewModel
+    public class LoginDto
     {
         public string Email { get; set; } = string.Empty;
 

@@ -167,34 +167,27 @@ public class StatsRepository : IStatsRepository
         // Try to convert note type name to Type variable
         // and pass it to the Map<T>() as T.
         // Otherwise, it will be necessary to add new note types every time.
-        switch (noteType)
+        return noteType switch
         {
-            case nameof(LegalProcedure):
-                return _mapper.Map<LegalProcedure>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(LegalProcedure) => _mapper.Map<LegalProcedure>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            case nameof(Refueling):
-                return _mapper.Map<Refueling>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(Refueling) => _mapper.Map<Refueling>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            case nameof(Service):
-                return _mapper.Map<Service>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(Service) => _mapper.Map<Service>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            case nameof(SparePart):
-                return _mapper.Map<SparePart>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(SparePart) => _mapper.Map<SparePart>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            case nameof(TextNote):
-                return _mapper.Map<TextNote>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(TextNote) => _mapper.Map<TextNote>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            case nameof(Washing):
-                return _mapper.Map<Washing>(
-                    source, opt => opt.Items["Mileage"] = null);
+            nameof(Washing) => _mapper.Map<Washing>(
+                source, opt => opt.Items["Mileage"] = null),
 
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

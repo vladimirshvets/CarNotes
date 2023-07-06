@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CarNotes.Domain.Interfaces.Repositories;
 using CarNotes.Domain.Models;
-using CarNotes.WebAPI.ViewModels;
+using CarNotes.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +11,7 @@ namespace CarNotes.WebAPI.Controllers;
 [Route("api/[controller]")]
 public abstract class NotesController<T, V> : ControllerBase
     where T : Note
-    where V : NoteViewModel
+    where V : NoteDto
 {
     private readonly IMapper _mapper;
 
@@ -37,45 +37,45 @@ public abstract class NotesController<T, V> : ControllerBase
     }
 
     [HttpPost]
-    public async Task<T> Post([FromBody] V viewModel)
+    public async Task<T> Post([FromBody] V dto)
     {
-        Mileage mileage = viewModel.Mileage;
+        Mileage mileage = dto.Mileage;
         if (mileage.Id == Guid.Empty)
         {
             mileage = await _mileageRepository.AddAsync(
-                viewModel.CarId, viewModel.Mileage);
+                dto.CarId, dto.Mileage);
         }
 
-        T note = _mapper.Map<T>(viewModel);
-        note = await _noteRepository.AddAsync(viewModel.CarId, mileage.Id, note);
+        T note = _mapper.Map<T>(dto);
+        note = await _noteRepository.AddAsync(dto.CarId, mileage.Id, note);
 
         return note;
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<T> Put(Guid id, [FromBody] V viewModel)
+    public async Task<T> Put(Guid id, [FromBody] V dto)
     {
-        T note = _mapper.Map<T>(viewModel);
+        T note = _mapper.Map<T>(dto);
         note = await _noteRepository.UpdateAsync(
-            viewModel.CarId, viewModel.Mileage.Id, id, note);
+            dto.CarId, dto.Mileage.Id, id, note);
 
         return note;
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, [FromBody] V viewModel)
+    public async Task<IActionResult> Delete(Guid id, [FromBody] V dto)
     {
         await _noteRepository.DeleteAsync(
-            viewModel.CarId, viewModel.Mileage.Id, id);
+            dto.CarId, dto.Mileage.Id, id);
 
         bool isMileageDeleted = false;
         int relatedRecords =
             await _mileageRepository.GetRelatedRecordsCountAsync(
-                viewModel.CarId, viewModel.Mileage.Id);
+                dto.CarId, dto.Mileage.Id);
         if (relatedRecords == 0)
         {
             await _mileageRepository.DeleteAsync(
-                viewModel.CarId, viewModel.Mileage.Id);
+                dto.CarId, dto.Mileage.Id);
             isMileageDeleted = true;
         }
 
@@ -83,7 +83,7 @@ public abstract class NotesController<T, V> : ControllerBase
         {
             Id = id,
             IsMileageDeleted = isMileageDeleted,
-            MileageId = viewModel.Mileage.Id
+            MileageId = dto.Mileage.Id
         });
     }
 }

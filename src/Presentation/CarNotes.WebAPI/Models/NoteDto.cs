@@ -1,8 +1,8 @@
 ﻿using CarNotes.Domain.Models;
 
-namespace CarNotes.WebAPI.ViewModels
+namespace CarNotes.WebAPI.Models
 {
-    public class NoteViewModel
+    public class NoteDto
     {
         public Guid CarId { get; set; }
 

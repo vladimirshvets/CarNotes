@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels
+﻿namespace CarNotes.WebAPI.Models
 {
-    public class TextNoteViewModel : NoteViewModel
+    public class TextNoteDto : NoteDto
     {
         public string Title { get; set; } = string.Empty;
 

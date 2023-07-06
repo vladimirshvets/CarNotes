@@ -1,8 +1,8 @@
 ﻿using CarNotes.Domain.Models;
 
-namespace CarNotes.WebAPI.ViewModels
+namespace CarNotes.WebAPI.Models
 {
-    public class SparePartViewModel : NoteViewModel
+    public class SparePartDto : NoteDto
     {
         public string Category { get; set; } = string.Empty;
 

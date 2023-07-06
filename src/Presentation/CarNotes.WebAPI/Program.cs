@@ -59,7 +59,7 @@ builder.Services
         };
     });
 
-builder.Services.AddAutoMapper(typeof(ViewModelMappingProfile));
+builder.Services.AddAutoMapper(typeof(DtoMappingProfile));
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IAccountService, AccountService>();

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using CarNotes.Domain.Interfaces.Services;
 using CarNotes.Domain.Models;
-using CarNotes.WebAPI.ViewModels.Account;
+using CarNotes.WebAPI.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +41,7 @@ public class AccountController : ControllerBase
 
     [HttpPut("profile/{userId:guid}")]
     public async Task<ActionResult<User>> UpdateProfile(
-        Guid userId, [FromBody] ProfileViewModel viewModel)
+        Guid userId, [FromBody] ProfileDto dto)
     {
         var user = await _accountService.GetAsync(userId);
         if (user == null)
@@ -49,9 +49,9 @@ public class AccountController : ControllerBase
             return NotFound();
         }
 
-        user.UserName = viewModel.UserName;
-        user.FirstName = viewModel.FirstName;
-        user.LastName = viewModel.LastName;
+        user.UserName = dto.UserName;
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
         user = await _accountService.UpdateAsync(userId, user);
 
         return Ok(user);

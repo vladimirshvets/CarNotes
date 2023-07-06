@@ -1,6 +1,6 @@
-﻿namespace CarNotes.WebAPI.ViewModels.Account
+﻿namespace CarNotes.WebAPI.Models.Account
 {
-    public class ProfileViewModel
+    public class ProfileDto
     {
         public string UserName { get; set; }
 
