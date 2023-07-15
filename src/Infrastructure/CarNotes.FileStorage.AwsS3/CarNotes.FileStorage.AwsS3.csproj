@@ -11,6 +11,6 @@
     <ProjectReference Include="..\..\Core\CarNotes.Domain\CarNotes.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.106.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.108" />
   </ItemGroup>
 </Project>

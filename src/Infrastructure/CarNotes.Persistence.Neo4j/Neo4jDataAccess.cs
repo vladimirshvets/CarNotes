@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Neo4j.Driver;
 
 namespace CarNotes.Persistence.Neo4j;
@@ -16,14 +17,17 @@ public class Neo4jDataAccess : INeo4jDataAccess
     /// <summary>
     /// Initializes a new instance of the <see cref="Neo4jDataAccess"/> class.
     /// </summary>
+    /// <param name="driver">Neo4j driver</param>
+    /// <param name="logger">Logger</param>
+    /// <param name="neo4jOptions">Database connection options</param>
     public Neo4jDataAccess(
         IDriver driver,
         ILogger<Neo4jDataAccess> logger,
-        Neo4jOptions neo4JOptions)
+        IOptions<Neo4jOptions> neo4jOptions)
     {
         _driver = driver;
         _logger = logger;
-        _database = neo4JOptions.Database ?? Neo4jDefaultDatabase;
+        _database = neo4jOptions.Value.Database ?? Neo4jDefaultDatabase;
     }
 
     /// <summary>

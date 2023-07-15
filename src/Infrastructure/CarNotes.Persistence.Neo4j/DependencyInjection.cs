@@ -25,7 +25,11 @@ namespace CarNotes.Persistence.Neo4j
 
             var neo4jOptions = new Neo4jOptions();
             configureOptions.Invoke(neo4jOptions);
-            services.AddSingleton(neo4jOptions);
+
+            services
+                .AddOptions<Neo4jOptions>()
+                .Configure(configureOptions);
+
             services.AddSingleton(GraphDatabase.Driver(
                 neo4jOptions.Connection,
                 AuthTokens.Basic(neo4jOptions.User, neo4jOptions.Password)));
